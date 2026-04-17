@@ -4,33 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Las Vegas Tours — Grand Canyon, Hoover Dam, Helicopters | TheVegasHub</title>
-<meta name="description" content="Compare top Las Vegas tours and day trips — Grand Canyon helicopters, Hoover Dam bus tours, Red Rock Canyon, Sphere shows, and more. Prices from Viator and Klook.">
+<meta name="description" content="Hand-picked Las Vegas tours and day trips — Grand Canyon helicopters, Hoover Dam, Red Rock Canyon, Sphere, and more — with real-time pricing and instant booking.">
 <meta name="msvalidate.01" content="3EEE76DDDF64D0FF9681E1D1AF528A5D">
 <link rel="canonical" href="https://thevegashub.com/tours">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Las Vegas Tours — Grand Canyon, Hoover Dam, Helicopters | TheVegasHub">
-<meta property="og:description" content="Compare top Las Vegas tours and day trips — Grand Canyon helicopters, Hoover Dam bus tours, Red Rock Canyon, Sphere shows, and more. Prices from Viator and Klook.">
+<meta property="og:description" content="Hand-picked Las Vegas tours and day trips — Grand Canyon helicopters, Hoover Dam, Red Rock Canyon, Sphere, and more — with real-time pricing and instant booking.">
 <meta property="og:url" content="https://thevegashub.com/tours">
 <meta property="og:image" content="https://thevegashub.com/images/og/og-default.jpg">
 <meta property="og:site_name" content="TheVegasHub">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Las Vegas Tours — Grand Canyon, Hoover Dam, Helicopters | TheVegasHub">
-<meta name="twitter:description" content="Compare top Las Vegas tours and day trips — Grand Canyon helicopters, Hoover Dam bus tours, Red Rock Canyon, Sphere shows, and more. Prices from Viator and Klook.">
+<meta name="twitter:description" content="Hand-picked Las Vegas tours and day trips — Grand Canyon helicopters, Hoover Dam, Red Rock Canyon, Sphere, and more — with real-time pricing and instant booking.">
 <meta name="twitter:image" content="https://thevegashub.com/images/og/og-default.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Bungee&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0010">
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC"></script>
 <script>
+  // GA4 loader — deferred until cookie consent decision
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-MYGBD31ZHC');
+  window.__loadGA = function() {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-MYGBD31ZHC', {'anonymize_ip': true});
+  };
 </script>
 </head>
 <body>
@@ -57,20 +67,21 @@
     <div class="section-head">
       <span class="pill pill-pink">TOURS & DAY TRIPS</span>
       <h1 class="headline-glow" style="font-size:clamp(44px,7vw,80px); margin:12px 0 8px;">VEGAS TOURS</h1>
-      <p class="kicker">The best day trips from Las Vegas — compared across Viator and Klook so you get the best rate.</p>
+      <p class="kicker">The best day trips from Las Vegas — hand-picked by locals, with live pricing and instant booking.</p>
     </div>
 
     <h2 class="headline neon-cyan" style="margin-top:32px;">TOP PICKS RIGHT NOW</h2>
     <p style="color:var(--text-muted); margin-bottom:24px;">Live pricing below — refreshed whenever this page loads.</p>
 
     <div style="background:rgba(255,255,255,.03); border:1px solid rgba(191,0,255,.2); border-radius:10px; padding:20px; margin-bottom:32px;">
-      <div style="font-family:'Bungee',sans-serif; color:var(--neon-cyan); font-size:14px; margin-bottom:14px; letter-spacing:.12em;">FROM VIATOR →</div>
       <div data-vi-partner-id="U00009631" data-vi-widget-ref="W-e608db0e-5519-4eb8-a37f-01bb80769f0a"></div>
       <script async src="https://www.viator.com/orion/partner/widget.js"></script>
     </div>
 
+    <h2 class="headline neon-pink" style="margin-top:40px;">MORE VEGAS EXPERIENCES</h2>
+    <p style="color:var(--text-muted); margin-bottom:24px;">Additional day trips, tickets, and tours — instant booking.</p>
+
     <div style="background:rgba(255,255,255,.03); border:1px solid rgba(255,46,176,.2); border-radius:10px; padding:20px; margin-bottom:32px;">
-      <div style="font-family:'Bungee',sans-serif; color:var(--neon-pink); font-size:14px; margin-bottom:14px; letter-spacing:.12em;">FROM KLOOK →</div>
       <ins class="klk-aff-widget"
            data-adid="1258235"
            data-lang=""
@@ -83,7 +94,7 @@
            data-tid="-1"
            data-amount="6"
            data-prod="dynamic_widget">
-        <a href="//www.klook.com/">Klook.com</a>
+        <a href="//www.klook.com/" style="color:var(--neon-cyan);">Loading experiences…</a>
       </ins>
       <script type="text/javascript">
         (function (d, sc, u) {
@@ -141,15 +152,33 @@
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
           <li><a href="/sitemap.xml">Sitemap</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/disclosure">Disclosure</a></li>
         </ul>
       </div>
     </div>
     <div style="border-top:1px solid rgba(191,0,255,.15); padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text-muted);">
       <div>© <span data-current-year>2026</span> TheVegasHub.com · Headquartered in Las Vegas</div>
-      <div>Some links are affiliate links. We may earn a commission — at no extra cost to you.</div>
+      <div>Some links are <a href="/disclosure" style="color:var(--text-muted); text-decoration:underline;">affiliate links</a>. We may earn a commission — at no extra cost to you.</div>
     </div>
   </div>
 </footer>
+
+<!-- Cookie consent banner -->
+<div id="vh-cookies" style="display:none; position:fixed; bottom:16px; left:16px; right:16px; max-width:620px; margin:0 auto; background:rgba(5,0,12,.96); border:1px solid var(--neon-cyan); border-radius:10px; padding:18px 20px; box-shadow:0 0 24px rgba(0,234,255,.35); z-index:9998; font-size:14px;">
+  <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:6px;">COOKIES &amp; ANALYTICS</div>
+      <div style="color:var(--text-muted); line-height:1.55;">We use cookies for analytics and affiliate attribution. Essential cookies are always on. <a href="/privacy" style="color:var(--neon-cyan);">Privacy Policy</a>.</div>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="VegasHub.cookies('reject')" class="btn btn-ghost" style="font-size:12px; padding:10px 14px;">Essential only</button>
+      <button onclick="VegasHub.cookies('accept')" class="btn btn-cyan" style="font-size:12px; padding:10px 14px;">Accept all</button>
+    </div>
+  </div>
+</div>
+
 <script src="/js/site.js"></script>
 </body>
 </html>

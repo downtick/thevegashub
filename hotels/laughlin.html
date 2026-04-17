@@ -24,6 +24,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Bungee&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0010">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
   {"@type":"ListItem","position":1,"name":"Home","item":"https://thevegashub.com/"},
@@ -31,12 +35,18 @@
   {"@type":"ListItem","position":3,"name":"Laughlin, NV","item":"https://thevegashub.com/hotels/laughlin"}
 ]}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC"></script>
 <script>
+  // GA4 loader — deferred until cookie consent decision
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-MYGBD31ZHC');
+  window.__loadGA = function() {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-MYGBD31ZHC', {'anonymize_ip': true});
+  };
 </script>
 </head>
 <body>
@@ -65,47 +75,96 @@
       <h1 class="headline-glow" style="font-size:clamp(44px,7vw,80px); margin:12px 0 8px;">HOTELS IN<br>LAUGHLIN, NV</h1>
       <p class="kicker">Laughlin, Nevada hotels on the Colorado River — Edgewater, Aquarius, Harrah's, Tropicana. Member-rate booking links inside.</p>
     </div>
-    <div class="grid grid-3">
-      <a class="card" href="https://book.hotelroomdiscounters.com/url/cf4b157a-75a9-44fb-a537-8a33455843b2?isPermanentLink=true" rel="nofollow sponsored" target="_blank" id="edgewater-laughlin">
-        <img class="card-img" src="/images/hotels/edgewater-laughlin.jpg" alt="Edgewater Hotel & Casino Resort riverside tower on the Colorado River in Laughlin Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
-        <div class="card-body">
-          <span class="pill pill-pink">HOT DEAL</span>
-          <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Edgewater Hotel & Casino Resort</h3>
-          <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Laughlin</p>
-          <p style="margin:0 0 14px;">Colorado River views and a long sand beach right at the door.</p>
-          <span class="display neon-pink" style="font-size:13px;">BOOK HOT DEAL →</span>
+
+    <div class="card" style="padding:36px; margin-bottom:48px; max-width:860px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:12px;">ABOUT LAUGHLIN, NV</div>
+      <p style="font-size:19px; font-style:italic; margin:0 0 20px; color:#fff;">The Colorado River's own casino town — beaches, buffets, boats.</p>
+      <p style="font-size:17px; line-height:1.8; margin:0 0 16px;">Laughlin is Vegas's little sibling 90 minutes south on the Colorado River, where the neon hotels run along a riverfront with actual sand beaches, paddleboats, and jet skis. Rooms routinely hit $50/night midweek.</p><p style="font-size:17px; line-height:1.8; margin:0 0 16px;">It's not trying to be the Strip — it's warmer, it's older, it's cheaper, and the locals still know the blackjack dealers' names. Come for a weekend, not a week.</p>
+    </div>
+    <div style="margin-top:0;">
+      <h2 class="headline neon-cyan" style="font-size:clamp(28px,4vw,40px); margin:0 0 8px;">Our picks</h2>
+      <p style="color:var(--text-muted); margin:0 0 24px;">Every hotel below has a dedicated page with insider tips — or jump straight to booking with the pink button.</p>
+      <div class="grid grid-3">
+      <div class="card" id="edgewater-laughlin">
+        <a href="/hotels/edgewater-laughlin" style="text-decoration:none; color:inherit;">
+          <img class="card-img" src="/images/hotels/edgewater-laughlin.jpg" alt="Edgewater Hotel & Casino Resort riverside tower on the Colorado River in Laughlin Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
+          <div class="card-body" style="padding-bottom:12px;">
+            <span class="pill pill-pink">HOT DEAL</span>
+            <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Edgewater Hotel & Casino Resort</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Laughlin</p>
+            <p class="card-spacer" style="margin:0 0 12px;">Colorado River views and a long sand beach right at the door.</p>
+            <span class="display neon-cyan" style="font-size:12px; margin-top:auto;">Read full guide →</span>
+          </div>
+        </a>
+        <div style="padding:0 20px 20px; margin-top:auto;">
+          <a href="https://book.hotelroomdiscounters.com/url/cf4b157a-75a9-44fb-a537-8a33455843b2?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
-      </a>
-      <a class="card" href="https://book.hotelroomdiscounters.com/url/305e177a-707b-4ac0-b5f9-d0ecb1b9f148?isPermanentLink=true" rel="nofollow sponsored" target="_blank" id="aquarius-laughlin">
-        <img class="card-img" src="/images/hotels/aquarius-laughlin.jpg" alt="The Aquarius Casino Resort largest hotel on the Colorado River in Laughlin Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
-        <div class="card-body">
-          <span class="pill pill-pink">HOT DEAL</span>
-          <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">The Aquarius Casino Resort, BW Premier Collection</h3>
-          <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Laughlin</p>
-          <p style="margin:0 0 14px;">Biggest hotel in Laughlin — easiest river-view room availability and best buffet on the strip.</p>
-          <span class="display neon-pink" style="font-size:13px;">BOOK HOT DEAL →</span>
+      </div>
+      <div class="card" id="aquarius-laughlin">
+        <a href="/hotels/aquarius-laughlin" style="text-decoration:none; color:inherit;">
+          <img class="card-img" src="/images/hotels/aquarius-laughlin.jpg" alt="The Aquarius Casino Resort largest hotel on the Colorado River in Laughlin Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
+          <div class="card-body" style="padding-bottom:12px;">
+            <span class="pill pill-pink">HOT DEAL</span>
+            <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">The Aquarius Casino Resort, BW Premier Collection</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Laughlin</p>
+            <p class="card-spacer" style="margin:0 0 12px;">Biggest hotel in Laughlin — easiest river-view room availability and best buffet on the strip.</p>
+            <span class="display neon-cyan" style="font-size:12px; margin-top:auto;">Read full guide →</span>
+          </div>
+        </a>
+        <div style="padding:0 20px 20px; margin-top:auto;">
+          <a href="https://book.hotelroomdiscounters.com/url/305e177a-707b-4ac0-b5f9-d0ecb1b9f148?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
-      </a>
-      <a class="card" href="https://book.hotelroomdiscounters.com/url/245cc798-6add-4a6b-81e9-8a20c7649e31?isPermanentLink=true" rel="nofollow sponsored" target="_blank" id="harrahs-laughlin">
-        <img class="card-img" src="/images/hotels/harrahs-laughlin.jpg" alt="Harrah's Laughlin Beach Resort and Casino private sand beach on the Colorado River in Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
-        <div class="card-body">
-          <span class="pill pill-pink">HOT DEAL</span>
-          <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Harrah's Laughlin</h3>
-          <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Laughlin</p>
-          <p style="margin:0 0 14px;">The only real private beach in Laughlin — Caesars Rewards destination.</p>
-          <span class="display neon-pink" style="font-size:13px;">BOOK HOT DEAL →</span>
+      </div>
+      <div class="card" id="harrahs-laughlin">
+        <a href="/hotels/harrahs-laughlin" style="text-decoration:none; color:inherit;">
+          <img class="card-img" src="/images/hotels/harrahs-laughlin.jpg" alt="Harrah's Laughlin Beach Resort and Casino private sand beach on the Colorado River in Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
+          <div class="card-body" style="padding-bottom:12px;">
+            <span class="pill pill-pink">HOT DEAL</span>
+            <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Harrah's Laughlin</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Laughlin</p>
+            <p class="card-spacer" style="margin:0 0 12px;">The only real private beach in Laughlin — Caesars Rewards destination.</p>
+            <span class="display neon-cyan" style="font-size:12px; margin-top:auto;">Read full guide →</span>
+          </div>
+        </a>
+        <div style="padding:0 20px 20px; margin-top:auto;">
+          <a href="https://book.hotelroomdiscounters.com/url/245cc798-6add-4a6b-81e9-8a20c7649e31?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
-      </a>
-      <a class="card" href="https://book.hotelroomdiscounters.com/url/6a5de067-dc63-44c0-b0b9-cea3fb9f8728?isPermanentLink=true" rel="nofollow sponsored" target="_blank" id="tropicana-laughlin">
-        <img class="card-img" src="/images/hotels/tropicana-laughlin.jpg" alt="Tropicana Laughlin green and white riverfront hotel and casino on the Colorado River in Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
-        <div class="card-body">
-          <span class="pill pill-pink">HOT DEAL</span>
-          <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Tropicana Laughlin</h3>
-          <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Laughlin</p>
-          <p style="margin:0 0 14px;">Renovated rooms, the best locals' restaurant on the river, and Caesars Rewards.</p>
-          <span class="display neon-pink" style="font-size:13px;">BOOK HOT DEAL →</span>
+      </div>
+      <div class="card" id="tropicana-laughlin">
+        <a href="/hotels/tropicana-laughlin" style="text-decoration:none; color:inherit;">
+          <img class="card-img" src="/images/hotels/tropicana-laughlin.jpg" alt="Tropicana Laughlin green and white riverfront hotel and casino on the Colorado River in Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
+          <div class="card-body" style="padding-bottom:12px;">
+            <span class="pill pill-pink">HOT DEAL</span>
+            <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Tropicana Laughlin</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Laughlin</p>
+            <p class="card-spacer" style="margin:0 0 12px;">Renovated rooms, the best locals' restaurant on the river, and Caesars Rewards.</p>
+            <span class="display neon-cyan" style="font-size:12px; margin-top:auto;">Read full guide →</span>
+          </div>
+        </a>
+        <div style="padding:0 20px 20px; margin-top:auto;">
+          <a href="https://book.hotelroomdiscounters.com/url/6a5de067-dc63-44c0-b0b9-cea3fb9f8728?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
-      </a>
+      </div>
+    </div>
+    </div>
+
+    <div style="margin-top:56px; margin-bottom:48px;">
+      <h2 class="headline neon-yellow" style="font-size:clamp(28px,4vw,40px); margin:0 0 8px;">What to do in Laughlin, NV</h2>
+      <p style="color:var(--text-muted); margin:0 0 24px;">Our editorial picks for how to spend a day.</p>
+      <div class="grid grid-3">
+      <div class="card" style="padding:20px;">
+        <h3 class="headline neon-pink" style="font-size:18px; margin:0 0 8px;">Colorado River jet ski rental</h3>
+        <p style="margin:0; font-size:14px;">From any hotel beach. By the hour.</p>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 class="headline neon-pink" style="font-size:18px; margin:0 0 8px;">Riverwalk</h3>
+        <p style="margin:0; font-size:14px;">Walk between the 9 casinos along the river — they're all connected by path.</p>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 class="headline neon-pink" style="font-size:18px; margin:0 0 8px;">Oatman, AZ day trip</h3>
+        <p style="margin:0; font-size:14px;">45-minute drive. Ghost-town, wild burros, photogenic as hell.</p>
+      </div>
+      </div>
     </div>
   </div>
 </section>
@@ -143,15 +202,33 @@
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
           <li><a href="/sitemap.xml">Sitemap</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/disclosure">Disclosure</a></li>
         </ul>
       </div>
     </div>
     <div style="border-top:1px solid rgba(191,0,255,.15); padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text-muted);">
       <div>© <span data-current-year>2026</span> TheVegasHub.com · Headquartered in Las Vegas</div>
-      <div>Some links are affiliate links. We may earn a commission — at no extra cost to you.</div>
+      <div>Some links are <a href="/disclosure" style="color:var(--text-muted); text-decoration:underline;">affiliate links</a>. We may earn a commission — at no extra cost to you.</div>
     </div>
   </div>
 </footer>
+
+<!-- Cookie consent banner -->
+<div id="vh-cookies" style="display:none; position:fixed; bottom:16px; left:16px; right:16px; max-width:620px; margin:0 auto; background:rgba(5,0,12,.96); border:1px solid var(--neon-cyan); border-radius:10px; padding:18px 20px; box-shadow:0 0 24px rgba(0,234,255,.35); z-index:9998; font-size:14px;">
+  <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:6px;">COOKIES &amp; ANALYTICS</div>
+      <div style="color:var(--text-muted); line-height:1.55;">We use cookies for analytics and affiliate attribution. Essential cookies are always on. <a href="/privacy" style="color:var(--neon-cyan);">Privacy Policy</a>.</div>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="VegasHub.cookies('reject')" class="btn btn-ghost" style="font-size:12px; padding:10px 14px;">Essential only</button>
+      <button onclick="VegasHub.cookies('accept')" class="btn btn-cyan" style="font-size:12px; padding:10px 14px;">Accept all</button>
+    </div>
+  </div>
+</div>
+
 <script src="/js/site.js"></script>
 </body>
 </html>

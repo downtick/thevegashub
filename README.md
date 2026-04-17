@@ -8,7 +8,7 @@ Insider Las Vegas travel site — static HTML + Tailwind + Vercel serverless con
 /                      static HTML site root (deploy target)
 ├── index.html         homepage
 ├── hotels/            city pages
-├── tours/             Viator + Klook tour widgets
+├── tours/             Tour & day-trip booking widgets
 ├── things-to-do/      listicles
 ├── why-vegas/         trip-type guides
 ├── packing-list/      printable tool

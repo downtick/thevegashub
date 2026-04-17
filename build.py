@@ -44,13 +44,23 @@ def head(title, desc, path, og_image="og-default.jpg", extra_jsonld=""):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Bungee&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0010">
 {extra_jsonld}
-<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
 <script>
+  // GA4 loader — deferred until cookie consent decision
   window.dataLayer = window.dataLayer || [];
   function gtag(){{dataLayer.push(arguments);}}
-  gtag('js', new Date());
-  gtag('config', '{GA_ID}');
+  window.__loadGA = function() {{
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id={GA_ID}';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', '{GA_ID}', {{'anonymize_ip': true}});
+  }};
 </script>
 </head>
 <body>
@@ -109,15 +119,33 @@ FOOTER = """<footer class="site-footer">
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
           <li><a href="/sitemap.xml">Sitemap</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/disclosure">Disclosure</a></li>
         </ul>
       </div>
     </div>
     <div style="border-top:1px solid rgba(191,0,255,.15); padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text-muted);">
       <div>© <span data-current-year>2026</span> TheVegasHub.com · Headquartered in Las Vegas</div>
-      <div>Some links are affiliate links. We may earn a commission — at no extra cost to you.</div>
+      <div>Some links are <a href="/disclosure" style="color:var(--text-muted); text-decoration:underline;">affiliate links</a>. We may earn a commission — at no extra cost to you.</div>
     </div>
   </div>
 </footer>
+
+<!-- Cookie consent banner -->
+<div id="vh-cookies" style="display:none; position:fixed; bottom:16px; left:16px; right:16px; max-width:620px; margin:0 auto; background:rgba(5,0,12,.96); border:1px solid var(--neon-cyan); border-radius:10px; padding:18px 20px; box-shadow:0 0 24px rgba(0,234,255,.35); z-index:9998; font-size:14px;">
+  <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:6px;">COOKIES &amp; ANALYTICS</div>
+      <div style="color:var(--text-muted); line-height:1.55;">We use cookies for analytics and affiliate attribution. Essential cookies are always on. <a href="/privacy" style="color:var(--neon-cyan);">Privacy Policy</a>.</div>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="VegasHub.cookies('reject')" class="btn btn-ghost" style="font-size:12px; padding:10px 14px;">Essential only</button>
+      <button onclick="VegasHub.cookies('accept')" class="btn btn-cyan" style="font-size:12px; padding:10px 14px;">Accept all</button>
+    </div>
+  </div>
+</div>
+
 <script src="/js/site.js"></script>
 </body>
 </html>
@@ -126,24 +154,32 @@ FOOTER = """<footer class="site-footer">
 def hotel_card(h):
     link = h.get("link", "#")
     is_todo = (not link) or link.startswith("TODO")
-    href = link if not is_todo else "/contact"
-    label = "COMING SOON" if is_todo else "BOOK HOT DEAL"
-    rel = 'rel="nofollow sponsored" target="_blank"' if not is_todo else ""
+    slug = h['slug']
+    # Card links to hotel page; separate BOOK button goes direct to affiliate link
+    page_href = f"/hotels/{slug}"
+    book_href = link if not is_todo else "/contact"
+    book_label = "COMING SOON" if is_todo else "BOOK NOW"
+    book_rel = 'rel="nofollow sponsored" target="_blank"' if not is_todo else ""
     pill = '<span class="pill">COMING SOON</span>' if is_todo else '<span class="pill pill-pink">HOT DEAL</span>'
     img = h.get("image","/images/og/og-default.jpg")
     alt = h["alt"]
     note = h.get("note","")
     city = h.get("city","")
-    return f"""      <a class="card" href="{href}" {rel} id="{h['slug']}">
-        <img class="card-img" src="{img}" alt="{alt}" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
-        <div class="card-body">
-          {pill}
-          <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">{h['name']}</h3>
-          <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">{city}</p>
-          <p style="margin:0 0 14px;">{note}</p>
-          <span class="display neon-pink" style="font-size:13px;">{label} →</span>
+    return f"""      <div class="card" id="{slug}">
+        <a href="{page_href}" style="text-decoration:none; color:inherit;">
+          <img class="card-img" src="{img}" alt="{alt}" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
+          <div class="card-body" style="padding-bottom:12px;">
+            {pill}
+            <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">{h['name']}</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">{city}</p>
+            <p class="card-spacer" style="margin:0 0 12px;">{note}</p>
+            <span class="display neon-cyan" style="font-size:12px; margin-top:auto;">Read full guide →</span>
+          </div>
+        </a>
+        <div style="padding:0 20px 20px; margin-top:auto;">
+          <a href="{book_href}" {book_rel} class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">{book_label}</a>
         </div>
-      </a>
+      </div>
 """
 
 def write(rel_path, html):
@@ -151,6 +187,231 @@ def write(rel_path, html):
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html)
     print(f"  wrote {rel_path}")
+
+# ---------------------------- PER-HOTEL PAGES ---------------------------- #
+
+# Tag-driven insider tips. Every hotel gets the first two plus any tag-matched ones.
+TAG_TIPS = {
+    "strip":        "Ask for a room above the 20th floor — the Strip view is worth the upgrade.",
+    "north-strip":  "North-Strip hotels are walkable to Resorts World, Wynn Plaza, and Fashion Show Mall.",
+    "mid-strip":    "Mid-Strip = the shortest walk to Sphere, Bellagio fountains, and the monorail stations.",
+    "south-strip":  "South-Strip puts you minutes from Allegiant Stadium (Raiders) and T-Mobile Arena.",
+    "off-strip":    "Off-Strip properties usually have free self-parking — don't valet unless you want a 45-minute wait at 2am.",
+    "downtown":     "Under the Fremont Street canopy, the neon light show runs every hour after dark. Free.",
+    "fremont":      "Walk the Fremont Street Experience at night. Free shows, cheaper drinks than the Strip.",
+    "luxury":       "Request a room on a renewed floor — even luxury towers have varying renovation tiers.",
+    "suites":       "All-suite properties mean bigger bathrooms and separate living areas — worth it for a 3+ night stay.",
+    "non-gaming":   "Non-gaming hotels are dramatically quieter — ideal if casino smoke isn't your thing.",
+    "pool":         "Book a cabana at least 2 weeks out for weekend dates — they sell out.",
+    "family":       "Ask at check-in for pool towels, pool-bag, and any kids' menu — they often don't volunteer it.",
+    "sportsbook":   "The sportsbook lounges at most hotels are open to non-guests. Grab a seat early on game day.",
+    "classic":      "Classic hotels mean classic footprints — request a renovated 'Go' or 'Deluxe' room, not a base-tier.",
+    "summerlin":    "Summerlin is a 20-minute drive from the Strip — plan on Uber/Lyft both ways.",
+    "henderson":    "Henderson hotels sit above the valley with Strip skyline views. Best sunsets.",
+    "mesquite":     "Mesquite is a 90-minute drive north of Vegas on I-15. Perfect Nevada golf-and-spa weekend.",
+    "laughlin":     "Laughlin's Colorado River beaches are the town's real draw. Rent a jet ski by the hour.",
+    "grand-canyon": "Booking the Grand Canyon? Buy the America the Beautiful Pass ($80/year) if you plan to hit 3+ national parks.",
+    "route-66":     "Historic Route 66 runs right through town — worth a slow drive at sunset.",
+    "new":          "Brand-new = smallest signs of wear, but also potentially untested ops. Check very recent reviews.",
+    "fountains":    "Ask for a fountain-view room and set an alarm for the 9pm show. Worth waking up for.",
+    "sphere-views": "For Sphere views, request a high north-facing room — Venetian, Palazzo, Wynn, and Encore face right at it.",
+    "train":        "The train departure from Williams is at 9:30am — stay the night before if you're making the morning trip.",
+    "river":        "Book a river-view room — the price bump is usually minimal and the view is the whole point of coming here.",
+    "value":        "Budget properties rarely include resort fees in the base price — check the total before you book.",
+    "sphere-view":  "Request north-facing high floors — these rooms look directly at Sphere.",
+}
+
+GENERIC_TIPS = [
+    "Member rates (what you get through our link) typically save 10-25% vs the public rate advertised on the hotel's own site.",
+    "Book through our link before your trip; don't wait until you're checking in — the rate can change.",
+    "Las Vegas rooms are nearly always cheapest mid-week (Sun-Thu). Weekends add 40-100%.",
+]
+
+def hotel_tips(h):
+    tags = h.get("tags", []) or []
+    tips = []
+    # Add tag-matched tips first
+    seen = set()
+    for t in tags:
+        if t in TAG_TIPS and TAG_TIPS[t] not in seen:
+            tips.append(TAG_TIPS[t])
+            seen.add(TAG_TIPS[t])
+    # Always include 2 generic tips
+    for g in GENERIC_TIPS[:2]:
+        if g not in seen:
+            tips.append(g)
+    return tips[:6]
+
+def hotel_related(h, all_hotels, max_count=3):
+    """Return up to N related hotels: same area if possible, same city as fallback."""
+    same_area = [x for x in all_hotels if x != h and x.get("area") == h.get("area") and not x.get("link", "").startswith("TODO")]
+    same_city = [x for x in all_hotels if x != h and x.get("city") == h.get("city") and x not in same_area and not x.get("link", "").startswith("TODO")]
+    out = (same_area + same_city)[:max_count]
+    return out
+
+def city_slug_for(h):
+    """Map a hotel's city+area to the matching city page slug."""
+    city = h.get("city","")
+    area = h.get("area","")
+    if area == "downtown": return "downtown-fremont"
+    if city == "Henderson": return "henderson"
+    if city == "Mesquite": return "mesquite"
+    if city == "Laughlin": return "laughlin"
+    if area == "grand-canyon": return "grand-canyon"
+    return "las-vegas-strip"
+
+def page_hotel(h, all_hotels):
+    slug = h["slug"]
+    name = h["name"]
+    link = h.get("link", "")
+    is_todo = (not link) or link.startswith("TODO")
+    book_rel = 'rel="nofollow sponsored" target="_blank"' if not is_todo else ""
+    book_href = link if not is_todo else "/contact"
+    book_label = "COMING SOON" if is_todo else "BOOK YOUR ROOM →"
+    img = h.get("image", "/images/og/og-default.jpg")
+    alt = h["alt"]
+    note = h.get("note", "")
+    city = h.get("city", "")
+    area = h.get("area", "")
+    tags = h.get("tags", []) or []
+    tips = hotel_tips(h)
+    related = hotel_related(h, all_hotels)
+    city_slug = city_slug_for(h)
+    city_label = {"downtown-fremont":"Downtown Fremont","henderson":"Henderson","mesquite":"Mesquite","laughlin":"Laughlin","grand-canyon":"Grand Canyon Area","las-vegas-strip":"Las Vegas"}.get(city_slug, city)
+
+    # Meta description — 155 chars max
+    meta_desc = (note[:140] + "…") if len(note) > 140 else note
+    if not meta_desc:
+        meta_desc = f"{name} in {city} — member rates, insider tips, and instant booking through TheVegasHub."
+
+    # JSON-LD Hotel schema
+    hotel_jsonld = f"""<script type="application/ld+json">
+{{
+  "@context":"https://schema.org",
+  "@type":"Hotel",
+  "name":{json.dumps(name)},
+  "url":"{SITE}/hotels/{slug}",
+  "image":"{SITE}{img}",
+  "description":{json.dumps(note)},
+  "address":{{"@type":"PostalAddress","addressLocality":{json.dumps(city)},"addressRegion":"NV" if "{city}" in ["Las Vegas","Henderson","Mesquite","Laughlin"] else "AZ","addressCountry":"US"}}
+}}
+</script>""".replace('"NV" if "{city}" in ["Las Vegas","Henderson","Mesquite","Laughlin"] else "AZ"',
+                      '"NV"' if city in ["Las Vegas","Henderson","Mesquite","Laughlin"] else '"AZ"')
+
+    breadcrumb_jsonld = f"""<script type="application/ld+json">
+{{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {{"@type":"ListItem","position":1,"name":"Home","item":"{SITE}/"}},
+  {{"@type":"ListItem","position":2,"name":"Hotels","item":"{SITE}/hotels"}},
+  {{"@type":"ListItem","position":3,"name":{json.dumps(city_label)},"item":"{SITE}/hotels/{city_slug}"}},
+  {{"@type":"ListItem","position":4,"name":{json.dumps(name)},"item":"{SITE}/hotels/{slug}"}}
+]}}
+</script>"""
+
+    # Tags as pills
+    tag_pills = "".join(f'<span class="pill" style="margin-right:6px;">{t.replace("-"," ").upper()}</span>' for t in tags[:5])
+
+    # Tips HTML
+    tips_html = "".join(f"""        <li style="padding:14px 0; border-bottom:1px solid rgba(191,0,255,.15); display:flex; gap:14px; align-items:flex-start;">
+          <span class="display neon-cyan" style="font-size:22px; min-width:30px;">{i+1:02d}</span>
+          <span style="line-height:1.65;">{tip}</span>
+        </li>\n""" for i, tip in enumerate(tips))
+
+    # Related hotels
+    related_html = "".join(f"""        <a class="card" href="/hotels/{r['slug']}" style="text-decoration:none;">
+          <img class="card-img" src="{r.get('image','')}" alt="{r['alt']}" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
+          <div class="card-body" style="padding:18px;">
+            <h3 class="headline" style="font-size:20px; margin:0 0 4px;">{r['name']}</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:0;">{r.get('city','')}</p>
+          </div>
+        </a>\n""" for r in related)
+
+    html = head(
+        f"{name} — Member Rates & Insider Tips | TheVegasHub",
+        meta_desc,
+        f"/hotels/{slug}",
+        og_image=img.lstrip("/"),
+        extra_jsonld=hotel_jsonld + "\n" + breadcrumb_jsonld,
+    ) + HEADER + f"""
+<!-- HERO -->
+<section class="hero" style="padding:72px 0 48px; background:linear-gradient(180deg, rgba(10,0,20,.45) 0%, rgba(10,0,20,.85) 100%), url('{img}') center/cover;">
+  <div class="container">
+    <div style="font-size:13px; letter-spacing:.1em; color:var(--text-muted); margin-bottom:12px;">
+      <a href="/hotels" style="color:var(--text-muted);">Hotels</a>
+      <span style="margin:0 8px;">›</span>
+      <a href="/hotels/{city_slug}" style="color:var(--text-muted);">{city_label}</a>
+    </div>
+    <div style="margin-bottom:14px;">{tag_pills}</div>
+    <h1 class="headline-glow" style="font-size:clamp(40px,7vw,84px); line-height:1.05; margin:0 0 16px;">{name}</h1>
+    <p class="sub" style="max-width:700px; margin:0 0 28px;">{note}</p>
+    <a class="btn btn-cyan" href="{book_href}" {book_rel} style="font-size:16px; padding:16px 36px;">{book_label}</a>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<section class="section" style="padding-top:48px;">
+  <div class="container" style="display:grid; grid-template-columns:1fr 320px; gap:48px; max-width:1100px;">
+    <!-- EDITORIAL -->
+    <div>
+      <h2 class="headline neon-cyan" style="font-size:32px; margin-top:0;">Why we like it</h2>
+      <p style="font-size:17px; line-height:1.8;">{note}</p>
+      <p style="font-size:17px; line-height:1.8;">{name} sits in {city_label} — one of the six Vegas-region destinations we cover on TheVegasHub. Our team has stayed at the property enough times to know what's worth asking for at check-in, which rooms to request, and when rates are at their best. If you're booking through our link, you'll see the member rate — typically 10-25% below what the hotel quotes on its own site or on Booking.com.</p>
+
+      <h2 class="headline neon-pink" style="font-size:32px; margin-top:40px;">Insider tips</h2>
+      <ul style="list-style:none; padding:0; margin:0; font-size:16px;">
+{tips_html}      </ul>
+
+      <!-- Second CTA -->
+      <div style="background:rgba(191,0,255,.06); border:1px solid var(--neon-cyan); border-radius:10px; padding:28px; margin:40px 0; text-align:center;">
+        <div class="display neon-cyan" style="font-size:14px; margin-bottom:10px;">READY TO BOOK?</div>
+        <h3 class="headline" style="font-size:26px; margin:0 0 14px;">Member rates at {name}</h3>
+        <p style="margin:0 0 20px; color:var(--text-muted);">Rates from our booking partner — lower than the hotel's public rate. Free to check.</p>
+        <a class="btn btn-cyan" href="{book_href}" {book_rel} style="font-size:15px; padding:14px 32px;">{book_label}</a>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside>
+      <div class="card" style="padding:24px; position:sticky; top:100px;">
+        <div class="display neon-cyan" style="font-size:12px; margin-bottom:14px;">QUICK FACTS</div>
+        <dl style="margin:0; font-size:14px;">
+          <dt style="color:var(--text-muted); font-size:11px; letter-spacing:.1em; text-transform:uppercase; margin-top:12px;">Location</dt>
+          <dd style="margin:4px 0 0; font-size:15px;">{city}, {("NV" if city in ["Las Vegas","Henderson","Mesquite","Laughlin"] else "AZ")}</dd>
+
+          <dt style="color:var(--text-muted); font-size:11px; letter-spacing:.1em; text-transform:uppercase; margin-top:16px;">Area</dt>
+          <dd style="margin:4px 0 0; font-size:15px;">{area.replace("-"," ").title() if area else "—"}</dd>
+
+          <dt style="color:var(--text-muted); font-size:11px; letter-spacing:.1em; text-transform:uppercase; margin-top:16px;">Vibe</dt>
+          <dd style="margin:4px 0 0; font-size:14px; line-height:1.6;">{", ".join(t.replace("-"," ").title() for t in tags[:4]) if tags else "—"}</dd>
+        </dl>
+        <div style="margin-top:24px;">
+          <a class="btn btn-pink" href="{book_href}" {book_rel} style="width:100%; text-align:center; padding:14px; font-size:13px;">{book_label}</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+""" + (f"""
+<!-- RELATED HOTELS -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="headline neon-yellow" style="font-size:clamp(28px,4vw,40px);">You might also like</h2>
+      <p class="kicker">Other {city_label} hotels we recommend.</p>
+    </div>
+    <div class="grid grid-3">
+{related_html}    </div>
+  </div>
+</section>
+""" if related else "") + """
+<style>
+  @media (max-width:800px) {
+    section.section .container[style*="grid-template-columns:1fr 320px"] { grid-template-columns: 1fr !important; }
+    aside .card { position:static !important; }
+  }
+</style>
+""" + FOOTER
+
+    write(f"hotels/{slug}.html", html)
 
 # ---------------------------- CITY PAGES ---------------------------- #
 
@@ -181,9 +442,117 @@ CITY_PAGES = [
      lambda h: h["area"]=="grand-canyon"),
 ]
 
+CITY_INTROS = {
+    "las-vegas-strip": {
+        "tagline": "The four-mile corridor that defines Las Vegas.",
+        "intro": [
+            "The Strip is what everyone means when they say 'Vegas.' Four miles of neon, fountains, and megaresorts running from Mandalay Bay in the south to the Stratosphere in the north, with the Sphere now anchoring the east side of the mid-Strip.",
+            "Our Strip picks are weighted toward three things that actually matter for a weekend: room quality (who renovated recently), walkability (how far is your show), and pools (the real differentiator from April through October). Member rates save 10-25% off the public rate at most properties.",
+        ],
+        "what_to_do": [
+            ("Bellagio Fountains", "Every 30 minutes from 3pm, every 15 after 8pm. Best view: bridge at Caesars."),
+            ("The Sphere", "Book tickets before you book your hotel — it's the closest walk from Venetian/Palazzo."),
+            ("Walk the Strip at night", "Start at Bellagio, go north, drink somewhere you can see the fountains."),
+        ],
+    },
+    "downtown-fremont": {
+        "tagline": "Old Vegas — neon, cocktails, and cheaper rooms 10 minutes from the Strip.",
+        "intro": [
+            "Downtown Fremont is the Vegas your grandparents came to — classic casinos, the covered neon canopy of the Fremont Street Experience, and some of the best cocktail bars in the city. Rooms run 30-50% cheaper than the Strip for the same category, and the walk between properties is measured in minutes, not miles.",
+            "We recommend Downtown as a first night or last night on a Vegas trip — it's a totally different flavor from the Strip, and you can Uber back for $15.",
+        ],
+        "what_to_do": [
+            ("Fremont Street Experience", "The neon canopy runs shows every hour after dark — free."),
+            ("Container Park", "Shops, kids' park, giant fire-breathing praying mantis. Worth 30 minutes."),
+            ("Carson Kitchen / Downtown Cocktail Room", "Best food + drinks in Vegas for under $50/head."),
+        ],
+    },
+    "henderson": {
+        "tagline": "Hilltop resorts, Strip views, locals' favorite pools.",
+        "intro": [
+            "Henderson is the wealthy suburb southeast of Vegas proper — think Summerlin with better Strip skyline views. Two hilltop resorts (Green Valley Ranch and M Resort) sit above the valley with west-facing patios that frame the Strip at sunset.",
+            "If you're here for a bachelor party, Raiders game, or Strip nightlife, stay on the Strip. If you're here with family, a group of friends who don't want casino smoke, or anyone over 40 who wants quiet — Henderson's the move.",
+        ],
+        "what_to_do": [
+            ("Green Valley Ranch pool", "Best pool deck in Henderson. Day passes available."),
+            ("Lake Las Vegas", "20 minutes from the Strip. Rent a kayak, lunch at MonteLago Village."),
+            ("Ethel M Chocolate Factory", "Free tour, free samples, free cactus garden. 15 minutes from Henderson hotels."),
+        ],
+    },
+    "mesquite": {
+        "tagline": "Golf, spa, river-country weekends — 90 minutes north of Vegas.",
+        "intro": [
+            "Mesquite is Nevada's best-kept golf secret. A 90-minute drive north of Vegas on I-15, right at the Arizona border, it has four full casino-resorts, a half-dozen of the best-rated golf courses in the Southwest, and rooms that run 60-70% cheaper than the Strip.",
+            "We send couples and small groups here for quieter weekends — the vibe is Palm Springs circa 1985 with a casino floor attached. Zion National Park is a 75-minute drive east. St. George, Utah is 30 minutes away.",
+            "All 4 Mesquite properties below have their own dedicated pages — click through for full reviews, insider tips on room requests, and member-rate booking.",
+        ],
+        "what_to_do": [
+            ("Play Wolf Creek Golf Club", "Nevada's most photographed public course. Red-rock canyon views on every hole."),
+            ("CasaBlanca Spa", "Old-school full-service spa — cheaper than the Strip by 40-60%."),
+            ("Day trip to Zion", "75-minute drive east through the Virgin River Gorge. Stunning."),
+            ("Valley of Fire State Park", "45 minutes south. Red-rock desert with petroglyphs — underrated over the Grand Canyon for a quick trip."),
+            ("Dinner at Jagers Mesquite Grill", "The town's best steak, a block from the CasaBlanca."),
+        ],
+    },
+    "laughlin": {
+        "tagline": "The Colorado River's own casino town — beaches, buffets, boats.",
+        "intro": [
+            "Laughlin is Vegas's little sibling 90 minutes south on the Colorado River, where the neon hotels run along a riverfront with actual sand beaches, paddleboats, and jet skis. Rooms routinely hit $50/night midweek.",
+            "It's not trying to be the Strip — it's warmer, it's older, it's cheaper, and the locals still know the blackjack dealers' names. Come for a weekend, not a week.",
+        ],
+        "what_to_do": [
+            ("Colorado River jet ski rental", "From any hotel beach. By the hour."),
+            ("Riverwalk", "Walk between the 9 casinos along the river — they're all connected by path."),
+            ("Oatman, AZ day trip", "45-minute drive. Ghost-town, wild burros, photogenic as hell."),
+        ],
+    },
+    "grand-canyon": {
+        "tagline": "Gateway hotels for the South Rim, West Rim, and Route 66.",
+        "intro": [
+            "The Grand Canyon South Rim is 4.5 hours from Vegas by car. To hit it right, most visitors sleep the night before in Williams or Tusayan, do the Rim in the morning, and drive back to Vegas or continue to Sedona.",
+            "Our Grand Canyon picks include the Grand Hotel at the Grand Canyon (closest to the South Rim entrance) and the Grand Canyon Railway Hotel (if you want to take the train in). Williams and Kingman are classic Route 66 stops worth the stay.",
+        ],
+        "what_to_do": [
+            ("Drive the South Rim scenic drive", "Hermit Road + Desert View Drive. Park at pullouts, walk 50 feet, be stunned."),
+            ("Take the Grand Canyon Railway", "2h 15min each way from Williams. Old-school."),
+            ("Historic Route 66 Williams", "Walk Railroad Avenue after dark. Neon signs, diners, BBQ."),
+        ],
+    },
+}
+
 def page_city(slug, title, desc, heading, filt):
     matches = [h for h in HOTELS if filt(h)]
     cards = "".join(hotel_card(h) for h in matches) or "<p>Hotels coming soon.</p>"
+    intro_data = CITY_INTROS.get(slug, {})
+    tagline = intro_data.get("tagline", "")
+    intros = intro_data.get("intro", [])
+    what_to_do = intro_data.get("what_to_do", [])
+
+    intro_html = ""
+    if intros:
+        paras = "".join(f'<p style="font-size:17px; line-height:1.8; margin:0 0 16px;">{p}</p>' for p in intros)
+        intro_html = f"""
+    <div class="card" style="padding:36px; margin-bottom:48px; max-width:860px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:12px;">ABOUT {heading.upper()}</div>
+      <p style="font-size:19px; font-style:italic; margin:0 0 20px; color:#fff;">{tagline}</p>
+      {paras}
+    </div>"""
+
+    wtd_html = ""
+    if what_to_do:
+        items = "".join(f"""      <div class="card" style="padding:20px;">
+        <h3 class="headline neon-pink" style="font-size:18px; margin:0 0 8px;">{t}</h3>
+        <p style="margin:0; font-size:14px;">{d}</p>
+      </div>
+""" for t, d in what_to_do)
+        wtd_html = f"""
+    <div style="margin-top:56px; margin-bottom:48px;">
+      <h2 class="headline neon-yellow" style="font-size:clamp(28px,4vw,40px); margin:0 0 8px;">What to do in {heading}</h2>
+      <p style="color:var(--text-muted); margin:0 0 24px;">Our editorial picks for how to spend a day.</p>
+      <div class="grid grid-3">
+{items}      </div>
+    </div>"""
+
     jsonld = f"""<script type="application/ld+json">
 {{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
   {{"@type":"ListItem","position":1,"name":"Home","item":"{SITE}/"}},
@@ -199,8 +568,14 @@ def page_city(slug, title, desc, heading, filt):
       <h1 class="headline-glow" style="font-size:clamp(44px,7vw,80px); margin:12px 0 8px;">HOTELS IN<br>{heading.upper()}</h1>
       <p class="kicker">{desc}</p>
     </div>
-    <div class="grid grid-3">
+{intro_html}
+    <div style="margin-top:{"0" if intros else "0"};">
+      <h2 class="headline neon-cyan" style="font-size:clamp(28px,4vw,40px); margin:0 0 8px;">Our picks</h2>
+      <p style="color:var(--text-muted); margin:0 0 24px;">Every hotel below has a dedicated page with insider tips — or jump straight to booking with the pink button.</p>
+      <div class="grid grid-3">
 {cards}    </div>
+    </div>
+{wtd_html}
   </div>
 </section>
 """ + FOOTER
@@ -246,7 +621,7 @@ def page_hotels_index():
 def page_tours():
     html = head(
         "Las Vegas Tours — Grand Canyon, Hoover Dam, Helicopters | TheVegasHub",
-        "Compare top Las Vegas tours and day trips — Grand Canyon helicopters, Hoover Dam bus tours, Red Rock Canyon, Sphere shows, and more. Prices from Viator and Klook.",
+        "Hand-picked Las Vegas tours and day trips — Grand Canyon helicopters, Hoover Dam, Red Rock Canyon, Sphere, and more — with real-time pricing and instant booking.",
         "/tours",
     ) + HEADER + """
 <section class="section">
@@ -254,20 +629,21 @@ def page_tours():
     <div class="section-head">
       <span class="pill pill-pink">TOURS & DAY TRIPS</span>
       <h1 class="headline-glow" style="font-size:clamp(44px,7vw,80px); margin:12px 0 8px;">VEGAS TOURS</h1>
-      <p class="kicker">The best day trips from Las Vegas — compared across Viator and Klook so you get the best rate.</p>
+      <p class="kicker">The best day trips from Las Vegas — hand-picked by locals, with live pricing and instant booking.</p>
     </div>
 
     <h2 class="headline neon-cyan" style="margin-top:32px;">TOP PICKS RIGHT NOW</h2>
     <p style="color:var(--text-muted); margin-bottom:24px;">Live pricing below — refreshed whenever this page loads.</p>
 
     <div style="background:rgba(255,255,255,.03); border:1px solid rgba(191,0,255,.2); border-radius:10px; padding:20px; margin-bottom:32px;">
-      <div style="font-family:'Bungee',sans-serif; color:var(--neon-cyan); font-size:14px; margin-bottom:14px; letter-spacing:.12em;">FROM VIATOR →</div>
       <div data-vi-partner-id="U00009631" data-vi-widget-ref="W-e608db0e-5519-4eb8-a37f-01bb80769f0a"></div>
       <script async src="https://www.viator.com/orion/partner/widget.js"></script>
     </div>
 
+    <h2 class="headline neon-pink" style="margin-top:40px;">MORE VEGAS EXPERIENCES</h2>
+    <p style="color:var(--text-muted); margin-bottom:24px;">Additional day trips, tickets, and tours — instant booking.</p>
+
     <div style="background:rgba(255,255,255,.03); border:1px solid rgba(255,46,176,.2); border-radius:10px; padding:20px; margin-bottom:32px;">
-      <div style="font-family:'Bungee',sans-serif; color:var(--neon-pink); font-size:14px; margin-bottom:14px; letter-spacing:.12em;">FROM KLOOK →</div>
       <ins class="klk-aff-widget"
            data-adid="1258235"
            data-lang=""
@@ -280,7 +656,7 @@ def page_tours():
            data-tid="-1"
            data-amount="6"
            data-prod="dynamic_widget">
-        <a href="//www.klook.com/">Klook.com</a>
+        <a href="//www.klook.com/" style="color:var(--neon-cyan);">Loading experiences…</a>
       </ins>
       <script type="text/javascript">
         (function (d, sc, u) {
@@ -819,6 +1195,158 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
 """ + FOOTER
     write("contact/index.html", html)
 
+# ---------------------------- LEGAL PAGES ---------------------------- #
+
+LEGAL_LAST_UPDATED = "April 17, 2026"
+
+def legal_page(path, title, desc, heading, body_html):
+    html = head(title, desc, path) + HEADER + f"""
+<section class="section">
+  <div class="container" style="max-width:820px;">
+    <div class="section-head">
+      <span class="pill">LEGAL</span>
+      <h1 class="headline-glow" style="font-size:clamp(40px,6vw,72px); margin:12px 0 8px;">{heading.upper()}</h1>
+      <p class="kicker">Last updated: {LEGAL_LAST_UPDATED}</p>
+    </div>
+    <div class="card" style="padding:36px; font-size:16px; line-height:1.75;">
+{body_html}
+    </div>
+  </div>
+</section>
+""" + FOOTER
+    write(path.lstrip("/") + "/index.html", html)
+
+PRIVACY_BODY = """
+      <h2 class="headline neon-cyan" style="margin-top:0;">1. Who We Are</h2>
+      <p>TheVegasHub.com ("we," "our," "us") is a Las Vegas–based travel guide operated at thevegashub.com. We provide curated hotel, tour, and trip-planning content and earn affiliate commissions when visitors book through our partner links.</p>
+
+      <h2 class="headline neon-pink">2. What We Collect</h2>
+      <p><strong>Information you give us:</strong> If you fill out our contact form or subscribe to our newsletter, we collect the name, email, and message content you submit.</p>
+      <p><strong>Information collected automatically:</strong> When you visit the site, we and our analytics provider (Google Analytics 4) collect standard web-server data — IP address, browser type, device type, pages visited, referring URL, and timestamps. This data is used in aggregate to understand site traffic.</p>
+      <p><strong>Cookies:</strong> We use cookies for essential site functionality, analytics (Google Analytics), and affiliate link attribution. See our <a href="#cookies" style="color:var(--neon-cyan)">Cookies</a> section below.</p>
+
+      <h2 class="headline neon-yellow">3. How We Use Your Information</h2>
+      <ul>
+        <li>To respond to your contact-form messages</li>
+        <li>To send you our newsletter if you opt in</li>
+        <li>To understand site usage and improve our content</li>
+        <li>To attribute affiliate bookings and process commission payments</li>
+        <li>To prevent fraud and abuse</li>
+      </ul>
+      <p>We do <strong>not</strong> sell your personal information to third parties.</p>
+
+      <h2 class="headline neon-cyan">4. Third-Party Services</h2>
+      <p>We share limited data with the following service providers, each of which has its own privacy policy:</p>
+      <ul>
+        <li><strong>Google Analytics 4</strong> — for aggregated site analytics</li>
+        <li><strong>SMTP2GO</strong> — for delivering contact-form emails</li>
+        <li><strong>Brevo (Sendinblue)</strong> — for newsletter delivery (if you subscribe)</li>
+        <li><strong>Booking partners</strong> — when you click a booking link, the partner site receives a referral token so we can attribute your booking</li>
+        <li><strong>Vercel</strong> — our hosting provider, which collects standard server logs</li>
+      </ul>
+
+      <h2 class="headline neon-pink">5. Your Rights</h2>
+      <p>Depending on where you live, you may have rights to access, correct, or delete personal data we hold about you. To exercise these rights, email us at <a href="/contact" style="color:var(--neon-cyan)">our contact form</a>.</p>
+      <p><strong>California residents</strong> have rights under the CCPA/CPRA. <strong>EU/UK residents</strong> have rights under GDPR. We will respond to verified requests within 30 days.</p>
+
+      <h2 class="headline neon-yellow" id="cookies">6. Cookies</h2>
+      <p>We use three categories of cookies:</p>
+      <ul>
+        <li><strong>Essential</strong> — required for basic site function (session, language preference). Always on.</li>
+        <li><strong>Analytics</strong> — Google Analytics to measure site usage. You can opt out in our cookie banner or by using a browser extension like Google Analytics Opt-Out.</li>
+        <li><strong>Affiliate attribution</strong> — our booking partners set cookies when you click a link so bookings can be tracked to us. Blocking these will not affect your ability to book.</li>
+      </ul>
+
+      <h2 class="headline neon-cyan">7. Data Retention</h2>
+      <p>Contact form submissions are retained for up to 2 years. Newsletter subscribers remain until they unsubscribe. Analytics data is retained per Google's default GA4 settings (14 months).</p>
+
+      <h2 class="headline neon-pink">8. Children's Privacy</h2>
+      <p>Our site is not directed to children under 13. We do not knowingly collect personal information from anyone under 13.</p>
+
+      <h2 class="headline neon-yellow">9. Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time. The "last updated" date at the top will always reflect the most recent revision.</p>
+
+      <h2 class="headline neon-cyan">10. Contact Us</h2>
+      <p>Questions about this Privacy Policy? Email us through our <a href="/contact" style="color:var(--neon-cyan)">contact page</a>.</p>
+"""
+
+TERMS_BODY = """
+      <h2 class="headline neon-cyan" style="margin-top:0;">1. Acceptance of Terms</h2>
+      <p>By accessing or using TheVegasHub.com (the "Site"), you agree to these Terms of Service. If you do not agree, please do not use the Site.</p>
+
+      <h2 class="headline neon-pink">2. Editorial Content</h2>
+      <p>The information on this Site — including hotel rankings, tour recommendations, "things to do" lists, and editorial commentary — reflects the personal opinions of our writers. It is provided for informational purposes only.</p>
+      <p>We strive for accuracy but cannot guarantee that every detail (room rates, amenities, show schedules, tour times, etc.) is current. Always confirm critical details directly with the hotel, tour operator, or venue before you book or travel.</p>
+
+      <h2 class="headline neon-yellow">3. Affiliate Links</h2>
+      <p>Many links on this Site are affiliate links — meaning we may earn a commission if you book through them. This does not increase the price you pay, and our rankings are editorial, not paid. See our <a href="/disclosure" style="color:var(--neon-cyan)">Affiliate Disclosure</a> for details.</p>
+
+      <h2 class="headline neon-cyan">4. Third-Party Websites</h2>
+      <p>Our links take you to third-party booking sites (Hotel Room Discounters, Atomic Golf, tour providers, etc.). Once you leave TheVegasHub.com, you are subject to those sites' terms and privacy policies. We are not responsible for their content, pricing, availability, or practices.</p>
+
+      <h2 class="headline neon-pink">5. No Warranties</h2>
+      <p>The Site is provided "as is." We make no warranties — express or implied — about the accuracy, completeness, or availability of any content. Your use of the Site and any booking you make through it is entirely at your own risk.</p>
+
+      <h2 class="headline neon-yellow">6. Limitation of Liability</h2>
+      <p>To the fullest extent permitted by law, TheVegasHub.com and its operators are not liable for any direct, indirect, incidental, or consequential damages arising from your use of the Site or any booking made through a link on the Site — including travel disruptions, cancellations, injuries, property damage, or financial loss.</p>
+
+      <h2 class="headline neon-cyan">7. Intellectual Property</h2>
+      <p>All editorial content on this Site — text, rankings, listicles, and original photography — is the property of TheVegasHub.com and is protected by copyright. You may share our URLs freely but may not copy or republish our editorial content without written permission.</p>
+      <p>Hotel and attraction photos are either used with permission, licensed, or sourced from booking partner CDNs under our affiliate agreements.</p>
+
+      <h2 class="headline neon-pink">8. User Submissions</h2>
+      <p>If you send us feedback, questions, or content via our contact form, we may quote or use it (attributed or anonymously) to improve the Site. Please do not send confidential information.</p>
+
+      <h2 class="headline neon-yellow">9. Prohibited Uses</h2>
+      <p>You agree not to: (a) scrape or automatically collect content from the Site; (b) use the Site to send spam or abuse our contact form; (c) attempt to disrupt the Site's operation; or (d) use the Site for any illegal purpose.</p>
+
+      <h2 class="headline neon-cyan">10. Governing Law</h2>
+      <p>These Terms are governed by the laws of the State of Nevada, USA. Any dispute will be resolved in the state or federal courts of Clark County, Nevada.</p>
+
+      <h2 class="headline neon-pink">11. Changes</h2>
+      <p>We may update these Terms at any time. Continued use of the Site after changes are posted constitutes acceptance of the revised Terms.</p>
+
+      <h2 class="headline neon-yellow">12. Contact</h2>
+      <p>Questions? Reach us via our <a href="/contact" style="color:var(--neon-cyan)">contact page</a>.</p>
+"""
+
+DISCLOSURE_BODY = """
+      <h2 class="headline neon-cyan" style="margin-top:0;">Short Version</h2>
+      <p style="font-size:18px;"><strong>We earn commissions when you book hotels, tours, or experiences through our links.</strong> Your price is the same whether you book through us or go direct. Our rankings are editorial — no one pays us to feature them.</p>
+
+      <h2 class="headline neon-pink">FTC Disclosure</h2>
+      <p>In accordance with the U.S. Federal Trade Commission's guidelines on endorsements and testimonials (16 CFR Part 255), TheVegasHub.com discloses that many outbound links on this Site are affiliate or referral links.</p>
+      <p>When you click one of these links and complete a booking or purchase on the partner's site, we may earn a commission. This commission is paid by the partner — not by you. You pay the same price as any other customer.</p>
+
+      <h2 class="headline neon-yellow">Who Our Affiliate Partners Are</h2>
+      <p>Our primary affiliate relationships include (but are not limited to):</p>
+      <ul>
+        <li><strong>Hotel Room Discounters</strong> — hotel bookings across the Las Vegas region</li>
+        <li><strong>Viator</strong> (a Tripadvisor company) — tours and experiences</li>
+        <li><strong>Klook</strong> — tours and experiences</li>
+        <li><strong>Atomic Golf</strong> (via Impact Radius / sjv.io) — Atomic Golf reservations</li>
+        <li>Various direct partnerships for car rentals, helicopter tours, and show tickets</li>
+      </ul>
+
+      <h2 class="headline neon-cyan">Our Editorial Independence</h2>
+      <p>TheVegasHub.com does <strong>not</strong> accept paid placements, guest posts, sponsored reviews, or "featured hotel" buyouts. We are not influenced by which partner pays the highest commission — we rank hotels, tours, and attractions based on what we would personally book and recommend to friends.</p>
+      <p>If a hotel doesn't belong on a list, we leave it off — regardless of whether it's an affiliate partner. If a new place earns a spot, we add it — whether or not it has an affiliate program yet.</p>
+
+      <h2 class="headline neon-pink">How to Tell a Link Is an Affiliate Link</h2>
+      <p>Every outbound booking link on this Site is an affiliate link by default. We also mark affiliate links with the HTML attribute <code>rel="nofollow sponsored"</code> in accordance with Google's guidance on affiliate disclosure.</p>
+
+      <h2 class="headline neon-yellow">You Are Never Required to Use Our Links</h2>
+      <p>Every hotel, tour, and attraction we recommend can also be booked on the provider's own website without using our link. If you prefer to book elsewhere, more power to you — we appreciate it if you use our links, but there is zero pressure.</p>
+
+      <h2 class="headline neon-cyan">Contact</h2>
+      <p>Questions about our affiliate relationships or editorial policy? Reach us through our <a href="/contact" style="color:var(--neon-cyan)">contact page</a>. We answer every email.</p>
+"""
+
+def page_legal():
+    legal_page("/privacy", "Privacy Policy | TheVegasHub", "TheVegasHub.com privacy policy — what data we collect, how we use it, your rights, and how to contact us.", "Privacy Policy", PRIVACY_BODY)
+    legal_page("/terms",   "Terms of Service | TheVegasHub", "TheVegasHub.com terms of service — site usage rules, limitation of liability, and editorial disclaimers.", "Terms of Service", TERMS_BODY)
+    legal_page("/disclosure", "Affiliate Disclosure | TheVegasHub", "TheVegasHub.com affiliate disclosure — how we make money, FTC compliance, and our editorial independence policy.", "Affiliate Disclosure", DISCLOSURE_BODY)
+
 # ---------------------------- README ---------------------------- #
 
 README = """# TheVegasHub.com
@@ -831,7 +1359,7 @@ Insider Las Vegas travel site — static HTML + Tailwind + Vercel serverless con
 /                      static HTML site root (deploy target)
 ├── index.html         homepage
 ├── hotels/            city pages
-├── tours/             Viator + Klook tour widgets
+├── tours/             Tour & day-trip booking widgets
 ├── things-to-do/      listicles
 ├── why-vegas/         trip-type guides
 ├── packing-list/      printable tool
@@ -888,6 +1416,46 @@ npm run dev     # python3 -m http.server 3000
 def page_readme():
     write("README.md", README)
 
+# ---------------------------- SITEMAP ---------------------------- #
+
+def page_sitemap():
+    """Regenerate sitemap.xml including all hotel pages."""
+    today = "2026-04-17"
+    urls = [
+        ("/",                                                 "weekly",  "1.0"),
+        ("/hotels",                                           "weekly",  "0.9"),
+    ]
+    # City hotel pages
+    for slug, *_ in CITY_PAGES:
+        urls.append((f"/hotels/{slug}", "weekly", "0.9"))
+    # Individual hotel pages
+    for h in HOTELS:
+        urls.append((f"/hotels/{h['slug']}", "weekly", "0.8"))
+    # Tours, things-to-do, why-vegas, etc.
+    urls.extend([
+        ("/tours",                                            "weekly",  "0.9"),
+        ("/things-to-do",                                     "weekly",  "0.9"),
+        ("/things-to-do/atomic-golf",                         "monthly", "0.8"),
+    ])
+    for slug, *_ in LISTICLES:
+        urls.append((f"/things-to-do/{slug}", "monthly", "0.8"))
+    urls.append(("/why-vegas", "monthly", "0.8"))
+    for slug, *_ in WHY:
+        urls.append((f"/why-vegas/{slug}", "monthly", "0.7"))
+    urls.extend([
+        ("/packing-list", "monthly", "0.8"),
+        ("/about",        "yearly",  "0.5"),
+        ("/contact",      "yearly",  "0.5"),
+        ("/privacy",      "yearly",  "0.3"),
+        ("/terms",        "yearly",  "0.3"),
+        ("/disclosure",   "yearly",  "0.3"),
+    ])
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for path, cf, pri in urls:
+        lines.append(f'  <url><loc>{SITE}{path}</loc><lastmod>{today}</lastmod><changefreq>{cf}</changefreq><priority>{pri}</priority></url>')
+    lines.append('</urlset>')
+    write("sitemap.xml", "\n".join(lines) + "\n")
+
 # ---------------------------- MAIN ---------------------------- #
 
 if __name__ == "__main__":
@@ -895,6 +1463,8 @@ if __name__ == "__main__":
     page_hotels_index()
     for slug, title, desc, heading, filt in CITY_PAGES:
         page_city(slug, title, desc, heading, filt)
+    for h in HOTELS:
+        page_hotel(h, HOTELS)
     page_tours()
     page_things_index()
     for slug, title, desc, h1, items in LISTICLES:
@@ -905,5 +1475,7 @@ if __name__ == "__main__":
     page_packing_list()
     page_about()
     page_contact()
+    page_legal()
+    page_sitemap()
     page_readme()
     print("Done.")

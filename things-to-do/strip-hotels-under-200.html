@@ -24,6 +24,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Bungee&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0010">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"ItemList","name":"Strip Hotels Under $200","itemListElement":[{"@type": "ListItem", "position": 1, "name": "Treasure Island (TI)", "description": "Center Strip, clean rooms, pedestrian bridge to Fashion Show Mall. Midweek often under $120."}, {"@type": "ListItem", "position": 2, "name": "Luxor", "description": "South Strip, huge pyramid, walking distance to Allegiant Stadium. Tower rooms only."}, {"@type": "ListItem", "position": 3, "name": "Excalibur", "description": "Cheapest real Strip hotel. Basic rooms, castle-themed, family-friendly. Often $79."}, {"@type": "ListItem", "position": 4, "name": "Flamingo", "description": "Center Strip in the middle of everything. Go Rooms are the renovated ones \u2014 ask for one."}, {"@type": "ListItem", "position": 5, "name": "MGM Grand", "description": "Huge complex, good pool, walkable to T-Mobile Arena. Midweek often under $150."}, {"@type": "ListItem", "position": 6, "name": "Harrah's", "description": "Center Strip Carnaval Court. Old-school but a great location. Often under $130."}, {"@type": "ListItem", "position": 7, "name": "LINQ", "description": "Attached to the High Roller observation wheel. Renovated rooms. Often under $150."}, {"@type": "ListItem", "position": 8, "name": "Planet Hollywood", "description": "Center Strip, great pool, the Miracle Mile shops. Often under $170."}, {"@type": "ListItem", "position": 9, "name": "Paris", "description": "Center Strip with Eiffel Tower. Rooms are average but views are not. Often under $180."}, {"@type": "ListItem", "position": 10, "name": "Park MGM", "description": "South Strip, non-smoking, Dolby Theater venue. Often under $180."}, {"@type": "ListItem", "position": 11, "name": "Rio", "description": "Off-Strip but huge all-suite rooms. Often under $100 during renovation."}, {"@type": "ListItem", "position": 12, "name": "Westgate Las Vegas", "description": "Off-Strip near the Convention Center. Biggest rooms in the city. Often under $120."}]}
 </script>
@@ -34,12 +38,18 @@
   {"@type":"ListItem","position":3,"name":"Strip Hotels Under $200","item":"https://thevegashub.com/things-to-do/strip-hotels-under-200"}
 ]}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC"></script>
 <script>
+  // GA4 loader — deferred until cookie consent decision
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-MYGBD31ZHC');
+  window.__loadGA = function() {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-MYGBD31ZHC', {'anonymize_ip': true});
+  };
 </script>
 </head>
 <body>
@@ -194,15 +204,33 @@
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
           <li><a href="/sitemap.xml">Sitemap</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/disclosure">Disclosure</a></li>
         </ul>
       </div>
     </div>
     <div style="border-top:1px solid rgba(191,0,255,.15); padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text-muted);">
       <div>© <span data-current-year>2026</span> TheVegasHub.com · Headquartered in Las Vegas</div>
-      <div>Some links are affiliate links. We may earn a commission — at no extra cost to you.</div>
+      <div>Some links are <a href="/disclosure" style="color:var(--text-muted); text-decoration:underline;">affiliate links</a>. We may earn a commission — at no extra cost to you.</div>
     </div>
   </div>
 </footer>
+
+<!-- Cookie consent banner -->
+<div id="vh-cookies" style="display:none; position:fixed; bottom:16px; left:16px; right:16px; max-width:620px; margin:0 auto; background:rgba(5,0,12,.96); border:1px solid var(--neon-cyan); border-radius:10px; padding:18px 20px; box-shadow:0 0 24px rgba(0,234,255,.35); z-index:9998; font-size:14px;">
+  <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:6px;">COOKIES &amp; ANALYTICS</div>
+      <div style="color:var(--text-muted); line-height:1.55;">We use cookies for analytics and affiliate attribution. Essential cookies are always on. <a href="/privacy" style="color:var(--neon-cyan);">Privacy Policy</a>.</div>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="VegasHub.cookies('reject')" class="btn btn-ghost" style="font-size:12px; padding:10px 14px;">Essential only</button>
+      <button onclick="VegasHub.cookies('accept')" class="btn btn-cyan" style="font-size:12px; padding:10px 14px;">Accept all</button>
+    </div>
+  </div>
+</div>
+
 <script src="/js/site.js"></script>
 </body>
 </html>

@@ -24,6 +24,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Bungee&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0010">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
   {"@type":"ListItem","position":1,"name":"Home","item":"https://thevegashub.com/"},
@@ -31,12 +35,18 @@
   {"@type":"ListItem","position":3,"name":"Downtown Fremont","item":"https://thevegashub.com/hotels/downtown-fremont"}
 ]}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC"></script>
 <script>
+  // GA4 loader — deferred until cookie consent decision
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-MYGBD31ZHC');
+  window.__loadGA = function() {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-MYGBD31ZHC', {'anonymize_ip': true});
+  };
 </script>
 </head>
 <body>
@@ -65,37 +75,81 @@
       <h1 class="headline-glow" style="font-size:clamp(44px,7vw,80px); margin:12px 0 8px;">HOTELS IN<br>DOWNTOWN FREMONT</h1>
       <p class="kicker">Downtown Las Vegas hotels on Fremont Street — cheaper rooms, classic Vegas neon, better cocktails. Member-rate links inside.</p>
     </div>
-    <div class="grid grid-3">
-      <a class="card" href="https://book.hotelroomdiscounters.com/url/5f0b7d7c-a4dc-4b31-8777-33d1d9fb5fed?isPermanentLink=true" rel="nofollow sponsored" target="_blank" id="fremont-hotel">
-        <img class="card-img" src="/images/hotels/fremont-hotel.jpg" alt="Fremont Hotel & Casino under the neon canopy of the Fremont Street Experience in downtown Las Vegas" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
-        <div class="card-body">
-          <span class="pill pill-pink">HOT DEAL</span>
-          <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Fremont Hotel & Casino</h3>
-          <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Las Vegas</p>
-          <p style="margin:0 0 14px;">Cheapest downtown option right under the neon canopy — Second Street Grill is a local favorite.</p>
-          <span class="display neon-pink" style="font-size:13px;">BOOK HOT DEAL →</span>
+
+    <div class="card" style="padding:36px; margin-bottom:48px; max-width:860px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:12px;">ABOUT DOWNTOWN FREMONT</div>
+      <p style="font-size:19px; font-style:italic; margin:0 0 20px; color:#fff;">Old Vegas — neon, cocktails, and cheaper rooms 10 minutes from the Strip.</p>
+      <p style="font-size:17px; line-height:1.8; margin:0 0 16px;">Downtown Fremont is the Vegas your grandparents came to — classic casinos, the covered neon canopy of the Fremont Street Experience, and some of the best cocktail bars in the city. Rooms run 30-50% cheaper than the Strip for the same category, and the walk between properties is measured in minutes, not miles.</p><p style="font-size:17px; line-height:1.8; margin:0 0 16px;">We recommend Downtown as a first night or last night on a Vegas trip — it's a totally different flavor from the Strip, and you can Uber back for $15.</p>
+    </div>
+    <div style="margin-top:0;">
+      <h2 class="headline neon-cyan" style="font-size:clamp(28px,4vw,40px); margin:0 0 8px;">Our picks</h2>
+      <p style="color:var(--text-muted); margin:0 0 24px;">Every hotel below has a dedicated page with insider tips — or jump straight to booking with the pink button.</p>
+      <div class="grid grid-3">
+      <div class="card" id="fremont-hotel">
+        <a href="/hotels/fremont-hotel" style="text-decoration:none; color:inherit;">
+          <img class="card-img" src="/images/hotels/fremont-hotel.jpg" alt="Fremont Hotel & Casino under the neon canopy of the Fremont Street Experience in downtown Las Vegas" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
+          <div class="card-body" style="padding-bottom:12px;">
+            <span class="pill pill-pink">HOT DEAL</span>
+            <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Fremont Hotel & Casino</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Las Vegas</p>
+            <p class="card-spacer" style="margin:0 0 12px;">Cheapest downtown option right under the neon canopy — Second Street Grill is a local favorite.</p>
+            <span class="display neon-cyan" style="font-size:12px; margin-top:auto;">Read full guide →</span>
+          </div>
+        </a>
+        <div style="padding:0 20px 20px; margin-top:auto;">
+          <a href="https://book.hotelroomdiscounters.com/url/5f0b7d7c-a4dc-4b31-8777-33d1d9fb5fed?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
-      </a>
-      <a class="card" href="https://book.hotelroomdiscounters.com/url/87486b03-8b78-4715-b592-8dc86bba81b4?isPermanentLink=true" rel="nofollow sponsored" target="_blank" id="plaza-downtown">
-        <img class="card-img" src="/images/hotels/plaza-downtown.jpg" alt="Plaza Hotel & Casino classic downtown Las Vegas casino at the head of Fremont Street" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
-        <div class="card-body">
-          <span class="pill pill-pink">HOT DEAL</span>
-          <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Plaza Hotel & Casino</h3>
-          <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Las Vegas</p>
-          <p style="margin:0 0 14px;">Anchor of Fremont Street — rooftop pool with downtown skyline views and Oscar's Steakhouse.</p>
-          <span class="display neon-pink" style="font-size:13px;">BOOK HOT DEAL →</span>
+      </div>
+      <div class="card" id="plaza-downtown">
+        <a href="/hotels/plaza-downtown" style="text-decoration:none; color:inherit;">
+          <img class="card-img" src="/images/hotels/plaza-downtown.jpg" alt="Plaza Hotel & Casino classic downtown Las Vegas casino at the head of Fremont Street" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
+          <div class="card-body" style="padding-bottom:12px;">
+            <span class="pill pill-pink">HOT DEAL</span>
+            <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Plaza Hotel & Casino</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Las Vegas</p>
+            <p class="card-spacer" style="margin:0 0 12px;">Anchor of Fremont Street — rooftop pool with downtown skyline views and Oscar's Steakhouse.</p>
+            <span class="display neon-cyan" style="font-size:12px; margin-top:auto;">Read full guide →</span>
+          </div>
+        </a>
+        <div style="padding:0 20px 20px; margin-top:auto;">
+          <a href="https://book.hotelroomdiscounters.com/url/87486b03-8b78-4715-b592-8dc86bba81b4?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
-      </a>
-      <a class="card" href="https://book.hotelroomdiscounters.com/url/14cca0bd-9946-4cdb-b97b-4370313041f5?isPermanentLink=true" rel="nofollow sponsored" target="_blank" id="golden-nugget-downtown">
-        <img class="card-img" src="/images/hotels/golden-nugget-downtown.jpg" alt="Golden Nugget Las Vegas Rush Tower and The Tank shark aquarium pool on Fremont Street downtown" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
-        <div class="card-body">
-          <span class="pill pill-pink">HOT DEAL</span>
-          <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Golden Nugget Las Vegas Hotel & Casino</h3>
-          <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Las Vegas</p>
-          <p style="margin:0 0 14px;">The nicest rooms downtown — The Tank pool has a three-story shark tank water slide through it.</p>
-          <span class="display neon-pink" style="font-size:13px;">BOOK HOT DEAL →</span>
+      </div>
+      <div class="card" id="golden-nugget-downtown">
+        <a href="/hotels/golden-nugget-downtown" style="text-decoration:none; color:inherit;">
+          <img class="card-img" src="/images/hotels/golden-nugget-downtown.jpg" alt="Golden Nugget Las Vegas Rush Tower and The Tank shark aquarium pool on Fremont Street downtown" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
+          <div class="card-body" style="padding-bottom:12px;">
+            <span class="pill pill-pink">HOT DEAL</span>
+            <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Golden Nugget Las Vegas Hotel & Casino</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Las Vegas</p>
+            <p class="card-spacer" style="margin:0 0 12px;">The nicest rooms downtown — The Tank pool has a three-story shark tank water slide through it.</p>
+            <span class="display neon-cyan" style="font-size:12px; margin-top:auto;">Read full guide →</span>
+          </div>
+        </a>
+        <div style="padding:0 20px 20px; margin-top:auto;">
+          <a href="https://book.hotelroomdiscounters.com/url/14cca0bd-9946-4cdb-b97b-4370313041f5?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
-      </a>
+      </div>
+    </div>
+    </div>
+
+    <div style="margin-top:56px; margin-bottom:48px;">
+      <h2 class="headline neon-yellow" style="font-size:clamp(28px,4vw,40px); margin:0 0 8px;">What to do in Downtown Fremont</h2>
+      <p style="color:var(--text-muted); margin:0 0 24px;">Our editorial picks for how to spend a day.</p>
+      <div class="grid grid-3">
+      <div class="card" style="padding:20px;">
+        <h3 class="headline neon-pink" style="font-size:18px; margin:0 0 8px;">Fremont Street Experience</h3>
+        <p style="margin:0; font-size:14px;">The neon canopy runs shows every hour after dark — free.</p>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 class="headline neon-pink" style="font-size:18px; margin:0 0 8px;">Container Park</h3>
+        <p style="margin:0; font-size:14px;">Shops, kids' park, giant fire-breathing praying mantis. Worth 30 minutes.</p>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 class="headline neon-pink" style="font-size:18px; margin:0 0 8px;">Carson Kitchen / Downtown Cocktail Room</h3>
+        <p style="margin:0; font-size:14px;">Best food + drinks in Vegas for under $50/head.</p>
+      </div>
+      </div>
     </div>
   </div>
 </section>
@@ -133,15 +187,33 @@
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
           <li><a href="/sitemap.xml">Sitemap</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/disclosure">Disclosure</a></li>
         </ul>
       </div>
     </div>
     <div style="border-top:1px solid rgba(191,0,255,.15); padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text-muted);">
       <div>© <span data-current-year>2026</span> TheVegasHub.com · Headquartered in Las Vegas</div>
-      <div>Some links are affiliate links. We may earn a commission — at no extra cost to you.</div>
+      <div>Some links are <a href="/disclosure" style="color:var(--text-muted); text-decoration:underline;">affiliate links</a>. We may earn a commission — at no extra cost to you.</div>
     </div>
   </div>
 </footer>
+
+<!-- Cookie consent banner -->
+<div id="vh-cookies" style="display:none; position:fixed; bottom:16px; left:16px; right:16px; max-width:620px; margin:0 auto; background:rgba(5,0,12,.96); border:1px solid var(--neon-cyan); border-radius:10px; padding:18px 20px; box-shadow:0 0 24px rgba(0,234,255,.35); z-index:9998; font-size:14px;">
+  <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:6px;">COOKIES &amp; ANALYTICS</div>
+      <div style="color:var(--text-muted); line-height:1.55;">We use cookies for analytics and affiliate attribution. Essential cookies are always on. <a href="/privacy" style="color:var(--neon-cyan);">Privacy Policy</a>.</div>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="VegasHub.cookies('reject')" class="btn btn-ghost" style="font-size:12px; padding:10px 14px;">Essential only</button>
+      <button onclick="VegasHub.cookies('accept')" class="btn btn-cyan" style="font-size:12px; padding:10px 14px;">Accept all</button>
+    </div>
+  </div>
+</div>
+
 <script src="/js/site.js"></script>
 </body>
 </html>

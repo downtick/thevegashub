@@ -24,6 +24,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Bungee&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0010">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"ItemList","name":"Best Day Trips from Las Vegas","itemListElement":[{"@type": "ListItem", "position": 1, "name": "Grand Canyon West Rim (Skywalk)", "description": "2h15m each way \u00b7 The closest Grand Canyon view from Vegas. Skywalk is the attention-grabber; Guano Point is the actual view."}, {"@type": "ListItem", "position": 2, "name": "Grand Canyon South Rim", "description": "4h15m each way \u00b7 Longer drive, bigger canyon. Worth the overnight if you can."}, {"@type": "ListItem", "position": 3, "name": "Hoover Dam", "description": "45 min each way \u00b7 The actual dam tour is 90 minutes. Combine with Lake Mead."}, {"@type": "ListItem", "position": 4, "name": "Red Rock Canyon Scenic Loop", "description": "30 min each way \u00b7 13-mile loop, pullouts, short hikes. Our go-to Vegas morning."}, {"@type": "ListItem", "position": 5, "name": "Valley of Fire State Park", "description": "1h each way \u00b7 Underrated red-rock state park. Less crowded than Red Rock, more dramatic."}, {"@type": "ListItem", "position": 6, "name": "Mount Charleston", "description": "45 min each way \u00b7 Pine trees, snow in winter, 30 degrees cooler in summer. Vegas's local reset."}, {"@type": "ListItem", "position": 7, "name": "Death Valley National Park", "description": "2h each way \u00b7 October-April only. Lowest point in North America, wildest terrain."}, {"@type": "ListItem", "position": 8, "name": "Zion National Park", "description": "2h45m each way \u00b7 Best done as an overnight in Springdale, UT. Drives you want to do."}, {"@type": "ListItem", "position": 9, "name": "Seven Magic Mountains", "description": "25 min each way \u00b7 Giant neon-rock art installation. 15-minute stop, great photo."}, {"@type": "ListItem", "position": 10, "name": "Laughlin on the Colorado River", "description": "1h30m each way \u00b7 Cheap rooms, beach, jet skis, buffets. Great weekend away from Vegas."}, {"@type": "ListItem", "position": 11, "name": "Area 51 / Extraterrestrial Highway", "description": "2h30m each way \u00b7 Weird roadside stop. You won't see aliens. You will see a lot of Joshua trees."}, {"@type": "ListItem", "position": 12, "name": "Bryce Canyon", "description": "3h45m each way \u00b7 Push-yourself long day. Most photogenic national park in the Southwest."}]}
 </script>
@@ -34,12 +38,18 @@
   {"@type":"ListItem","position":3,"name":"Best Day Trips from Las Vegas","item":"https://thevegashub.com/things-to-do/best-day-trips"}
 ]}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC"></script>
 <script>
+  // GA4 loader — deferred until cookie consent decision
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-MYGBD31ZHC');
+  window.__loadGA = function() {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-MYGBD31ZHC', {'anonymize_ip': true});
+  };
 </script>
 </head>
 <body>
@@ -194,15 +204,33 @@
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
           <li><a href="/sitemap.xml">Sitemap</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/disclosure">Disclosure</a></li>
         </ul>
       </div>
     </div>
     <div style="border-top:1px solid rgba(191,0,255,.15); padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text-muted);">
       <div>© <span data-current-year>2026</span> TheVegasHub.com · Headquartered in Las Vegas</div>
-      <div>Some links are affiliate links. We may earn a commission — at no extra cost to you.</div>
+      <div>Some links are <a href="/disclosure" style="color:var(--text-muted); text-decoration:underline;">affiliate links</a>. We may earn a commission — at no extra cost to you.</div>
     </div>
   </div>
 </footer>
+
+<!-- Cookie consent banner -->
+<div id="vh-cookies" style="display:none; position:fixed; bottom:16px; left:16px; right:16px; max-width:620px; margin:0 auto; background:rgba(5,0,12,.96); border:1px solid var(--neon-cyan); border-radius:10px; padding:18px 20px; box-shadow:0 0 24px rgba(0,234,255,.35); z-index:9998; font-size:14px;">
+  <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:6px;">COOKIES &amp; ANALYTICS</div>
+      <div style="color:var(--text-muted); line-height:1.55;">We use cookies for analytics and affiliate attribution. Essential cookies are always on. <a href="/privacy" style="color:var(--neon-cyan);">Privacy Policy</a>.</div>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="VegasHub.cookies('reject')" class="btn btn-ghost" style="font-size:12px; padding:10px 14px;">Essential only</button>
+      <button onclick="VegasHub.cookies('accept')" class="btn btn-cyan" style="font-size:12px; padding:10px 14px;">Accept all</button>
+    </div>
+  </div>
+</div>
+
 <script src="/js/site.js"></script>
 </body>
 </html>

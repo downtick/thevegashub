@@ -24,6 +24,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Bungee&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0010">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"ItemList","name":"25 Free Things to Do in Las Vegas","itemListElement":[{"@type": "ListItem", "position": 1, "name": "Watch the Bellagio Fountains", "description": "On the hour and half-hour from 3pm, every 15 mins after 8pm. Best viewed from the bridge at Caesars."}, {"@type": "ListItem", "position": 2, "name": "Walk the Fremont Street Experience", "description": "The free neon canopy shows run every hour after dark \u2014 zero cover, wild people-watching."}, {"@type": "ListItem", "position": 3, "name": "Ride the High Roller at sunset (yes, free-ish)", "description": "$25 happy-hour cabin gets you a full bar and a loop. Cheaper than any rooftop bar."}, {"@type": "ListItem", "position": 4, "name": "Explore the Conservatory at Bellagio", "description": "Changes 5 times a year. Open 24/7 and free to walk through."}, {"@type": "ListItem", "position": 5, "name": "Watch Mirage volcano... oh wait", "description": "R.I.P. Grab a drink at The Pinball Hall of Fame instead \u2014 it's free to enter."}, {"@type": "ListItem", "position": 6, "name": "Walk Red Rock Canyon scenic loop", "description": "$20 per car for the loop, zero per person if you're a passenger. Best desert views in the valley."}, {"@type": "ListItem", "position": 7, "name": "Take a free gondola ride? Almost.", "description": "The outdoor ride at the Venetian is paid; the window shopping in St. Mark's Square is free and photogenic."}, {"@type": "ListItem", "position": 8, "name": "Visit the Neon Museum Boneyard exterior", "description": "Walk past the glowing sign yard on Las Vegas Blvd after dark \u2014 the outside is free."}, {"@type": "ListItem", "position": 9, "name": "People-watch at the Wynn Atrium", "description": "Flowers, chandeliers, and serious money. Free coffee if you know where to sit."}, {"@type": "ListItem", "position": 10, "name": "Hit the Aria public art collection", "description": "Free self-guided tour. Maya Lin, Henry Moore, Jenny Holzer."}, {"@type": "ListItem", "position": 11, "name": "Watch a wedding at the Little White Chapel", "description": "People really will invite you in. Vegas in a nutshell."}, {"@type": "ListItem", "position": 12, "name": "Catch the free CircusCircus acts", "description": "Acrobats every half hour above the midway. Nostalgic, kid-friendly, free."}, {"@type": "ListItem", "position": 13, "name": "Walk the Strip at 6am", "description": "Empty, cool, photographable. The only time the Strip is ever quiet."}, {"@type": "ListItem", "position": 14, "name": "Hike the Historic Railroad Trail at Lake Mead", "description": "Free, easy, ends at Hoover Dam's rear view."}, {"@type": "ListItem", "position": 15, "name": "Tour the Ethel M Chocolate Factory", "description": "Free samples, free cactus garden. Real hidden gem."}, {"@type": "ListItem", "position": 16, "name": "Check out the Downtown Container Park", "description": "Shops, kids' park, the giant fire-breathing praying mantis. Free entry."}, {"@type": "ListItem", "position": 17, "name": "Watch planes land from Sunset Park", "description": "Best sunset in the valley and directly in line with the airport. Free. Bring food."}, {"@type": "ListItem", "position": 18, "name": "Visit the Clark County Wetlands Park", "description": "Nobody comes here. Ducks, herons, 3 miles of trails. Free."}, {"@type": "ListItem", "position": 19, "name": "Browse the Forum Shops aquarium", "description": "7 feeding times a day. Free to watch."}, {"@type": "ListItem", "position": 20, "name": "Catch the Silverton Aquarium mermaids", "description": "Free mermaid show in the lobby aquarium. Yes, really."}, {"@type": "ListItem", "position": 21, "name": "Walk the First Friday arts district", "description": "First Friday of every month \u2014 free entry to galleries in the 18b."}, {"@type": "ListItem", "position": 22, "name": "Tour the Springs Preserve gardens exterior", "description": "Grounds and trails are free; museum is paid. Still worth the walk."}, {"@type": "ListItem", "position": 23, "name": "Mount Charleston lookouts", "description": "Free pullouts with 50-mile valley views, 45 minutes from the Strip."}, {"@type": "ListItem", "position": 24, "name": "See the flamingos at the Flamingo", "description": "Live flamingos in a garden behind the pool. Free to walk through."}, {"@type": "ListItem", "position": 25, "name": "Do a sunrise at Hoover Dam", "description": "Bypass Bridge is free and the Dam views are 100% worth the 6am alarm."}]}
 </script>
@@ -34,12 +38,18 @@
   {"@type":"ListItem","position":3,"name":"25 Free Things to Do in Las Vegas","item":"https://thevegashub.com/things-to-do/25-free-things-to-do-in-vegas"}
 ]}
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC"></script>
 <script>
+  // GA4 loader — deferred until cookie consent decision
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-MYGBD31ZHC');
+  window.__loadGA = function() {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-MYGBD31ZHC', {'anonymize_ip': true});
+  };
 </script>
 </head>
 <body>
@@ -285,15 +295,33 @@
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
           <li><a href="/sitemap.xml">Sitemap</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/disclosure">Disclosure</a></li>
         </ul>
       </div>
     </div>
     <div style="border-top:1px solid rgba(191,0,255,.15); padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text-muted);">
       <div>© <span data-current-year>2026</span> TheVegasHub.com · Headquartered in Las Vegas</div>
-      <div>Some links are affiliate links. We may earn a commission — at no extra cost to you.</div>
+      <div>Some links are <a href="/disclosure" style="color:var(--text-muted); text-decoration:underline;">affiliate links</a>. We may earn a commission — at no extra cost to you.</div>
     </div>
   </div>
 </footer>
+
+<!-- Cookie consent banner -->
+<div id="vh-cookies" style="display:none; position:fixed; bottom:16px; left:16px; right:16px; max-width:620px; margin:0 auto; background:rgba(5,0,12,.96); border:1px solid var(--neon-cyan); border-radius:10px; padding:18px 20px; box-shadow:0 0 24px rgba(0,234,255,.35); z-index:9998; font-size:14px;">
+  <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:6px;">COOKIES &amp; ANALYTICS</div>
+      <div style="color:var(--text-muted); line-height:1.55;">We use cookies for analytics and affiliate attribution. Essential cookies are always on. <a href="/privacy" style="color:var(--neon-cyan);">Privacy Policy</a>.</div>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="VegasHub.cookies('reject')" class="btn btn-ghost" style="font-size:12px; padding:10px 14px;">Essential only</button>
+      <button onclick="VegasHub.cookies('accept')" class="btn btn-cyan" style="font-size:12px; padding:10px 14px;">Accept all</button>
+    </div>
+  </div>
+</div>
+
 <script src="/js/site.js"></script>
 </body>
 </html>

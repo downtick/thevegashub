@@ -55,3 +55,39 @@ window.VegasHub.shareMenu = function() {
 
 // Print helper
 window.VegasHub.print = function() { window.print(); };
+
+// ---- Cookie consent ----
+(function() {
+  const COOKIE_KEY = 'vh_cookie_consent';
+  function get() { try { return localStorage.getItem(COOKIE_KEY); } catch(e){return null;} }
+  function set(v) { try { localStorage.setItem(COOKIE_KEY, v); } catch(e){} }
+  function showBanner() {
+    const b = document.getElementById('vh-cookies');
+    if (b) b.style.display = 'block';
+  }
+  function hideBanner() {
+    const b = document.getElementById('vh-cookies');
+    if (b) b.style.display = 'none';
+  }
+  function onReady() {
+    const choice = get();
+    if (choice === 'accept') {
+      if (window.__loadGA) window.__loadGA();
+    } else if (choice === 'reject') {
+      // do nothing — essential only
+    } else {
+      // first visit — show banner
+      showBanner();
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', onReady);
+  } else {
+    onReady();
+  }
+  window.VegasHub.cookies = function(choice) {
+    set(choice);
+    hideBanner();
+    if (choice === 'accept' && window.__loadGA) window.__loadGA();
+  };
+})();

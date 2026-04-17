@@ -89,6 +89,7 @@ body{
   overflow:hidden;
   display:flex;
   flex-direction:column;
+  height:100%;
   transition:all .25s ease;
 }
 .card:hover{
@@ -102,7 +103,12 @@ body{
   object-fit:cover;
   display:block;
 }
-.card-body{padding:20px;}
+.card-body{padding:20px; display:flex; flex-direction:column; flex:1;}
+/* Hotel card — inner anchor stretches so BOOK button stays pinned to bottom */
+.card > a{display:flex; flex-direction:column; flex:1;}
+.card-body > p:last-of-type, .card-body > p.card-spacer{flex:1;}
+/* Ensure grid items stretch */
+.grid > .card{align-self:stretch;}
 
 /* Pills */
 .pill{
