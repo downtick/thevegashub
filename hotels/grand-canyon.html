@@ -84,8 +84,15 @@
     <div style="margin-top:0;">
       <h2 class="headline neon-cyan" style="font-size:clamp(28px,4vw,40px); margin:0 0 8px;">Our picks</h2>
       <p style="color:var(--text-muted); margin:0 0 24px;">Every hotel below has a dedicated page with insider tips — or jump straight to booking with the pink button.</p>
-      <div class="grid grid-3">
-      <div class="card" id="grand-hotel-gc">
+      
+    <div class="filter-bar" id="hotel-filter-bar">
+      <span class="filter-bar-label">FILTER:</span>
+      <button class="filter-chip active" data-tag="_all">All (5)</button>
+      <button class="filter-chip" data-tag="route-66">Route 66</button><button class="filter-chip" data-tag="family">Family</button><button class="filter-chip" data-tag="value">Value</button>
+      <span class="filter-count" id="hotel-filter-count"></span>
+    </div>
+      <div class="grid grid-3" id="hotels-grid">
+      <div class="card" id="grand-hotel-gc" data-tags="grand-canyon lodge family">
         <a href="/hotels/grand-hotel-gc" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="/images/hotels/grand-hotel-gc.jpg" alt="The Grand Hotel at the Grand Canyon lodge-style entrance in Tusayan Arizona near the South Rim" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
           <div class="card-body" style="padding-bottom:12px;">
@@ -100,7 +107,7 @@
           <a href="https://book.hotelroomdiscounters.com/url/c750490c-dd08-4145-a6f5-303afc04c7df?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
       </div>
-      <div class="card" id="grand-canyon-railway">
+      <div class="card" id="grand-canyon-railway" data-tags="grand-canyon train family route-66">
         <a href="/hotels/grand-canyon-railway" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="/images/hotels/grand-canyon-railway.jpg" alt="Grand Canyon Railway Hotel with vintage train depot in Williams Arizona on Historic Route 66" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
           <div class="card-body" style="padding-bottom:12px;">
@@ -115,7 +122,7 @@
           <a href="https://book.hotelroomdiscounters.com/url/870af897-4e0d-40e5-ad0b-8838cc06e7ed?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
       </div>
-      <div class="card" id="best-western-williams">
+      <div class="card" id="best-western-williams" data-tags="grand-canyon value route-66">
         <a href="/hotels/best-western-williams" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="/images/hotels/best-western-williams.jpg" alt="Best Western Plus Inn of Williams Route 66 motel exterior in Williams Arizona" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
           <div class="card-body" style="padding-bottom:12px;">
@@ -130,7 +137,7 @@
           <a href="https://book.hotelroomdiscounters.com/url/18047b94-50c5-4f4a-89bb-8569a49ec54e?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
       </div>
-      <div class="card" id="hampton-kingman">
+      <div class="card" id="hampton-kingman" data-tags="grand-canyon route-66 value">
         <a href="/hotels/hampton-kingman" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="/images/hotels/hampton-kingman.jpg" alt="Hampton Inn & Suites Kingman Arizona on Historic Route 66" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
           <div class="card-body" style="padding-bottom:12px;">
@@ -145,7 +152,7 @@
           <a href="https://book.hotelroomdiscounters.com/url/b94138a0-aae5-4fa6-8d7a-290b14560f4c?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
       </div>
-      <div class="card" id="wayfarers-kingman">
+      <div class="card" id="wayfarers-kingman" data-tags="grand-canyon route-66">
         <a href="/hotels/wayfarers-kingman" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="/images/hotels/wayfarers-kingman.jpg" alt="Best Western Plus A Wayfarer's Inn and Suites Kingman Arizona classic Route 66 motel" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
           <div class="card-body" style="padding-bottom:12px;">
@@ -183,7 +190,36 @@
     </div>
   </div>
 </section>
-<footer class="site-footer">
+<script>
+(function(){
+  const bar = document.getElementById('hotel-filter-bar');
+  if (!bar) return;
+  const grid = document.querySelector('#hotels-grid');
+  const cards = grid ? [...grid.querySelectorAll('.card')] : [];
+  const counter = document.getElementById('hotel-filter-count');
+  function apply(tag) {
+    [...bar.querySelectorAll('.filter-chip')].forEach(c => c.classList.toggle('active', c.dataset.tag === tag));
+    let shown = 0;
+    cards.forEach(card => {
+      const tags = (card.dataset.tags || '').split(/\s+/);
+      const match = tag === '_all' || tags.includes(tag);
+      card.dataset.hidden = match ? '0' : '1';
+      if (match) shown++;
+    });
+    if (counter) counter.textContent = tag === '_all' ? '' : shown + ' match' + (shown === 1 ? '' : 'es');
+    // Preserve in URL hash so filter is shareable
+    if (tag !== '_all') location.hash = 'filter=' + tag;
+    else history.replaceState(null, '', location.pathname);
+  }
+  bar.addEventListener('click', e => {
+    const chip = e.target.closest('.filter-chip');
+    if (chip) apply(chip.dataset.tag);
+  });
+  // Honor initial hash
+  const m = (location.hash.match(/filter=([\w-]+)/) || [])[1];
+  if (m) apply(m);
+})();
+</script><footer class="site-footer">
   <div class="container">
     <div class="grid grid-4" style="gap:32px; margin-bottom:32px;">
       <div>

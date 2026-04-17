@@ -84,8 +84,15 @@
     <div style="margin-top:0;">
       <h2 class="headline neon-cyan" style="font-size:clamp(28px,4vw,40px); margin:0 0 8px;">Our picks</h2>
       <p style="color:var(--text-muted); margin:0 0 24px;">Every hotel below has a dedicated page with insider tips — or jump straight to booking with the pink button.</p>
-      <div class="grid grid-3">
-      <div class="card" id="edgewater-laughlin">
+      
+    <div class="filter-bar" id="hotel-filter-bar">
+      <span class="filter-bar-label">FILTER:</span>
+      <button class="filter-chip active" data-tag="_all">All (4)</button>
+      <button class="filter-chip" data-tag="river">Riverfront</button>
+      <span class="filter-count" id="hotel-filter-count"></span>
+    </div>
+      <div class="grid grid-3" id="hotels-grid">
+      <div class="card" id="edgewater-laughlin" data-tags="laughlin river">
         <a href="/hotels/edgewater-laughlin" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="/images/hotels/edgewater-laughlin.jpg" alt="Edgewater Hotel & Casino Resort riverside tower on the Colorado River in Laughlin Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
           <div class="card-body" style="padding-bottom:12px;">
@@ -100,7 +107,7 @@
           <a href="https://book.hotelroomdiscounters.com/url/cf4b157a-75a9-44fb-a537-8a33455843b2?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
       </div>
-      <div class="card" id="aquarius-laughlin">
+      <div class="card" id="aquarius-laughlin" data-tags="laughlin river value">
         <a href="/hotels/aquarius-laughlin" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="/images/hotels/aquarius-laughlin.jpg" alt="The Aquarius Casino Resort largest hotel on the Colorado River in Laughlin Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
           <div class="card-body" style="padding-bottom:12px;">
@@ -115,7 +122,7 @@
           <a href="https://book.hotelroomdiscounters.com/url/305e177a-707b-4ac0-b5f9-d0ecb1b9f148?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
       </div>
-      <div class="card" id="harrahs-laughlin">
+      <div class="card" id="harrahs-laughlin" data-tags="laughlin beach river">
         <a href="/hotels/harrahs-laughlin" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="/images/hotels/harrahs-laughlin.jpg" alt="Harrah's Laughlin Beach Resort and Casino private sand beach on the Colorado River in Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
           <div class="card-body" style="padding-bottom:12px;">
@@ -130,7 +137,7 @@
           <a href="https://book.hotelroomdiscounters.com/url/245cc798-6add-4a6b-81e9-8a20c7649e31?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
         </div>
       </div>
-      <div class="card" id="tropicana-laughlin">
+      <div class="card" id="tropicana-laughlin" data-tags="laughlin river">
         <a href="/hotels/tropicana-laughlin" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="/images/hotels/tropicana-laughlin.jpg" alt="Tropicana Laughlin green and white riverfront hotel and casino on the Colorado River in Nevada" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
           <div class="card-body" style="padding-bottom:12px;">
@@ -168,7 +175,36 @@
     </div>
   </div>
 </section>
-<footer class="site-footer">
+<script>
+(function(){
+  const bar = document.getElementById('hotel-filter-bar');
+  if (!bar) return;
+  const grid = document.querySelector('#hotels-grid');
+  const cards = grid ? [...grid.querySelectorAll('.card')] : [];
+  const counter = document.getElementById('hotel-filter-count');
+  function apply(tag) {
+    [...bar.querySelectorAll('.filter-chip')].forEach(c => c.classList.toggle('active', c.dataset.tag === tag));
+    let shown = 0;
+    cards.forEach(card => {
+      const tags = (card.dataset.tags || '').split(/\s+/);
+      const match = tag === '_all' || tags.includes(tag);
+      card.dataset.hidden = match ? '0' : '1';
+      if (match) shown++;
+    });
+    if (counter) counter.textContent = tag === '_all' ? '' : shown + ' match' + (shown === 1 ? '' : 'es');
+    // Preserve in URL hash so filter is shareable
+    if (tag !== '_all') location.hash = 'filter=' + tag;
+    else history.replaceState(null, '', location.pathname);
+  }
+  bar.addEventListener('click', e => {
+    const chip = e.target.closest('.filter-chip');
+    if (chip) apply(chip.dataset.tag);
+  });
+  // Honor initial hash
+  const m = (location.hash.match(/filter=([\w-]+)/) || [])[1];
+  if (m) apply(m);
+})();
+</script><footer class="site-footer">
   <div class="container">
     <div class="grid grid-4" style="gap:32px; margin-bottom:32px;">
       <div>

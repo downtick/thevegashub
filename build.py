@@ -165,7 +165,8 @@ def hotel_card(h):
     alt = h["alt"]
     note = h.get("note","")
     city = h.get("city","")
-    return f"""      <div class="card" id="{slug}">
+    tags_attr = " ".join(h.get("tags", []) or [])
+    return f"""      <div class="card" id="{slug}" data-tags="{tags_attr}">
         <a href="{page_href}" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="{img}" alt="{alt}" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
           <div class="card-body" style="padding-bottom:12px;">
@@ -520,9 +521,87 @@ CITY_INTROS = {
     },
 }
 
+FILTER_LABELS = {
+    "luxury":       "Luxury",
+    "suites":       "All-Suite",
+    "pool":         "Pool",
+    "non-gaming":   "Non-Gaming",
+    "value":        "Value",
+    "family":       "Family",
+    "sphere-views": "Sphere View",
+    "sphere-view":  "Sphere View",
+    "mid-strip":    "Mid-Strip",
+    "north-strip":  "North Strip",
+    "south-strip":  "South Strip",
+    "off-strip":    "Off-Strip",
+    "classic":      "Classic",
+    "new":          "Newly Opened",
+    "fremont":      "Fremont",
+    "downtown":     "Downtown",
+    "summerlin":    "Summerlin",
+    "sportsbook":   "Sportsbook",
+    "river":        "Riverfront",
+    "beach":        "Beach",
+    "golf":         "Golf",
+    "route-66":     "Route 66",
+    "train":        "Train",
+}
+
+def filter_bar_html(matches):
+    """Build a filter chip bar based on tags present across the matching hotels."""
+    tag_counts = {}
+    for h in matches:
+        for t in (h.get("tags", []) or []):
+            tag_counts[t] = tag_counts.get(t, 0) + 1
+    # Keep tags with >=2 matches, sorted by count desc
+    chosen = sorted([t for t, c in tag_counts.items() if c >= 2 and t in FILTER_LABELS],
+                    key=lambda t: (-tag_counts[t], t))[:10]
+    if not chosen:
+        return ""
+    chips = "".join(f'<button class="filter-chip" data-tag="{t}">{FILTER_LABELS[t]}</button>' for t in chosen)
+    return f"""
+    <div class="filter-bar" id="hotel-filter-bar">
+      <span class="filter-bar-label">FILTER:</span>
+      <button class="filter-chip active" data-tag="_all">All ({len(matches)})</button>
+      {chips}
+      <span class="filter-count" id="hotel-filter-count"></span>
+    </div>"""
+
+FILTER_JS = """<script>
+(function(){
+  const bar = document.getElementById('hotel-filter-bar');
+  if (!bar) return;
+  const grid = document.querySelector('#hotels-grid');
+  const cards = grid ? [...grid.querySelectorAll('.card')] : [];
+  const counter = document.getElementById('hotel-filter-count');
+  function apply(tag) {
+    [...bar.querySelectorAll('.filter-chip')].forEach(c => c.classList.toggle('active', c.dataset.tag === tag));
+    let shown = 0;
+    cards.forEach(card => {
+      const tags = (card.dataset.tags || '').split(/\\s+/);
+      const match = tag === '_all' || tags.includes(tag);
+      card.dataset.hidden = match ? '0' : '1';
+      if (match) shown++;
+    });
+    if (counter) counter.textContent = tag === '_all' ? '' : shown + ' match' + (shown === 1 ? '' : 'es');
+    // Preserve in URL hash so filter is shareable
+    if (tag !== '_all') location.hash = 'filter=' + tag;
+    else history.replaceState(null, '', location.pathname);
+  }
+  bar.addEventListener('click', e => {
+    const chip = e.target.closest('.filter-chip');
+    if (chip) apply(chip.dataset.tag);
+  });
+  // Honor initial hash
+  const m = (location.hash.match(/filter=([\\w-]+)/) || [])[1];
+  if (m) apply(m);
+})();
+</script>"""
+
 def page_city(slug, title, desc, heading, filt):
     matches = [h for h in HOTELS if filt(h)]
     cards = "".join(hotel_card(h) for h in matches) or "<p>Hotels coming soon.</p>"
+    filter_html = filter_bar_html(matches)
     intro_data = CITY_INTROS.get(slug, {})
     tagline = intro_data.get("tagline", "")
     intros = intro_data.get("intro", [])
@@ -572,13 +651,14 @@ def page_city(slug, title, desc, heading, filt):
     <div style="margin-top:{"0" if intros else "0"};">
       <h2 class="headline neon-cyan" style="font-size:clamp(28px,4vw,40px); margin:0 0 8px;">Our picks</h2>
       <p style="color:var(--text-muted); margin:0 0 24px;">Every hotel below has a dedicated page with insider tips — or jump straight to booking with the pink button.</p>
-      <div class="grid grid-3">
+      {filter_html}
+      <div class="grid grid-3" id="hotels-grid">
 {cards}    </div>
     </div>
 {wtd_html}
   </div>
 </section>
-""" + FOOTER
+""" + FILTER_JS + FOOTER
     write(f"hotels/{slug}.html", html)
 
 # ---------------------------- /hotels/ INDEX ---------------------------- #
@@ -783,6 +863,173 @@ LISTICLES = [
       ("David Copperfield","MGM Grand. The classic. Still impressive."),
       ("Criss Angel Mindfreak","Planet Hollywood. You either love it or you don't. No in-between."),
       ("The Beatles LOVE (closing)","Mirage — check status. If open, see it. If closed, streaming's the only way now.")]),
+
+    ("best-vegas-buffets", "Best Las Vegas Buffets Ranked (2026) | TheVegasHub",
+     "The best Las Vegas buffets in 2026 — Bacchanal, Wicked Spoon, Garden Buffet, and the rest. Ranked by locals who do this for research, not fun.",
+     "Best Vegas Buffets Ranked",
+     [("Bacchanal Buffet at Caesars Palace","$79 weekdays. Still the #1 buffet in Vegas — live-carving stations, seafood tower, best dessert spread. Reserve a slot online."),
+      ("Wicked Spoon at Cosmopolitan","Individual-portion format that changed the buffet game. Adults only after 9pm. Best brunch."),
+      ("The Buffet at Wynn","Understated, classy, excellent quality. Smaller crowds. Best for a real meal, not a competitive-eating session."),
+      ("Garden Court Buffet at Main Street Station","Downtown. $28. Still the best value buffet in the city — chase it with a cocktail at the adjoining brewpub."),
+      ("A.Y.C.E. Buffet at Palms","Reopened, renovated. Pool-day calorie refill station."),
+      ("Flavors at Harrah's","Middle-of-the-road buffet in a middle-of-the-road Strip hotel. Cheap and fine."),
+      ("The Buffet at Aria","Priced like a steakhouse, eats like one. Worth it once."),
+      ("MGM Grand Buffet","Competent, huge, never empty. Sunday brunch is the play."),
+      ("Bayside Buffet at Mandalay Bay","Pool-adjacent brunch with the strongest mimosa pour on the Strip."),
+      ("South Point Buffet","Locals' buffet. $22 weekdays. Quality punches way above the price."),
+      ("Carnival World Buffet at Rio","Reopening reports pending — historically one of the biggest in town."),
+      ("Feast Buffet at Green Valley Ranch","Henderson. Best-kept secret of the Station Casinos chain."),
+      ("Circus Buffet at CircusCircus","We recommend it ironically. You were warned.")]),
+
+    ("best-adults-only-pools", "Best Adults-Only Pools in Las Vegas 2026 | TheVegasHub",
+     "The best adults-only pools in Las Vegas for 2026 — Marquee Dayclub, Moorea, Encore Beach Club, and the best quiet adult pools for when you just want peace.",
+     "Best Adults-Only Pools in Las Vegas",
+     [("Marquee Dayclub at Cosmopolitan","21+. DJ-driven pool party every weekend, summer residencies. Book a cabana or table."),
+      ("Encore Beach Club","21+. The original premium pool party. Calvin Harris, Diplo, Kaskade routinely. Bring real money."),
+      ("Ayu Dayclub at Resorts World","21+ on weekends. Newest pool venue on the Strip. Massive."),
+      ("Moorea Beach Club at Mandalay Bay","Topless-optional European-style adult pool. Much quieter than Dayclub energy."),
+      ("Tao Beach at Venetian","21+. Smaller, more curated. Adults-only section with food from Tao."),
+      ("Elia Beach Club at Virgin Hotels","21+. Underrated — Greek-island vibes with actual quality food."),
+      ("Drai's Beach Club at The Cromwell","21+. Rooftop pool with Strip views. Night pool on Saturdays."),
+      ("Stadium Swim at Circa Las Vegas","21+ downtown. 6 pools stacked like a stadium around a massive screen. Sports-bar vibe."),
+      ("Waldorf Astoria Pool","Guests only. Adults-only. Quietest luxury pool on the Strip."),
+      ("Rio Pool (adults-only section)","In the renovation reopen. Worth checking if you want a quieter pool."),
+      ("Bellagio Cypress Pool","Guests only. Adults-only. The classy old-money pool."),
+      ("Liquid Pool at Aria","21+ some days. Good daytime party without Encore Beach Club's intensity.")]),
+
+    ("best-f1-hotels", "Best Las Vegas F1 Grand Prix Hotels 2026 | TheVegasHub",
+     "Best hotels for the Las Vegas F1 Grand Prix 2026 — rooms with track views, walkable to the pit, and where to get the best member rates.",
+     "Best Vegas F1 Hotels",
+     [("Wynn Las Vegas","Inside the track. North-facing rooms look directly down the main straight. Views + no traffic."),
+      ("Encore at Wynn","Same campus as Wynn — suites with track views without the Wynn price."),
+      ("Venetian","Track wraps around the front drive. Palazzo side is quieter."),
+      ("Palazzo","Same footprint as Venetian. All-suite = easier for a 4-night F1 weekend."),
+      ("The Cosmopolitan","Terrace Suites face the pit and main straight. Book a terrace and you don't need a grandstand ticket."),
+      ("Waldorf Astoria","North-facing rooms above floor 20 = track views without the hotel-inside-track insanity."),
+      ("Fontainebleau","New for F1. North end of the Strip, close to Turn 14."),
+      ("Bellagio","Faces the track across the fountains. Spectacular."),
+      ("Caesars Palace","Track runs right along the property. Balcony suites sell out first."),
+      ("Paris Las Vegas","Eiffel Tower observation deck becomes a grandstand during F1 weekend."),
+      ("Flamingo","Closer to the track than Paris. Budget F1 option if you're not here for luxury."),
+      ("Planet Hollywood","Mid-Strip, affordable F1 stay if you don't need a track-view room.")]),
+
+    ("hidden-speakeasies-vegas", "10 Hidden Speakeasies in Las Vegas (Locals' Picks) | TheVegasHub",
+     "The best hidden speakeasies and secret bars in Las Vegas — password-protected doors, unmarked entrances, and the cocktail scenes tourists don't find.",
+     "Hidden Speakeasies in Las Vegas",
+     [("The Laundry Room at Commonwealth","Downtown. Text for the password, enter through a hidden door inside Commonwealth. 22 seats."),
+      ("Herbs & Rye","Off-Strip. Everyone eventually ends up here after 1am. Best steakhouse-speakeasy combo in the city."),
+      ("Ghost Donkey at Cosmopolitan","Mezcal-focused, hidden inside Block 16 food hall. Disco ceiling. Nachos."),
+      ("Peppermill's Fireside Lounge","Not hidden, but iconic. Sunken fire pit in the center. Unchanged since 1972."),
+      ("Velveteen Rabbit","Downtown arts district. Local crowd. Some of the best cocktails in the city under $15."),
+      ("Downtown Cocktail Room","Unmarked door near Ogden. Classic cocktails done right. First Tom Collins of your trip."),
+      ("Vanderpump à Paris","Tucked inside Paris Las Vegas. Flower walls, pink everything, Lisa Vanderpump's place."),
+      ("Atomic Liquors","America's oldest freestanding bar. Opened 1952. Not hidden but locally iconic."),
+      ("Delilah at Wynn","Speakeasy-inspired supper club. Not truly hidden, but feels like it."),
+      ("The Library at Alibi (Aria)","Inside the Aria lobby bar. Turn left at the fireplace."),
+      ("Oak & Ivy at Downtown Container Park","Small, excellent, cash-first. The bartenders don't care who you are."),
+      ("The Underground at Mob Museum","Actual basement speakeasy inside the Mob Museum. Prohibition-era cocktails.")]),
+
+    ("best-cheap-eats-vegas", "15 Best Cheap Eats in Las Vegas (Under $20) | TheVegasHub",
+     "The best cheap eats in Las Vegas under $20 — off-Strip tacos, Chinatown noodles, $5 shrimp cocktails, and the locals' go-to quick meals.",
+     "Best Cheap Eats in Las Vegas",
+     [("Raising Cane's on the Strip","Open 24/7. Chicken fingers. This is why we live in 2026."),
+      ("Tacos El Gordo","East side + Strip. Best Tijuana-style tacos in the city. $3 tacos al pastor."),
+      ("Pho Kim Long","Chinatown. Huge portions, under $15. Always a 30-minute wait. Always worth it."),
+      ("Battista's Hole in the Wall","$45 dinner that feels like $90. Old-school Italian next to Flamingo, all-you-can-drink wine included."),
+      ("The Peppermill coffeeshop","The adjoining diner has 24-hour breakfast. Famous fruit plate. Under $20."),
+      ("Earl of Sandwich at Planet Hollywood","Best Strip lunch under $15. Cabo sandwich or the Original 1762."),
+      ("Nacho Daddy downtown","Under $20. The fried-tarantula taco is a thing. Skip it — order the nachos."),
+      ("Secret Pizza at Cosmopolitan","Hidden pizza counter on the 3rd floor. Under $10 a slice."),
+      ("Monta Ramen, Chinatown","Best tonkotsu in the city. Under $18."),
+      ("Fat Choy at Eureka Casino (Fremont)","Hawaiian + Asian fusion. Loco moco is the move. Under $18."),
+      ("Gold Fork Burger Bar (Downtown)","Best Vegas burger under $15. 4 lines of delicious."),
+      ("Makers & Finders","Arts District. Coffeeshop + Latin brunch. $15 huevos rancheros."),
+      ("Shake Shack (Strip + Downtown)","Don't roll your eyes. It's good. Under $15."),
+      ("Bachi Burger","Asian-fusion burgers. Ramen burger if you dare. Henderson location is quieter."),
+      ("The Pizzeria at The Palazzo","24-hour NY slice. Under $8. Best pizza emergency in the city.")]),
+
+    ("best-breakfast-spots-vegas", "12 Best Breakfast Spots in Las Vegas | TheVegasHub",
+     "The best breakfast spots in Las Vegas — hangover fixes, brunch standouts, Strip breakfasts worth their price, and the locals' morning picks.",
+     "Best Breakfast Spots in Las Vegas",
+     [("Hash House A Go Go (Plaza + Linq)","Biggest portions in the city. The sage fried chicken benedict is the move."),
+      ("Eggslut at Cosmopolitan","Sandwich-driven. The Fairfax is famous for good reason."),
+      ("The Henry at The Cosmopolitan","24-hour menu. Chicken & waffles, famous burger. $30 average."),
+      ("The Kitchen at The Wynn","High-end à la carte. Best eggs benedict on the Strip. $45."),
+      ("Bouchon at The Venetian","Thomas Keller's bistro. Weekend brunch is the Vegas expense-account brunch."),
+      ("Black Tap at The Venetian","Shake + burger for breakfast. $20 freak-out shakes."),
+      ("Skinny Fats Happy","Off-Strip. Two menus — healthy vs happy. Always-packed locals' brunch."),
+      ("Mr Mamas Breakfast & Lunch","Off-Strip chain. Chicken-fried everything. Loved by locals."),
+      ("The Peppermill coffeeshop","Icons. Fruit plate, 24-hour menu, next to Resorts World."),
+      ("Bacchanal Brunch at Caesars","Adds breakfast to the buffet rotation on Sat/Sun. Worth the price."),
+      ("Oscar's at the Plaza (downtown)","Old-school downtown breakfast with a Strip-view from the dome."),
+      ("Du-par's at Golden Gate","Pancakes since 1938. Thick-cut bacon. Downtown.")]),
+
+    ("best-sports-bars-vegas", "Best Sports Bars in Las Vegas for 2026 | TheVegasHub",
+     "The best sports bars in Las Vegas — UFC watch parties, Monday Night Football, F1 livestream, and locals' picks with the most screens.",
+     "Best Sports Bars in Las Vegas",
+     [("Circa Stadium Swim","6-pool sports complex with a 143-foot screen. 21+. Weekend game-day legendary."),
+      ("The Barstool Sportsbook at Circa","Three-story bar-book. Best in the city. Food from Saddle Ranch."),
+      ("Westgate SuperBook","Biggest sportsbook in Vegas. 30,000 sq ft, 220-foot video wall. Not fancy, just serious."),
+      ("The Tap at MGM","MGM Grand sports bar. Closest to T-Mobile Arena. Perfect pre/post game."),
+      ("Beer Park at Paris","Rooftop with a direct view of the Bellagio fountains AND every NFL Sunday game."),
+      ("Cabana Grill at Durango","Best locals' sportsbook experience. Newer property, premium tech."),
+      ("Hooters Vegas","Yes, really. It's a sports bar. Cheap beer, cheap wings, lots of screens."),
+      ("Nine Fine Irishmen at NYNY","Authentic-ish Irish pub with soccer (football). UEFA / Premier League coverage."),
+      ("Sporting Life Bar","Locals' sports bar off-Strip. Cheap beer, 15 screens, no tourists."),
+      ("Canyon Grill at Red Rock Resort","Summerlin. Upscale but still sports-bar enough. Best views of the mountains during day games."),
+      ("Fizz at Caesars","Champagne bar that happens to have the games on. Date-night sports."),
+      ("Hash House A Go Go (Linq)","Not a sports bar proper but huge screens + huge breakfasts = ultimate NFL Sunday setup.")]),
+
+    ("best-bachelorette-suites", "Best Bachelorette Party Suites in Las Vegas | TheVegasHub",
+     "The best Las Vegas bachelorette party suites for 2026 — high-floor Cosmo terraces, Palms Sky Villa, Palazzo Prestige, and where to book for photos and parties.",
+     "Best Bachelorette Party Suites",
+     [("Palms Sky Villa","Mountain-view multi-level villas with their own pool. Legendary bachelorette territory. $$$$$."),
+      ("Cosmopolitan Terrace Suite","Wraparound balcony with fountain views. Best bachelorette photo spot on the Strip."),
+      ("Palazzo Prestige Club Lounge","Club-level rooms with suite space + separate lounge. Group-ready."),
+      ("Venetian Prestige Suite","Same campus, slightly different vibe. Huge soak tub."),
+      ("Caesars Palace Colosseum Suites","Old-Vegas glam. Request a Forum Tower renovated room."),
+      ("The Signature at MGM","Separate building from the MGM casino. Kitchen + living room = house-party hosting."),
+      ("Drai's Penthouse at The Cromwell","Penthouse suite above Drai's nightclub. 21+ energy."),
+      ("Nobu Hotel at Caesars","Boutique bride-favorite. Japanese-minimalist suites."),
+      ("Bellagio Penthouse","Fountain-view suites. Old-money bachelorette."),
+      ("Red Rock Resort Lavish Suites","Summerlin. Bigger rooms, better deals, Strip skyline view."),
+      ("Aria Sky Suites","Small separate tower, very private. Limo to the Strip."),
+      ("SKYLOFTS at MGM Grand","Private check-in, butler service, rooftop suites. Wedding-level bachelorette.")]),
+
+    ("best-rooftop-pools-vegas", "Best Rooftop Pools in Las Vegas (With Views) | TheVegasHub",
+     "The best rooftop pools in Las Vegas — Drai's, Stadium Swim at Circa, Rio sky pool, and the highest pool decks with Strip views.",
+     "Best Rooftop Pools in Las Vegas",
+     [("Drai's Beach Club at The Cromwell","11 stories up. Best rooftop Strip view. Live DJ weekends."),
+      ("Stadium Swim at Circa","Downtown. 6 pools stacked like stadium seats, 143-foot screen."),
+      ("The Rooftop Pool at Virgin Hotels","21+. Elia Beach Club + a quiet separate adult pool. Greek-island styling."),
+      ("Tank Pool at Golden Nugget","Downtown. Three-story shark-tank water slide through an actual aquarium."),
+      ("Boulevard Pool at Cosmopolitan","8th-floor pool above the Strip. Concerts from pool deck during summer."),
+      ("Sky Pool at Palms","Rooftop with west-facing sunset view."),
+      ("Waldorf Astoria Pool","23rd floor. Guests only. Highest luxury pool on the Strip."),
+      ("Ayu Dayclub at Resorts World","New high pool complex. 21+ weekends."),
+      ("Pool District at Resorts World","Multi-tier pool deck, one of the largest on the Strip."),
+      ("Plaza's Rooftop Pool","Downtown. Strip skyline views from way downtown."),
+      ("Rio Pool","Under renovation — was the rooftop pool for parties, reopening specs pending."),
+      ("Bellagio Pool Courtyard","Not a rooftop technically but elevated and legendary.")]),
+
+    ("best-20-dinners-vegas", "15 Best $20 Dinners in Las Vegas | TheVegasHub",
+     "15 best dinners in Las Vegas for under $20 — off-Strip Chinese, downtown burgers, Italian hole-in-the-wall, and the cheap-eats spots locals actually eat at.",
+     "Best $20 Dinners in Las Vegas",
+     [("Battista's Hole in the Wall","$45 dinner with bottomless wine — not under $20 per person if you drink, but worth listing. Sandwich at lunch is $14."),
+      ("In-N-Out Burger","Every Vegas tourist denies wanting it. Every local has been at 1am. Under $10."),
+      ("Tacos El Gordo (multiple)","$3 tacos al pastor. Dinner for $15, fully stuffed."),
+      ("Pho Kim Long (Chinatown)","Huge bowl of pho under $15."),
+      ("Monta Ramen (Chinatown)","Best tonkotsu for $18."),
+      ("Pepperoni's Pizza at Planet Hollywood","Giant slice for under $8."),
+      ("Secret Pizza at Cosmopolitan","Same deal. Under $10 a slice, open late."),
+      ("Gold Fork Burger Bar","Downtown. Gourmet burger under $15."),
+      ("Raising Cane's","24/7 chicken fingers combo under $12. Open late."),
+      ("Nora's Italian Cuisine","West-side old-school Italian. Pasta dinners under $20."),
+      ("District One Kitchen","Chinatown Vietnamese. Combo plates under $18."),
+      ("Earl of Sandwich (Planet Hollywood)","Cabo sandwich + chips + drink under $14."),
+      ("Shake Shack","Don't be snobby. $15 combo is fine."),
+      ("Du-par's","Downtown. Breakfast-for-dinner under $18. Pancakes and bacon."),
+      ("Nacho Daddy","Downtown. Massive nachos to share under $20 per person.")]),
 ]
 
 def page_listicle(slug, title, desc, h1, items):
@@ -825,6 +1072,161 @@ def page_listicle(slug, title, desc, h1, items):
 """ + FOOTER
     write(f"things-to-do/{slug}.html", html)
 
+ATTRACTIONS = [
+    {
+        "slug": "sphere",
+        "name": "The Sphere Las Vegas",
+        "tagline": "The world's largest 16K wraparound LED venue.",
+        "hero_img": "/images/attractions/sphere.jpg",
+        "hero_alt": "The Sphere Las Vegas glowing exterior at night on the east side of the Strip",
+        "pill": "MUST-SEE",
+        "intro": "The 366-foot-tall Sphere just east of the Strip is the single most architecturally distinct venue built in Las Vegas in 30 years. Whether you're there for Postcard from Earth, a U2 residency night, or an Anyma show, the experience is unlike any other concert venue on the planet.",
+        "sections": [
+            ("POSTCARD FROM EARTH", "Darren Aronofsky's 50-minute immersive visual experience is the default Sphere daytime/matinee show. 16K resolution, haptic seats, wraparound audio. Plays almost daily. Get a seat between row 150-250 for the best field of view."),
+            ("CONCERT RESIDENCIES", "The Eagles, Kenny Chesney, Phish, Anyma, Dead & Company — Sphere bookings rotate every few months. A Sphere concert is visually unlike anything else in live music."),
+            ("BEST HOTELS TO WALK FROM", "Sphere is connected by pedestrian bridge to the Venetian and Palazzo. Wynn, Encore, and Resorts World are a 5-10 minute walk. Don't drive — F1-weekend gridlock is a sample of every Sphere night."),
+        ],
+        "tip": "For concerts, check StubHub / Vivid Seats the day-of — prices crash when shows don't sell out. Resale 200s often come in below face value 90 min before curtain.",
+        "book_label": "CHECK SPHERE TICKETS",
+        "book_href": "https://www.thesphere.com/",
+    },
+    {
+        "slug": "bellagio-fountains",
+        "name": "Bellagio Fountains",
+        "tagline": "The 8-acre lake with choreographed water shows every 30 minutes.",
+        "hero_img": "/images/attractions/bellagio-fountains.jpg",
+        "hero_alt": "Bellagio Fountains choreographed water jets in front of the Bellagio tower on the Las Vegas Strip at night",
+        "pill": "FREE",
+        "intro": "The single most photographed attraction in Las Vegas. Twelve hundred water jets, synchronized to a rotating soundtrack of everything from Sinatra to Lady Gaga, firing for 3-5 minutes every 30 minutes (and every 15 minutes after 8pm) — always free, always worth it.",
+        "sections": [
+            ("BEST VIEWING SPOTS", "The Bellagio Lake bridge (the footbridge on Las Vegas Blvd) is the iconic view. For a higher angle, Eiffel Tower observation deck at Paris or a fountain-view room at Cosmopolitan is unbeatable. For the cheap option: a fountain-view room at Bellagio itself — ask at check-in."),
+            ("SCHEDULE", "Weekday afternoons: every 30 minutes starting 3pm. Weekend afternoons: 12pm. After 8pm nightly: every 15 minutes. Last show at midnight. Wind shuts them down — check the Bellagio concierge."),
+            ("BEST SONGS TO CATCH", "'Time to Say Goodbye' (Con Te Partirò) is the classic, runs late evenings. Lady Gaga 'Poker Face' during pool-season weekends is a crowd highlight. Holiday shows run November through January."),
+        ],
+        "tip": "The show that plays closest to 9pm sharp is typically 'My Heart Will Go On' — the most photographed fountain moment in the world. Get to the bridge by 8:50.",
+        "book_label": "STAY AT BELLAGIO",
+        "book_href": "https://book.hotelroomdiscounters.com/url/d5e1e309-5600-4625-a5eb-f7fe775958f2?isPermanentLink=true",
+    },
+    {
+        "slug": "high-roller",
+        "name": "The High Roller at The LINQ",
+        "tagline": "The 550-foot observation wheel on the Strip.",
+        "hero_img": "/images/attractions/high-roller.jpg",
+        "hero_alt": "The High Roller observation wheel at The LINQ Promenade on the Las Vegas Strip at sunset",
+        "pill": "STRIP ICON",
+        "intro": "Formerly the world's tallest observation wheel (London Eye 2.0), the High Roller gives you 30 minutes of panoramic Strip views from 550 feet up. The Happy Half Hour cabin turns it into a revolving bar with open bar included — a Vegas experience worth having exactly once.",
+        "sections": [
+            ("STANDARD RIDE", "$25-35 depending on time of day. One 30-minute rotation. Book sunset for best photos. Skip the line is usually available day-of through the LINQ app."),
+            ("HAPPY HALF HOUR", "$80 cabin with a bartender. Open bar for the 30-minute ride. For groups of 8+. Best value per ounce on the Strip."),
+            ("STAY NEARBY", "The LINQ Hotel is attached. Flamingo, Harrah's, Cromwell, and Caesars are all 2-minute walks. Planet Hollywood and Paris are 5 minutes."),
+        ],
+        "tip": "Book Happy Half Hour at sunset and you effectively get Strip photos + open bar + rotation for under $10/person with 8 people. Cheapest cabana on the Strip.",
+        "book_label": "BOOK HIGH ROLLER",
+        "book_href": "https://www.caesars.com/linq/things-to-do/high-roller",
+    },
+    {
+        "slug": "fremont-street-experience",
+        "name": "Fremont Street Experience",
+        "tagline": "The 5-block neon canopy of Old Vegas.",
+        "hero_img": "/images/attractions/fremont-street.jpg",
+        "hero_alt": "Fremont Street Experience illuminated neon canopy over Downtown Las Vegas casinos",
+        "pill": "FREE",
+        "intro": "Five blocks of Downtown, covered by a 1,500-foot-long neon LED canopy that runs synchronized shows every hour after dark. Below: casinos, live music on three stages, zip-lines overhead, cocktail bars, and the street-performer chaos of Vegas's oldest casino strip. It's free, it's loud, and it's one of two places in the city every first-timer needs to see.",
+        "sections": [
+            ("THE CANOPY SHOWS", "Every hour after dark. Six-minute LED shows that feel like standing inside a music video. Best viewed from dead-center under the canopy, ideally near the Golden Nugget."),
+            ("ZIP LINES (SLOTZILLA)", "$30-50 depending on which level (lower 'zip' or upper 'Zoom'). Runs the length of the canopy. Worth it once for the view."),
+            ("BEST DRINKS", "Oak & Ivy at Downtown Container Park, Nacho Daddy's on Fremont, and the Peppermill-level classic Carousel Bar inside the Plaza. For cocktails, stroll 3 blocks south to Herbs & Rye."),
+        ],
+        "tip": "Fremont Street is also where locals go when tourists aren't looking. The crowd leans to older regulars + bachelorette parties, with the best people-watching on any Friday night between 9pm and midnight.",
+        "book_label": "STAY DOWNTOWN",
+        "book_href": "/hotels/downtown-fremont",
+    },
+    {
+        "slug": "hoover-dam",
+        "name": "Hoover Dam",
+        "tagline": "The engineering marvel 45 minutes from the Strip.",
+        "hero_img": "/images/attractions/hoover-dam.jpg",
+        "hero_alt": "Hoover Dam massive concrete arch dam between Nevada and Arizona with Lake Mead reservoir",
+        "pill": "DAY TRIP",
+        "intro": "726 feet tall. 1,244 feet across. Holds back Lake Mead. Completed in 1935 — still one of the largest concrete structures ever built. The Hoover Dam tour is a 90-minute dose of historical context, actual engineering, and a view you can't get anywhere else on earth. It's 45 minutes from Vegas, and absolutely worth the drive.",
+        "sections": [
+            ("THE POWERPLANT TOUR", "$15, about 30 minutes. Takes you inside to see the generators. Best intro if you have kids."),
+            ("THE DAM TOUR", "$30, about 60 minutes. Goes deeper into the structure — ventilation shafts, maintenance passages. Adults only, slightly claustrophobic, fascinating."),
+            ("THE BYPASS BRIDGE (FREE)", "The Mike O'Callaghan-Pat Tillman Memorial Bridge is the arch bridge 900 feet downstream of the dam. Walk the pedestrian path for the best aerial view of the dam. Free."),
+        ],
+        "tip": "Combine Hoover Dam with a Lake Mead sightseeing stop or drive. The loop from the Strip takes 4 hours including the dam tour — add Valley of Fire State Park if you want a full day of desert scenery.",
+        "book_label": "FIND A TOUR",
+        "book_href": "/tours",
+    },
+]
+
+def page_attraction(a):
+    img = a["hero_img"]
+    jsonld_attr = f"""<script type="application/ld+json">
+{{
+  "@context":"https://schema.org",
+  "@type":"TouristAttraction",
+  "name":{json.dumps(a['name'])},
+  "url":"{SITE}/things-to-do/{a['slug']}",
+  "image":"{SITE}{img}",
+  "description":{json.dumps(a['intro'])},
+  "address":{{"@type":"PostalAddress","addressLocality":"Las Vegas","addressRegion":"NV","addressCountry":"US"}}
+}}
+</script>
+<script type="application/ld+json">
+{{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {{"@type":"ListItem","position":1,"name":"Home","item":"{SITE}/"}},
+  {{"@type":"ListItem","position":2,"name":"Things to Do","item":"{SITE}/things-to-do"}},
+  {{"@type":"ListItem","position":3,"name":{json.dumps(a['name'])},"item":"{SITE}/things-to-do/{a['slug']}"}}
+]}}
+</script>"""
+
+    sections_html = "".join(f"""
+    <div class="card" style="padding:36px; margin-bottom:20px;">
+      <span class="pill pill-cyan">{p.upper()}</span>
+      <h2 class="headline neon-cyan" style="font-size:30px; margin:14px 0 12px;">{p}</h2>
+      <p style="font-size:17px; line-height:1.8; margin:0;">{body}</p>
+    </div>""" for i, (p, body) in enumerate(a["sections"]))
+
+    book_rel = 'rel="nofollow sponsored" target="_blank"' if a["book_href"].startswith("http") else ""
+
+    html = head(
+        f"{a['name']} — {a['tagline']} | TheVegasHub",
+        a["intro"][:155],
+        f"/things-to-do/{a['slug']}",
+        extra_jsonld=jsonld_attr,
+    ) + HEADER + f"""
+<section class="hero" style="padding:80px 0 48px; background:linear-gradient(180deg, rgba(10,0,20,.55) 0%, rgba(10,0,20,.88) 100%), url('{img}') center/cover;">
+  <div class="container">
+    <span class="pill pill-pink" style="margin-bottom:16px; display:inline-block;">{a['pill']}</span>
+    <h1 class="headline-glow" style="font-size:clamp(44px,8vw,92px); line-height:1.05; margin:12px 0 16px;">{a['name'].upper()}</h1>
+    <p class="sub" style="max-width:720px;">{a['tagline']}</p>
+    <a class="btn btn-cyan" href="{a['book_href']}" {book_rel} style="font-size:16px; padding:16px 36px;">{a['book_label']} →</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:900px;">
+    <p style="font-size:19px; line-height:1.75; margin:0 0 36px;">{a['intro']}</p>
+{sections_html}
+
+    <div class="card" style="padding:28px; background:rgba(255,230,0,.06); border-color:var(--neon-yellow); margin:24px 0;">
+      <span class="pill">INSIDER TIP</span>
+      <p style="font-size:17px; line-height:1.7; margin:12px 0 0;">{a['tip']}</p>
+    </div>
+
+    <div style="text-align:center; padding:40px 0;">
+      <a class="btn btn-cyan" href="{a['book_href']}" {book_rel} style="font-size:16px; padding:16px 36px;">{a['book_label']} →</a>
+    </div>
+
+    <div style="text-align:center; margin-top:32px;">
+      <a class="btn btn-ghost" href="/things-to-do">More Things to Do</a>
+    </div>
+  </div>
+</section>
+""" + FOOTER
+    write(f"things-to-do/{a['slug']}.html", html)
+
 def page_things_index():
     tiles = "".join(f"""      <a class="card" href="/things-to-do/{s}" style="padding:28px; text-decoration:none;">
         <span class="pill pill-cyan">LIST</span>
@@ -832,15 +1234,21 @@ def page_things_index():
         <p style="margin:0; color:var(--text-muted);">{d}</p>
       </a>
 """ for s,_,d,h1,_ in LISTICLES)
-    attractions = """      <a class="card" href="/things-to-do/atomic-golf" style="padding:0; text-decoration:none; overflow:hidden;">
-        <img src="/images/attractions/atomic-golf.jpg" alt="Atomic Golf Las Vegas illuminated tech-enabled driving range tower at night" loading="lazy" style="width:100%; height:180px; object-fit:cover; display:block;" onerror="this.style.display='none'">
-        <div style="padding:24px;">
+    # All attractions: Atomic Golf (custom) + the 5 generated from ATTRACTIONS
+    attraction_items = [
+        ("atomic-golf", "Atomic Golf Las Vegas", "State-of-the-art driving range, lessons, and one of the best group nights out in the city.", "/images/attractions/atomic-golf.jpg", "Atomic Golf Las Vegas illuminated tech-enabled driving range tower at night"),
+    ]
+    for a in ATTRACTIONS:
+        attraction_items.append((a["slug"], a["name"], a["tagline"], a["hero_img"], a["hero_alt"]))
+    attractions = "".join(f"""      <a class="card" href="/things-to-do/{s}" style="text-decoration:none;">
+        <img class="card-img" src="{img}" alt="{alt}" loading="lazy" onerror="this.style.display='none'">
+        <div class="card-body">
           <span class="pill pill-pink">ATTRACTION</span>
-          <h3 class="headline" style="font-size:24px; margin:14px 0 6px;">Atomic Golf Las Vegas</h3>
-          <p style="margin:0; color:var(--text-muted);">State-of-the-art driving range, lessons, and one of the best group nights out in the city.</p>
+          <h3 class="headline" style="font-size:22px; margin:12px 0 6px;">{name}</h3>
+          <p style="margin:0; color:var(--text-muted); font-size:14px;">{desc}</p>
         </div>
       </a>
-"""
+""" for s, name, desc, img, alt in attraction_items)
     html = head(
         "Things to Do in Las Vegas — Listicles by Locals | TheVegasHub",
         "Locals' ranked lists for Las Vegas — free things to do, best pools, best day trips, best shows, best cheap Strip hotels, plus featured attractions like Atomic Golf.",
@@ -1439,6 +1847,8 @@ def page_sitemap():
     ])
     for slug, *_ in LISTICLES:
         urls.append((f"/things-to-do/{slug}", "monthly", "0.8"))
+    for a in ATTRACTIONS:
+        urls.append((f"/things-to-do/{a['slug']}", "monthly", "0.7"))
     urls.append(("/why-vegas", "monthly", "0.8"))
     for slug, *_ in WHY:
         urls.append((f"/why-vegas/{slug}", "monthly", "0.7"))
@@ -1469,6 +1879,8 @@ if __name__ == "__main__":
     page_things_index()
     for slug, title, desc, h1, items in LISTICLES:
         page_listicle(slug, title, desc, h1, items)
+    for a in ATTRACTIONS:
+        page_attraction(a)
     page_why_index()
     for slug, title, desc, h1, body in WHY:
         page_why(slug, title, desc, h1, body)
