@@ -31,6 +31,33 @@
   ],
   "redirects": [
     { "source": "/home", "destination": "/", "permanent": true },
-    { "source": "/index.html", "destination": "/", "permanent": true }
+    { "source": "/index.html", "destination": "/", "permanent": true },
+
+    { "source": "/wp-admin", "destination": "/", "permanent": true },
+    { "source": "/wp-admin/:path*", "destination": "/", "permanent": true },
+    { "source": "/wp-login.php", "destination": "/", "permanent": true },
+    { "source": "/wp-signup.php", "destination": "/", "permanent": true },
+    { "source": "/wp-activate.php", "destination": "/", "permanent": true },
+    { "source": "/xmlrpc.php", "destination": "/", "permanent": true },
+    { "source": "/wp-json/:path*", "destination": "/", "permanent": true },
+
+    { "source": "/feed", "destination": "/", "permanent": true },
+    { "source": "/feed/", "destination": "/", "permanent": true },
+    { "source": "/comments/feed", "destination": "/", "permanent": true },
+    { "source": "/comments/feed/", "destination": "/", "permanent": true },
+
+    { "source": "/author/:author", "destination": "/about", "permanent": true },
+    { "source": "/author/:author/:path*", "destination": "/about", "permanent": true },
+    { "source": "/category/:category", "destination": "/things-to-do", "permanent": true },
+    { "source": "/category/:category/:path*", "destination": "/things-to-do", "permanent": true },
+    { "source": "/tag/:tag", "destination": "/things-to-do", "permanent": true },
+    { "source": "/tag/:tag/:path*", "destination": "/things-to-do", "permanent": true },
+
+    { "source": "/atomic-golf", "destination": "/things-to-do/atomic-golf", "permanent": true },
+    { "source": "/hotels/strip", "destination": "/hotels/las-vegas-strip", "permanent": true },
+    { "source": "/hotels/downtown", "destination": "/hotels/downtown-fremont", "permanent": true },
+    { "source": "/hotels/grand-canyon-hotels", "destination": "/hotels/grand-canyon", "permanent": true },
+    { "source": "/blog", "destination": "/things-to-do", "permanent": true },
+    { "source": "/blog/:slug*", "destination": "/things-to-do", "permanent": true }
   ]
 }

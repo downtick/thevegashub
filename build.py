@@ -456,9 +456,18 @@ def page_things_index():
         <p style="margin:0; color:var(--text-muted);">{d}</p>
       </a>
 """ for s,_,d,h1,_ in LISTICLES)
+    attractions = """      <a class="card" href="/things-to-do/atomic-golf" style="padding:0; text-decoration:none; overflow:hidden;">
+        <img src="/images/attractions/atomic-golf.jpg" alt="Atomic Golf Las Vegas illuminated tech-enabled driving range tower at night" loading="lazy" style="width:100%; height:180px; object-fit:cover; display:block;" onerror="this.style.display='none'">
+        <div style="padding:24px;">
+          <span class="pill pill-pink">ATTRACTION</span>
+          <h3 class="headline" style="font-size:24px; margin:14px 0 6px;">Atomic Golf Las Vegas</h3>
+          <p style="margin:0; color:var(--text-muted);">State-of-the-art driving range, lessons, and one of the best group nights out in the city.</p>
+        </div>
+      </a>
+"""
     html = head(
         "Things to Do in Las Vegas — Listicles by Locals | TheVegasHub",
-        "Locals' ranked lists for Las Vegas — free things to do, best pools, best day trips, best shows, best cheap Strip hotels.",
+        "Locals' ranked lists for Las Vegas — free things to do, best pools, best day trips, best shows, best cheap Strip hotels, plus featured attractions like Atomic Golf.",
         "/things-to-do",
     ) + HEADER + f"""
 <section class="section">
@@ -470,6 +479,13 @@ def page_things_index():
     </div>
     <div class="grid grid-3">
 {tiles}    </div>
+
+    <div class="section-head" style="margin-top:64px;">
+      <h2 class="headline neon-pink" style="font-size:clamp(32px,5vw,48px); margin:0 0 8px;">FEATURED ATTRACTIONS</h2>
+      <p class="kicker">Hand-picked Vegas experiences worth building a trip around.</p>
+    </div>
+    <div class="grid grid-3">
+{attractions}    </div>
   </div>
 </section>
 """ + FOOTER

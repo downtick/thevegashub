@@ -2,4 +2,24 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
+# Legacy WordPress paths (site previously ran on WordPress) — block
+# crawlers from wasting budget on now-nonexistent admin & infrastructure URLs.
+Disallow: /wp-admin/
+Disallow: /wp-content/
+Disallow: /wp-includes/
+Disallow: /wp-json/
+Disallow: /xmlrpc.php
+Disallow: /wp-login.php
+Disallow: /wp-signup.php
+Disallow: /wp-activate.php
+Disallow: /?p=
+Disallow: /?page_id=
+Disallow: /?cat=
+Disallow: /?s=
+Disallow: /feed/
+Disallow: /comments/feed/
+Disallow: /author/
+Disallow: /trackback/
+Disallow: /*?replytocom=
+
 Sitemap: https://thevegashub.com/sitemap.xml
