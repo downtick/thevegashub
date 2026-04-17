@@ -1,0 +1,241 @@
+/* TheVegasHub.com — Neon Vegas style system */
+:root{
+  --neon-purple:#bf00ff;
+  --neon-cyan:#00eaff;
+  --neon-pink:#ff2eb0;
+  --neon-yellow:#ffe600;
+  --bg-0:#000;
+  --bg-1:#0a0010;
+  --bg-2:#120025;
+  --text:#f5f5f5;
+  --text-muted:rgba(245,245,245,.68);
+  --card-bg:rgba(191,0,255,.06);
+  --card-border:rgba(191,0,255,.32);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:radial-gradient(1200px 600px at 50% -10%, #2a0040 0%, #0a0010 40%, #000 100%) fixed;
+  color:var(--text);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-weight:400;
+  line-height:1.6;
+}
+
+/* Typography */
+.display{font-family:'Bebas Neue','Oswald',sans-serif; letter-spacing:.04em; font-weight:700;}
+.headline{font-family:'Bebas Neue','Oswald',sans-serif; letter-spacing:.04em; color:#fff;}
+.headline-glow{
+  font-family:'Bebas Neue','Oswald',sans-serif;
+  color:#fff;
+  text-shadow:0 0 2px #fff, 0 0 8px rgba(191,0,255,.7), 0 0 18px rgba(255,46,176,.35);
+  letter-spacing:.04em;
+}
+.neon-cyan{color:var(--neon-cyan); text-shadow:0 0 4px rgba(0,234,255,.6);}
+.neon-pink{color:var(--neon-pink); text-shadow:0 0 4px rgba(255,46,176,.6);}
+.neon-yellow{color:var(--neon-yellow); text-shadow:0 0 4px rgba(255,230,0,.6);}
+.neon-marquee{color:#fff; text-shadow:0 0 2px #fff, 0 0 10px var(--neon-pink), 0 0 22px var(--neon-pink);}
+
+/* Buttons */
+.btn{
+  display:inline-block;
+  font-family:'Bungee',sans-serif;
+  padding:12px 24px;
+  border-radius:4px;
+  text-decoration:none;
+  transition:all .25s ease;
+  font-size:14px;
+  letter-spacing:.08em;
+  cursor:pointer;
+  border:2px solid transparent;
+}
+.btn-cyan{
+  border-color:var(--neon-cyan);
+  color:var(--neon-cyan);
+  background:rgba(0,234,255,.05);
+  text-shadow:0 0 8px var(--neon-cyan);
+  box-shadow:0 0 12px var(--neon-cyan), inset 0 0 12px rgba(0,234,255,.25);
+}
+.btn-cyan:hover{
+  background:rgba(0,234,255,.15);
+  box-shadow:0 0 24px var(--neon-cyan), inset 0 0 20px rgba(0,234,255,.4);
+}
+.btn-pink{
+  border-color:var(--neon-pink);
+  color:var(--neon-pink);
+  background:rgba(255,46,176,.05);
+  text-shadow:0 0 8px var(--neon-pink);
+  box-shadow:0 0 12px var(--neon-pink), inset 0 0 12px rgba(255,46,176,.25);
+}
+.btn-pink:hover{
+  background:rgba(255,46,176,.15);
+  box-shadow:0 0 24px var(--neon-pink), inset 0 0 20px rgba(255,46,176,.4);
+}
+.btn-ghost{
+  border-color:rgba(255,255,255,.3);
+  color:#fff;
+  background:transparent;
+}
+.btn-ghost:hover{border-color:#fff; background:rgba(255,255,255,.05);}
+
+/* Cards */
+.card{
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  backdrop-filter:blur(6px);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transition:all .25s ease;
+}
+.card:hover{
+  border-color:var(--neon-cyan);
+  box-shadow:0 0 20px rgba(0,234,255,.25);
+  transform:translateY(-2px);
+}
+.card-img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  display:block;
+}
+.card-body{padding:20px;}
+
+/* Pills */
+.pill{
+  display:inline-block;
+  font-family:'Bungee',sans-serif;
+  font-size:10px;
+  letter-spacing:.14em;
+  padding:4px 10px;
+  border-radius:999px;
+  background:rgba(255,230,0,.12);
+  color:var(--neon-yellow);
+  border:1px solid var(--neon-yellow);
+  text-shadow:0 0 4px rgba(255,230,0,.5);
+}
+.pill-pink{
+  background:rgba(255,46,176,.12);
+  color:var(--neon-pink);
+  border-color:var(--neon-pink);
+  text-shadow:0 0 4px rgba(255,46,176,.5);
+}
+.pill-cyan{
+  background:rgba(0,234,255,.12);
+  color:var(--neon-cyan);
+  border-color:var(--neon-cyan);
+  text-shadow:0 0 4px rgba(0,234,255,.5);
+}
+
+/* Layout */
+.container{max-width:1200px; margin:0 auto; padding:0 24px;}
+.section{padding:64px 0;}
+.section-dark{background:rgba(0,0,0,.5); border-top:1px solid rgba(191,0,255,.2); border-bottom:1px solid rgba(191,0,255,.2);}
+
+/* Header */
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(5,0,12,.85);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(191,0,255,.25);
+}
+.site-header .container{display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+.site-nav{display:flex; gap:24px; align-items:center;}
+.site-nav a{color:rgba(255,255,255,.78); text-decoration:none; font-family:'Bungee',sans-serif; font-size:12px; letter-spacing:.12em; transition:color .2s;}
+.site-nav a:hover{color:var(--neon-cyan); text-shadow:0 0 8px var(--neon-cyan);}
+@media (max-width:768px){
+  .site-nav{display:none;}
+  .site-nav.open{display:flex; flex-direction:column; position:absolute; top:100%; left:0; right:0; background:#05000c; padding:20px; gap:16px; border-bottom:1px solid rgba(191,0,255,.3);}
+  .menu-toggle{display:block !important;}
+}
+.menu-toggle{display:none; background:none; border:none; color:#fff; font-size:24px; cursor:pointer;}
+
+/* Footer */
+.site-footer{
+  border-top:1px solid rgba(191,0,255,.25);
+  padding:48px 0 24px;
+  margin-top:64px;
+  background:rgba(0,0,0,.5);
+}
+.site-footer a{color:rgba(255,255,255,.68); text-decoration:none;}
+.site-footer a:hover{color:var(--neon-cyan);}
+
+/* Hero */
+.hero{
+  position:relative;
+  padding:80px 0 96px;
+  text-align:center;
+  overflow:hidden;
+}
+.hero-photo{
+  background:
+    linear-gradient(180deg, rgba(10,0,20,.5) 0%, rgba(10,0,20,.85) 100%),
+    url('/images/hero/vegas-strip.jpg');
+  background-size:cover;
+  background-position:center;
+}
+.hero h1{font-size:clamp(48px,10vw,112px); line-height:1; margin:0 0 16px;}
+.hero p.sub{font-size:clamp(16px,2vw,22px); max-width:640px; margin:0 auto 32px; color:rgba(255,255,255,.88);}
+.hero-actions{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+
+/* Section headers */
+.section-head{margin-bottom:32px;}
+.section-head h2{font-size:clamp(32px,5vw,56px); margin:0 0 8px;}
+.section-head p.kicker{color:var(--text-muted); margin:0;}
+
+/* Grid helpers */
+.grid{display:grid; gap:24px;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+@media (max-width:900px){.grid-3, .grid-4{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:600px){.grid-3, .grid-4, .grid-2{grid-template-columns:1fr;}}
+
+/* Flicker */
+@keyframes flicker{
+  0%,18%,22%,25%,53%,57%,100%{opacity:1}
+  20%,24%,55%{opacity:.55}
+}
+.flicker{animation:flicker 5s infinite;}
+
+/* Form */
+form.contact input, form.contact textarea, form.contact select{
+  width:100%;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(191,0,255,.35);
+  color:#fff;
+  padding:12px 14px;
+  border-radius:6px;
+  font-family:inherit;
+  font-size:15px;
+  margin-bottom:14px;
+}
+form.contact input:focus, form.contact textarea:focus{outline:none; border-color:var(--neon-cyan); box-shadow:0 0 8px rgba(0,234,255,.35);}
+form.contact label{display:block; font-size:12px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; color:var(--text-muted); font-family:'Bungee',sans-serif;}
+
+/* Print — packing list */
+@media print{
+  body{background:#fff !important; color:#000 !important;}
+  .site-header, .site-footer, .no-print{display:none !important;}
+  .headline-glow, .neon-pink, .neon-cyan, .neon-yellow, .neon-marquee{color:#000 !important; text-shadow:none !important;}
+  .card, .pill{background:#fff !important; border:1px solid #000 !important; color:#000 !important; text-shadow:none !important; box-shadow:none !important;}
+  a{color:#000 !important; text-decoration:underline;}
+  .print-watermark{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    text-align:center;
+    font-size:11px;
+    color:#888 !important;
+    padding:4px 0;
+    border-top:1px dashed #ccc;
+  }
+  .print-header{display:block !important; text-align:center; border-bottom:2px solid #000; margin-bottom:16px; padding-bottom:8px;}
+}
+.print-header{display:none;}
+.print-watermark{display:none;}
+@media print{.print-watermark{display:block;}}

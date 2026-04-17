@@ -1,0 +1,20 @@
+# TheVegasHub.com
+
+> Insider Las Vegas travel guide. Hotel picks, tours, packing lists, and trip-planning tools curated by locals who've been in Las Vegas for 30+ years.
+
+## About
+
+TheVegasHub.com is a Las Vegas–headquartered travel site. Every hotel, tour, and listicle is hand-curated by residents with first-hand stays across the Strip, Downtown, Henderson, Mesquite, Laughlin, and the Grand Canyon region. Bookings help fund the site via affiliate partnerships with Hotel Room Discounters, Viator, and Klook — but rankings and recommendations are editorial, not paid.
+
+## Primary sections
+
+- [Hotels](https://thevegashub.com/hotels) — curated properties on the Strip, Downtown Fremont, Henderson, Mesquite, Laughlin, and Grand Canyon gateway towns
+- [Tours](https://thevegashub.com/tours) — Grand Canyon, Hoover Dam, Red Rock, helicopter, Strip experiences
+- [Things to Do](https://thevegashub.com/things-to-do) — ranked listicles from locals
+- [Why Vegas](https://thevegashub.com/why-vegas) — trip-type guides (bachelor, family, sports, first-timers)
+- [Packing List](https://thevegashub.com/packing-list) — printable Vegas packing checklist
+- [About](https://thevegashub.com/about) — who we are and how we pick
+- [Contact](https://thevegashub.com/contact)
+
+## Location
+Las Vegas, Nevada, United States
