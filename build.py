@@ -1513,7 +1513,7 @@ def page_about():
 
     <div class="card" style="padding:36px; margin-bottom:24px;">
       <h2 class="headline neon-cyan" style="margin-top:0;">Who We Are</h2>
-      <p>We're a small team based in Las Vegas. Our founders have lived here since the mid-1990s — through the Rat Pack ghost-town era, the explosion of the megaresorts, the post-9/11 rebuild, the Cosmo/Aria/Sphere wave, and every pool, buffet, and Cirque show along the way.</p>
+      <p>We're a small team based in Las Vegas. We've been coming here since the mid-1990s and have lived here for many years now — through the explosion of the megaresorts, the post-9/11 rebuild, the Cosmo/Aria/Sphere wave, and every pool, buffet, and Cirque show along the way.</p>
       <p>We've stayed in nearly every hotel on this site. Some of them dozens of times. We've watched shows open, close, move, and come back. We know which casinos have the loosest slots (we won't tell you), which pool is actually worth a cabana (we will tell you), and which Strip bathroom is always the cleanest on a busy Friday night (ask us politely).</p>
 
       <h2 class="headline neon-pink">How We Make Money</h2>
