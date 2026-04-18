@@ -118,7 +118,6 @@ FOOTER = """<footer class="site-footer">
         <ul style="list-style:none; padding:0; margin:0; font-size:14px; line-height:2;">
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
-          <li><a href="/sitemap.xml">Sitemap</a></li>
           <li><a href="/privacy">Privacy</a></li>
           <li><a href="/terms">Terms</a></li>
           <li><a href="/disclosure">Disclosure</a></li>
@@ -1549,23 +1548,35 @@ def page_contact():
     </div>
 
     <form class="contact card" style="padding:32px;" id="contactForm" novalidate>
-      <label for="c-name">Name</label>
+      <label for="c-name">Name <span style="color:var(--neon-pink);">*</span></label>
       <input id="c-name" name="name" type="text" maxlength="120" required>
 
-      <label for="c-email">Email</label>
+      <label for="c-email">Email <span style="color:var(--neon-pink);">*</span></label>
       <input id="c-email" name="email" type="email" maxlength="254" required>
 
-      <label for="c-subject">Subject</label>
-      <input id="c-subject" name="subject" type="text" maxlength="180">
+      <label for="c-phone">Phone <span style="color:var(--neon-pink);">*</span></label>
+      <input id="c-phone" name="phone" type="tel" maxlength="24" required autocomplete="tel" inputmode="tel" placeholder="(702) 555-1234">
 
-      <label for="c-message">Message</label>
+      <label for="c-subject">Subject <span style="color:var(--neon-pink);">*</span></label>
+      <input id="c-subject" name="subject" type="text" maxlength="180" required>
+
+      <label for="c-message">Message <span style="color:var(--neon-pink);">*</span></label>
       <textarea id="c-message" name="message" rows="6" maxlength="5000" required></textarea>
+
+      <label style="display:flex; gap:12px; align-items:flex-start; text-transform:none; letter-spacing:normal; font-family:'Inter',sans-serif; color:var(--text-muted); font-size:13px; line-height:1.55; margin-top:8px;">
+        <input id="c-sms" name="sms_consent" type="checkbox" required style="min-width:18px; margin-top:4px; accent-color:var(--neon-cyan); width:auto; margin-bottom:0;">
+        <span>I agree to receive SMS messages from TheVegasHub about my inquiry and occasional Las Vegas travel updates. <em>Standard message &amp; data rates apply.</em> Reply STOP at any time to opt out.</span>
+      </label>
 
       <!-- Honeypot -->
       <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-10000px;">
 
-      <button type="submit" class="btn btn-cyan" style="width:100%; margin-top:8px;">SEND MESSAGE</button>
+      <button type="submit" class="btn btn-cyan" style="width:100%; margin-top:16px;">SEND MESSAGE</button>
       <p id="c-status" style="margin-top:12px; font-size:14px; min-height:20px;"></p>
+
+      <p style="font-size:11px; color:var(--text-muted); margin-top:16px; line-height:1.5;">
+        Fields marked <span style="color:var(--neon-pink);">*</span> are required. Your info is used only to reply to your request and is never sold. See our <a href="/privacy" style="color:var(--neon-cyan);">Privacy Policy</a>.
+      </p>
     </form>
   </div>
 </section>
@@ -1575,13 +1586,28 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const f = e.target;
   const status = document.getElementById('c-status');
+
+  // Client-side required check (we still validate server-side)
+  if (!f.name.value.trim() || !f.email.value.trim() || !f.phone.value.trim() || !f.subject.value.trim() || !f.message.value.trim()) {
+    status.style.color = 'var(--neon-pink)';
+    status.textContent = 'Please fill in all required fields.';
+    return;
+  }
+  if (!f.sms_consent.checked) {
+    status.style.color = 'var(--neon-pink)';
+    status.textContent = 'Please agree to the SMS consent to continue.';
+    return;
+  }
+
   status.style.color = 'var(--text-muted)';
   status.textContent = 'Sending…';
   const body = {
     name: f.name.value,
     email: f.email.value,
+    phone: f.phone.value,
     subject: f.subject.value,
     message: f.message.value,
+    sms_consent: f.sms_consent.checked,
     website: f.website.value,
   };
   try {

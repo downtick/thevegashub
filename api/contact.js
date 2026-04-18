@@ -90,8 +90,10 @@ module.exports = async (req, res) => {
   // Sanitize + validate
   const name = sanitize(body.name, 120);
   const email = typeof body.email === 'string' ? body.email.slice(0, 254).trim() : '';
-  const subject = sanitize(body.subject, 180) || 'New contact form submission';
+  const phone = sanitize(body.phone, 24);
+  const subject = sanitize(body.subject, 180);
   const message = sanitize(body.message, 5000);
+  const smsConsent = !!body.sms_consent;
 
   if (!name || name.length < 2) {
     res.statusCode = 400;
@@ -101,9 +103,23 @@ module.exports = async (req, res) => {
     res.statusCode = 400;
     return res.end(JSON.stringify({ error: 'Please provide a valid email address.' }));
   }
+  // Phone — keep digits only, require at least 7 digits
+  const phoneDigits = phone.replace(/\D/g, '');
+  if (phoneDigits.length < 7) {
+    res.statusCode = 400;
+    return res.end(JSON.stringify({ error: 'Please provide a valid phone number.' }));
+  }
+  if (!subject || subject.length < 2) {
+    res.statusCode = 400;
+    return res.end(JSON.stringify({ error: 'Please include a subject.' }));
+  }
   if (!message || message.length < 5) {
     res.statusCode = 400;
     return res.end(JSON.stringify({ error: 'Please include a message.' }));
+  }
+  if (!smsConsent) {
+    res.statusCode = 400;
+    return res.end(JSON.stringify({ error: 'SMS consent is required to submit this form.' }));
   }
 
   const apiKey = process.env.SMTP2GO_API_KEY;
@@ -116,13 +132,14 @@ module.exports = async (req, res) => {
     return res.end(JSON.stringify({ error: 'Something went wrong. Please try again later.' }));
   }
 
+  const rawMessage = body.message?.slice(0, 5000) || '';
   const payload = {
     api_key: apiKey,
     to: [toEmail],
     sender: fromEmail,
     subject: `[TheVegasHub] ${subject}`,
-    text_body: `From: ${name} <${email}>\n\n${body.message?.slice(0, 5000) || ''}\n\n---\nIP: ${ip}\nUA: ${req.headers['user-agent'] || ''}`,
-    html_body: `<p><strong>From:</strong> ${name} &lt;${email}&gt;</p><p>${message.replace(/\n/g, '<br>')}</p><hr><p style="font-size:11px;color:#888">IP: ${ip}</p>`,
+    text_body: `From: ${name} <${email}>\nPhone: ${phone}\nSMS consent: YES (standard message & data rates apply)\n\n${rawMessage}\n\n---\nIP: ${ip}\nUA: ${req.headers['user-agent'] || ''}`,
+    html_body: `<p><strong>From:</strong> ${name} &lt;${email}&gt;</p><p><strong>Phone:</strong> ${phone}</p><p><strong>SMS consent:</strong> YES (standard message &amp; data rates apply)</p><p>${message.replace(/\n/g, '<br>')}</p><hr><p style="font-size:11px;color:#888">IP: ${ip}</p>`,
   };
 
   try {
