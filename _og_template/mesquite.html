@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>OG Card — Mesquite</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Bungee&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0; padding:0; width:1200px; height:630px; overflow:hidden; background:#000;}
+  body{font-family:'Inter',sans-serif; color:#fff;}
+  .og{
+    position:relative;
+    width:1200px; height:630px;
+    background-image:
+      linear-gradient(90deg, rgba(10,0,20,.92) 0%, rgba(10,0,20,.55) 40%, rgba(10,0,20,.15) 100%),
+      url('/images/hotels/casablanca-mesquite.jpg');
+    background-size:cover;
+    background-position:center;
+    overflow:hidden;
+  }
+  /* Left gradient accent */
+  .og::before{
+    content:"";
+    position:absolute; inset:0;
+    background:radial-gradient(600px 400px at 10% 100%, rgba(191,0,255,.45) 0%, rgba(191,0,255,0) 70%);
+    pointer-events:none;
+  }
+  /* Top-left brand */
+  .brand{
+    position:absolute;
+    top:40px; left:56px;
+    display:flex; align-items:baseline; gap:10px;
+  }
+  .brand-vh{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:42px;
+    color:#00eaff;
+    text-shadow:0 0 6px rgba(0,234,255,.6), 0 0 24px rgba(0,234,255,.4);
+    letter-spacing:.03em;
+  }
+  .brand-name{
+    font-family:'Bungee',sans-serif;
+    font-size:20px;
+    color:#fff;
+    letter-spacing:.08em;
+  }
+  /* Center content */
+  .content{
+    position:absolute;
+    left:56px; bottom:72px;
+    max-width:720px;
+  }
+  .pill{
+    display:inline-block;
+    font-family:'Bungee',sans-serif;
+    font-size:13px;
+    letter-spacing:.16em;
+    padding:6px 14px;
+    border-radius:999px;
+    background:rgba(255,46,176,.15);
+    color:#ff2eb0;
+    border:1px solid #ff2eb0;
+    text-shadow:0 0 6px rgba(255,46,176,.5);
+    margin-bottom:28px;
+  }
+  h1{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:132px;
+    line-height:.95;
+    letter-spacing:.02em;
+    margin:0 0 16px;
+    color:#fff;
+    text-shadow:
+      0 0 3px #fff,
+      0 0 14px rgba(191,0,255,.6),
+      0 0 38px rgba(255,46,176,.35);
+  }
+  h1 .nev{
+    display:block;
+    font-size:38px;
+    font-family:'Bungee',sans-serif;
+    color:#00eaff;
+    letter-spacing:.28em;
+    margin-top:8px;
+    text-shadow:0 0 4px rgba(0,234,255,.5);
+  }
+  .tag{
+    font-family:'Inter',sans-serif;
+    font-size:24px;
+    color:rgba(255,255,255,.92);
+    max-width:640px;
+    line-height:1.4;
+    margin:22px 0 0;
+  }
+  /* Bottom-right URL */
+  .url{
+    position:absolute;
+    bottom:40px; right:56px;
+    font-family:'Bungee',sans-serif;
+    font-size:16px;
+    letter-spacing:.18em;
+    color:#fff;
+    text-shadow:0 0 4px rgba(0,0,0,.8);
+  }
+  .url span{color:#00eaff;}
+</style>
+</head>
+<body>
+<div class="og">
+  <div class="brand">
+    <div class="brand-vh">VH</div>
+    <div class="brand-name">THE VEGAS HUB</div>
+  </div>
+
+  <div class="content">
+    <span class="pill">DESTINATION GUIDE</span>
+    <h1>MESQUITE<span class="nev">NEVADA</span></h1>
+    <p class="tag">Golf, spa, and river-country weekends — 90 minutes north of the Strip. Four resorts, member rates inside.</p>
+  </div>
+
+  <div class="url">THEVEGASHUB<span>.COM</span></div>
+</div>
+</body>
+</html>

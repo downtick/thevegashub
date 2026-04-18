@@ -443,6 +443,10 @@ CITY_PAGES = [
      lambda h: h["area"]=="grand-canyon"),
 ]
 
+CITY_OG = {
+    "mesquite": "og-mesquite.jpg",
+}
+
 CITY_INTROS = {
     "las-vegas-strip": {
         "tagline": "The four-mile corridor that defines Las Vegas.",
@@ -639,7 +643,8 @@ def page_city(slug, title, desc, heading, filt):
   {{"@type":"ListItem","position":3,"name":"{heading}","item":"{SITE}/hotels/{slug}"}}
 ]}}
 </script>"""
-    html = head(title, desc, f"/hotels/{slug}", extra_jsonld=jsonld) + HEADER + f"""
+    og_img = CITY_OG.get(slug, "og-default.jpg")
+    html = head(title, desc, f"/hotels/{slug}", og_image=og_img, extra_jsonld=jsonld) + HEADER + f"""
 <section class="section">
   <div class="container">
     <div class="section-head">
