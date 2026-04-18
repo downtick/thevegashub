@@ -152,7 +152,18 @@ module.exports = async (req, res) => {
     if (!r.ok || data?.data?.failed > 0) {
       console.error('[contact] smtp2go error', r.status, JSON.stringify(data));
       res.statusCode = 502;
-      return res.end(JSON.stringify({ error: 'Something went wrong. Please try again later.' }));
+      // TEMPORARY: leak SMTP2GO diagnostic to the response so we can see what's wrong.
+      // Remove this diagnostic block once the form is confirmed working.
+      const diag = {
+        error: 'Something went wrong. Please try again later.',
+        _debug: {
+          httpStatus: r.status,
+          smtp2goError: data?.data?.error || data?.data?.error_code || data?.error || null,
+          smtp2goField: data?.data?.field || null,
+          smtp2goEmails: data?.data?.failures || null,
+        },
+      };
+      return res.end(JSON.stringify(diag));
     }
     rateLimits.set(ip, now);
     return res.end(JSON.stringify({ ok: true }));
