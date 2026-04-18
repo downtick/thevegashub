@@ -138,8 +138,8 @@ module.exports = async (req, res) => {
     to: [toEmail],
     sender: fromEmail,
     subject: `[TheVegasHub] ${subject}`,
-    text_body: `From: ${name} <${email}>\nPhone: ${phone}\nSMS consent: YES (standard message & data rates apply)\n\n${rawMessage}\n\n---\nIP: ${ip}\nUA: ${req.headers['user-agent'] || ''}`,
-    html_body: `<p><strong>From:</strong> ${name} &lt;${email}&gt;</p><p><strong>Phone:</strong> ${phone}</p><p><strong>SMS consent:</strong> YES (standard message &amp; data rates apply)</p><p>${message.replace(/\n/g, '<br>')}</p><hr><p style="font-size:11px;color:#888">IP: ${ip}</p>`,
+    text_body: `From: ${name} <${email}>\nPhone: ${phone}\nSMS consent: YES — user agreed to receive a text message regarding this specific inquiry (standard message & data rates apply)\n\n${rawMessage}\n\n---\nIP: ${ip}\nUA: ${req.headers['user-agent'] || ''}`,
+    html_body: `<p><strong>From:</strong> ${name} &lt;${email}&gt;</p><p><strong>Phone:</strong> ${phone}</p><p><strong>SMS consent:</strong> YES — user agreed to receive a text message regarding this specific inquiry (standard message &amp; data rates apply)</p><p>${message.replace(/\n/g, '<br>')}</p><hr><p style="font-size:11px;color:#888">IP: ${ip}</p>`,
   };
 
   try {
