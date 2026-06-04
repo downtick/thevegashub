@@ -1,4 +1,187 @@
 /* TheVegasHub.com — Neon Vegas style system */
+
+/* ============================================================
+   ACCESSIBILITY WIDGET
+   ============================================================ */
+/* High contrast mode */
+[data-contrast="high"]{
+  --bg-0:#000; --bg-1:#000; --bg-2:#000;
+  --text:#fff; --text-muted:#fff;
+  --card-bg:#111; --card-border:#fff;
+  --neon-cyan:#fff; --neon-pink:#fff; --neon-purple:#fff; --neon-yellow:#ff0;
+}
+[data-contrast="high"] body{
+  background:#000 !important;
+}
+[data-contrast="high"] a{ color:#ff0 !important; text-decoration:underline !important; }
+[data-contrast="high"] .card{ border:2px solid #fff !important; }
+[data-contrast="high"] .site-header{ background:#000 !important; border-bottom:2px solid #fff; }
+
+/* Dark+ — deeper dark, softer contrast than default */
+[data-contrast="dark"]{
+  --bg-0:#000; --bg-1:#050005; --bg-2:#080010;
+  filter:brightness(1.15) contrast(1.1);
+}
+
+/* Letter spacing */
+.a11y-spacing body,
+.a11y-spacing p,
+.a11y-spacing li,
+.a11y-spacing a,
+.a11y-spacing span{
+  letter-spacing:0.08em !important;
+  word-spacing:0.16em !important;
+  line-height:1.9 !important;
+}
+
+/* Dyslexia-friendly font */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;600&display=swap');
+.a11y-dyslexia body,
+.a11y-dyslexia p,
+.a11y-dyslexia li,
+.a11y-dyslexia a,
+.a11y-dyslexia .kicker{
+  font-family:'Lexend',sans-serif !important;
+  letter-spacing:0.04em;
+  line-height:1.85 !important;
+}
+
+/* Widget wrap — fixed bottom-right */
+#vh-a11y-wrap{
+  position:fixed;
+  bottom:88px;
+  right:16px;
+  z-index:10000;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:8px;
+}
+
+/* Toggle button */
+#vh-a11y-btn{
+  width:48px; height:48px;
+  border-radius:50%;
+  border:2px solid var(--neon-cyan);
+  background:rgba(0,234,255,.12);
+  color:var(--neon-cyan);
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 14px rgba(0,234,255,.35);
+  transition:background .2s, box-shadow .2s;
+}
+#vh-a11y-btn:hover,
+#vh-a11y-btn:focus-visible{
+  background:rgba(0,234,255,.25);
+  box-shadow:0 0 22px rgba(0,234,255,.6);
+  outline:2px solid var(--neon-cyan);
+}
+
+/* Panel */
+#vh-a11y-widget{
+  background:rgba(5,0,12,.97);
+  border:1px solid var(--neon-cyan);
+  border-radius:12px;
+  padding:0;
+  width:270px;
+  box-shadow:0 0 28px rgba(0,234,255,.3);
+  overflow:hidden;
+}
+.a11y-header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px 12px;
+  border-bottom:1px solid rgba(0,234,255,.2);
+  font-family:'Bungee',sans-serif;
+  font-size:13px;
+  letter-spacing:.06em;
+  color:var(--neon-cyan);
+}
+.a11y-close{
+  background:none; border:none; color:var(--text-muted);
+  font-size:20px; cursor:pointer; line-height:1; padding:0 2px;
+}
+.a11y-close:hover{ color:#fff; }
+.a11y-section{
+  padding:14px 16px;
+  border-bottom:1px solid rgba(191,0,255,.12);
+}
+.a11y-label{
+  font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--text-muted); margin-bottom:8px;
+}
+.a11y-row{
+  display:flex; gap:6px; flex-wrap:wrap;
+}
+.a11y-fs-btn,
+.a11y-contrast-btn{
+  flex:1; min-width:60px;
+  padding:7px 4px;
+  border-radius:6px;
+  border:1px solid rgba(191,0,255,.3);
+  background:rgba(191,0,255,.06);
+  color:var(--text);
+  font-size:12px; cursor:pointer;
+  transition:background .15s, border-color .15s;
+}
+.a11y-fs-btn:hover,
+.a11y-contrast-btn:hover{
+  background:rgba(0,234,255,.12);
+  border-color:var(--neon-cyan);
+}
+.a11y-fs-btn[aria-pressed="true"],
+.a11y-contrast-btn[aria-pressed="true"]{
+  background:rgba(0,234,255,.2);
+  border-color:var(--neon-cyan);
+  color:#fff;
+}
+/* Toggle row */
+.a11y-toggle-row{
+  display:flex; align-items:center; justify-content:space-between;
+  cursor:pointer; font-size:13px; color:var(--text);
+  user-select:none;
+}
+/* Switch */
+.a11y-switch{ position:relative; width:40px; height:22px; flex-shrink:0; }
+.a11y-switch input{ opacity:0; width:0; height:0; position:absolute; }
+.a11y-slider{
+  position:absolute; inset:0;
+  background:rgba(191,0,255,.25);
+  border-radius:11px;
+  transition:background .2s;
+  cursor:pointer;
+}
+.a11y-slider::before{
+  content:'';
+  position:absolute;
+  width:16px; height:16px;
+  left:3px; top:3px;
+  background:#fff;
+  border-radius:50%;
+  transition:transform .2s;
+}
+.a11y-switch input:checked + .a11y-slider{ background:var(--neon-cyan); }
+.a11y-switch input:checked + .a11y-slider::before{ transform:translateX(18px); }
+.a11y-switch input:focus-visible + .a11y-slider{ outline:2px solid var(--neon-cyan); }
+
+/* Reset button */
+.a11y-reset{
+  display:block; width:100%;
+  padding:12px 16px;
+  background:none; border:none;
+  color:var(--text-muted); font-size:12px;
+  cursor:pointer; text-align:center;
+  letter-spacing:.04em;
+  transition:color .2s;
+}
+.a11y-reset:hover{ color:var(--neon-pink); }
+
+@media(max-width:640px){
+  #vh-a11y-wrap{ bottom:80px; right:12px; }
+  #vh-a11y-widget{ width:240px; }
+}
+/* ============================================================
+   END ACCESSIBILITY WIDGET
+   ============================================================ */
 :root{
   --neon-purple:#bf00ff;
   --neon-cyan:#00eaff;
