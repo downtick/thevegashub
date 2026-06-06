@@ -263,6 +263,68 @@
   </div>
 </section>
 
+<!-- NEWSLETTER SIGNUP STRIP -->
+<section style="padding:56px 0; border-top:1px solid rgba(191,0,255,.15);">
+  <div class="container" style="max-width:560px; text-align:center;">
+    <span class="pill pill-pink" style="margin-bottom:16px; display:inline-block;">FREE NEWSLETTER</span>
+    <h2 class="headline" style="font-size:clamp(28px,5vw,44px); margin:0 0 10px;">GET THE DEALS FIRST</h2>
+    <p style="color:var(--text-muted); margin:0 0 28px; font-size:16px; line-height:1.65;">Member hotel rates, new guides, and Vegas tips from 30-year locals. No spam. Unsubscribe any time.</p>
+    <form id="home-nl-form" novalidate style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+      <!-- Honeypot -->
+      <input type="text" name="website" id="home_hp" tabindex="-1" autocomplete="off"
+        style="position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true">
+      <input type="email" id="home-nl-email" name="email" required autocomplete="email"
+        placeholder="Your email address"
+        style="flex:1; min-width:220px; max-width:320px; padding:14px 18px; background:rgba(255,255,255,.06); border:1px solid rgba(191,0,255,.35); border-radius:8px; color:#fff; font-size:15px; font-family:inherit; outline:none; transition:border-color .2s;"
+        onfocus="this.style.borderColor='var(--neon-cyan)'" onblur="this.style.borderColor='rgba(191,0,255,.35)'">
+      <button type="submit" id="home-nl-btn" class="btn btn-cyan" style="white-space:nowrap; padding:14px 24px;">
+        <span id="home-nl-btn-text">Subscribe Free</span>
+      </button>
+    </form>
+    <div id="home-nl-msg" role="alert" aria-live="polite" style="margin-top:14px; font-size:14px; display:none;"></div>
+    <p style="margin-top:14px; font-size:12px; color:var(--text-muted);">
+      See our <a href="/privacy" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a>. We never sell your data.
+    </p>
+  </div>
+</section>
+<script>
+(function(){
+  const form = document.getElementById('home-nl-form');
+  const msg  = document.getElementById('home-nl-msg');
+  const btn  = document.getElementById('home-nl-btn');
+  const btnT = document.getElementById('home-nl-btn-text');
+  if (!form) return;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.style.display = 'none';
+    const email = document.getElementById('home-nl-email').value.trim();
+    const hp    = document.getElementById('home_hp').value;
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      msg.style.cssText = 'display:block; color:var(--neon-pink);';
+      msg.textContent = 'Please enter a valid email address.';
+      return;
+    }
+    btn.disabled = true; btnT.textContent = 'Joining...';
+    try {
+      const res  = await fetch('/api/subscribe', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, website: hp}) });
+      const data = await res.json();
+      if (data.ok) {
+        form.innerHTML = '<p style="color:var(--neon-cyan); font-size:16px; font-weight:600;">You\'re in! Check your inbox.</p>';
+        if (typeof gtag !== 'undefined') gtag('event','newsletter_signup',{method:'homepage'});
+      } else {
+        msg.style.cssText = 'display:block; color:var(--neon-pink);';
+        msg.textContent = data.error || 'Something went wrong. Please try again.';
+        btn.disabled = false; btnT.textContent = 'Subscribe Free';
+      }
+    } catch {
+      msg.style.cssText = 'display:block; color:var(--neon-pink);';
+      msg.textContent = 'Something went wrong. Please try again.';
+      btn.disabled = false; btnT.textContent = 'Subscribe Free';
+    }
+  });
+})();
+</script>
+
 <!-- FOOTER -->
 <footer class="site-footer">
   <div class="container">
