@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheVegasHub — Links</title>
+<meta name="description" content="Insider Las Vegas hotels, tours, pools, and trip tools from 30-year locals. Member hotel rates + booking links.">
+<meta name="robots" content="noindex"><!-- keep out of search — this is a utility page -->
+<link rel="canonical" href="https://thevegashub.com/link">
+
+<meta property="og:title" content="TheVegasHub — Vegas Trip Links">
+<meta property="og:description" content="Member hotel rates, best pools, free things to do, tours, packing list, and more.">
+<meta property="og:image" content="https://thevegashub.com/images/og/og-default.jpg">
+<meta property="og:url" content="https://thevegashub.com/link">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0010">
+
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cyan:   #00eaff;
+    --pink:   #ff2eb0;
+    --purple: #bf00ff;
+    --yellow: #ffe600;
+    --bg:     #07000f;
+    --card:   rgba(255,255,255,.06);
+    --border: rgba(255,255,255,.1);
+    --text:   #f5f5f5;
+    --muted:  rgba(245,245,245,.6);
+  }
+
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100dvh;
+    padding: 0 0 48px;
+    /* subtle radial glow behind everything */
+    background-image: radial-gradient(ellipse 800px 500px at 50% -60px, rgba(191,0,255,.18) 0%, transparent 70%);
+  }
+
+  /* ===== HEADER / PROFILE ===== */
+  .profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 28px;
+    gap: 10px;
+  }
+
+  .logo-mark {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: rgba(0,234,255,.1);
+    border: 2px solid var(--cyan);
+    box-shadow: 0 0 20px rgba(0,234,255,.35), 0 0 60px rgba(0,234,255,.12);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-mark span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    color: var(--cyan);
+    letter-spacing: .04em;
+    text-shadow: 0 0 12px var(--cyan);
+  }
+
+  .profile-name {
+    font-family: 'Bungee', sans-serif;
+    font-size: 17px;
+    letter-spacing: .08em;
+    color: #fff;
+  }
+
+  .profile-bio {
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.55;
+    max-width: 280px;
+  }
+
+  /* ===== DIVIDER LABEL ===== */
+  .section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: .18em;
+    color: var(--muted);
+    text-align: center;
+    margin: 8px 0 2px;
+    text-transform: uppercase;
+  }
+
+  /* ===== LINK STACK ===== */
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 16px;
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ===== BASE BUTTON ===== */
+  .link-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 20px;
+    min-height: 60px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s, background .15s, border-color .15s;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .link-btn:active { transform: scale(.97); }
+
+  .link-btn .icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 28px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .link-btn .label {
+    flex: 1;
+    line-height: 1.3;
+  }
+  .link-btn .sub {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .link-btn .arrow {
+    font-size: 16px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* ===== HERO BUTTON (book hotels — primary CTA) ===== */
+  .link-btn.hero {
+    min-height: 72px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(0,234,255,.18) 0%, rgba(191,0,255,.14) 100%);
+    border-color: rgba(0,234,255,.4);
+    box-shadow: 0 0 28px rgba(0,234,255,.18);
+  }
+  .link-btn.hero:hover, .link-btn.hero:focus-visible {
+    background: linear-gradient(135deg, rgba(0,234,255,.28) 0%, rgba(191,0,255,.22) 100%);
+    box-shadow: 0 0 40px rgba(0,234,255,.3);
+    border-color: var(--cyan);
+  }
+  .link-btn.hero .label { font-size: 17px; }
+  .link-btn.hero .sub { color: rgba(0,234,255,.75); }
+
+  /* ===== ACCENT VARIANTS ===== */
+  .link-btn.cyan  { border-color: rgba(0,234,255,.25); }
+  .link-btn.cyan:hover, .link-btn.cyan:focus-visible {
+    background: rgba(0,234,255,.1);
+    border-color: rgba(0,234,255,.5);
+    box-shadow: 0 0 20px rgba(0,234,255,.12);
+  }
+
+  .link-btn.pink  { border-color: rgba(255,46,176,.25); }
+  .link-btn.pink:hover, .link-btn.pink:focus-visible {
+    background: rgba(255,46,176,.1);
+    border-color: rgba(255,46,176,.5);
+    box-shadow: 0 0 20px rgba(255,46,176,.12);
+  }
+
+  .link-btn.yellow { border-color: rgba(255,230,0,.22); }
+  .link-btn.yellow:hover, .link-btn.yellow:focus-visible {
+    background: rgba(255,230,0,.08);
+    border-color: rgba(255,230,0,.45);
+    box-shadow: 0 0 20px rgba(255,230,0,.1);
+  }
+
+  .link-btn.purple { border-color: rgba(191,0,255,.28); }
+  .link-btn.purple:hover, .link-btn.purple:focus-visible {
+    background: rgba(191,0,255,.1);
+    border-color: rgba(191,0,255,.5);
+    box-shadow: 0 0 20px rgba(191,0,255,.14);
+  }
+
+  /* ===== SMALL PILL ROW (quick links) ===== */
+  .pill-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 16px;
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .pill-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .15s, border-color .15s;
+    flex: 1; min-width: 130px;
+    justify-content: center;
+  }
+  .pill-link:active { transform: scale(.96); }
+  .pill-link:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.25); }
+
+  /* ===== SPACER ===== */
+  .spacer { height: 8px; }
+  .spacer-sm { height: 4px; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center;
+    padding: 32px 20px 0;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 2;
+  }
+  .footer a { color: var(--muted); text-decoration: underline; }
+
+  /* ===== DESKTOP CAP ===== */
+  @media (min-width: 540px) {
+    .profile { padding-top: 56px; }
+    .link-btn { min-height: 64px; }
+    .link-btn.hero { min-height: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Profile header -->
+<div class="profile">
+  <div class="logo-mark" aria-hidden="true">
+    <span>VH</span>
+  </div>
+  <div class="profile-name">THE VEGAS HUB</div>
+  <p class="profile-bio">Insider Las Vegas hotels, tours &amp; trip tools from 30-year locals. Member rates — better than Expedia.</p>
+</div>
+
+<!-- Link stack -->
+<div class="links" role="list">
+
+  <!-- Hero CTA -->
+  <a class="link-btn hero" href="https://thevegashub.com/hotels" role="listitem">
+    <span class="icon">🏨</span>
+    <span class="label">
+      Book Hotels — Member Rates
+      <span class="sub">Strip · Downtown · Henderson · Grand Canyon</span>
+    </span>
+    <span class="arrow">›</span>
+  </a>
+
+  <div class="spacer-sm"></div>
+  <p class="section-label">What's hot right now</p>
+
+  <a class="link-btn cyan" href="https://thevegashub.com/things-to-do/best-pools-in-las-vegas" role="listitem">
+    <span class="icon">🏊</span>
+    <span class="label">
+      Best Pools in Las Vegas
+      <span class="sub">Ranked by locals — all 15 pools</span>
+    </span>
+    <span class="arrow">›</span>
+  </a>
+
+  <a class="link-btn pink" href="https://thevegashub.com/things-to-do/strip-hotels-under-200" role="listitem">
+    <span class="icon">💰</span>
+    <span class="label">
+      Strip Hotels Under $200/Night
+      <span class="sub">12 solid options with booking links</span>
+    </span>
+    <span class="arrow">›</span>
+  </a>
+
+  <a class="link-btn yellow" href="https://thevegashub.com/things-to-do/25-free-things-to-do-in-vegas" role="listitem">
+    <span class="icon">✨</span>
+    <span class="label">
+      25 Free Things to Do in Vegas
+      <span class="sub">Real locals list — not tourist traps</span>
+    </span>
+    <span class="arrow">›</span>
+  </a>
+
+  <div class="spacer-sm"></div>
+  <p class="section-label">Plan your trip</p>
+
+  <a class="link-btn purple" href="https://thevegashub.com/tours" role="listitem">
+    <span class="icon">🚁</span>
+    <span class="label">
+      Tours &amp; Day Trips
+      <span class="sub">Grand Canyon · Hoover Dam · Red Rock · Sphere</span>
+    </span>
+    <span class="arrow">›</span>
+  </a>
+
+  <a class="link-btn cyan" href="https://thevegashub.com/packing-list" role="listitem">
+    <span class="icon">🎒</span>
+    <span class="label">
+      Free Vegas Packing List
+      <span class="sub">By trip type — pools, shows, clubs, F1</span>
+    </span>
+    <span class="arrow">›</span>
+  </a>
+
+  <a class="link-btn yellow" href="https://thevegashub.com/travel-insurance" role="listitem">
+    <span class="icon">🛡️</span>
+    <span class="label">
+      Travel Insurance
+      <span class="sub">Instant quote — international visitors covered</span>
+    </span>
+    <span class="arrow">›</span>
+  </a>
+
+  <div class="spacer"></div>
+  <p class="section-label">Browse by trip type</p>
+
+</div>
+
+<!-- Quick pill row -->
+<div class="pill-row" role="list">
+  <a class="pill-link" href="https://thevegashub.com/why-vegas/bachelorette" role="listitem">💅 Bachelorette</a>
+  <a class="pill-link" href="https://thevegashub.com/why-vegas/sports-fans" role="listitem">🏈 Sports Fans</a>
+  <a class="pill-link" href="https://thevegashub.com/why-vegas/families" role="listitem">👨‍👩‍👧 Families</a>
+  <a class="pill-link" href="https://thevegashub.com/why-vegas/first-timers" role="listitem">🎰 First Timers</a>
+</div>
+
+<div class="links" style="margin-top:10px;">
+  <div class="spacer-sm"></div>
+  <p class="section-label">More lists</p>
+
+  <div class="pill-row" style="padding:0;" role="list">
+    <a class="pill-link" href="https://thevegashub.com/things-to-do/best-adults-only-pools" role="listitem">Adults-Only Pools</a>
+    <a class="pill-link" href="https://thevegashub.com/things-to-do/best-bachelorette-suites" role="listitem">Bachelorette Suites</a>
+  </div>
+  <div class="pill-row" style="padding:0; margin-top:10px;" role="list">
+    <a class="pill-link" href="https://thevegashub.com/things-to-do/best-day-trips" role="listitem">Best Day Trips</a>
+    <a class="pill-link" href="https://thevegashub.com/things-to-do/best-vegas-shows" role="listitem">Best Shows</a>
+  </div>
+  <div class="pill-row" style="padding:0; margin-top:10px;" role="list">
+    <a class="pill-link" href="https://thevegashub.com/things-to-do/best-cheap-eats-vegas" role="listitem">Cheap Eats</a>
+    <a class="pill-link" href="https://thevegashub.com/things-to-do/best-vegas-buffets" role="listitem">Best Buffets</a>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="https://thevegashub.com">thevegashub.com</a><br>
+  <span>Some links earn us a commission at no cost to you. <a href="https://thevegashub.com/disclosure">Disclosure</a></span>
+</div>
+
+</body>
+</html>
