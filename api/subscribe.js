@@ -83,9 +83,10 @@ module.exports = async (req, res) => {
   }
 
   // ── Pull secrets from env (never from request) ──
-  const apiKey  = process.env.SENDY_API_KEY;
-  const listId  = process.env.SENDY_LIST_ID;
-  const sendyUrl = (process.env.SENDY_URL || '').replace(/\/$/, '');
+  const apiKey        = process.env.SENDY_API_KEY;
+  const listId        = process.env.SENDY_LIST_ID;
+  const sendyUrl      = (process.env.SENDY_URL || '').replace(/\/$/, '');
+  const originSecret  = process.env.SENDY_ORIGIN_SECRET; // optional but strongly recommended
 
   if (!apiKey || !listId || !sendyUrl) {
     console.error('[subscribe] missing env vars — SENDY_API_KEY, SENDY_LIST_ID, or SENDY_URL not set');
@@ -104,9 +105,14 @@ module.exports = async (req, res) => {
   });
 
   try {
+    const sendyHeaders = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    // If SENDY_ORIGIN_SECRET is set, send it so .htaccess on SiteGround can
+    // reject any request that didn't come through this proxy.
+    if (originSecret) sendyHeaders['X-VH-Origin-Secret'] = originSecret;
+
     const r = await fetch(`${sendyUrl}/subscribe`, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: sendyHeaders,
       body:    params.toString(),
     });
 
