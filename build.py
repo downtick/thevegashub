@@ -635,12 +635,19 @@ def page_city(slug, title, desc, heading, filt):
 {items}      </div>
     </div>"""
 
+    item_list_elements = ",".join(
+        f'{{"@type":"ListItem","position":{i+1},"name":"{h["name"]}","url":"{SITE}/hotels/{h["slug"]}"}}'
+        for i, h in enumerate(matches)
+    )
     jsonld = f"""<script type="application/ld+json">
 {{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
   {{"@type":"ListItem","position":1,"name":"Home","item":"{SITE}/"}},
   {{"@type":"ListItem","position":2,"name":"Hotels","item":"{SITE}/hotels"}},
   {{"@type":"ListItem","position":3,"name":"{heading}","item":"{SITE}/hotels/{slug}"}}
 ]}}
+</script>
+<script type="application/ld+json">
+{{"@context":"https://schema.org","@type":"ItemList","name":"Hotels in {heading}","itemListElement":[{item_list_elements}]}}
 </script>"""
     og_img = CITY_OG.get(slug, "og-default.jpg")
     html = head(title, desc, f"/hotels/{slug}", og_image=og_img, extra_jsonld=jsonld) + HEADER + f"""
@@ -802,20 +809,20 @@ LISTICLES = [
     ("best-pools-in-las-vegas", "Best Pools in Las Vegas 2026 — Ranked by Locals | TheVegasHub",
      "The best pools in Las Vegas ranked by locals — Mandalay Bay, Caesars Garden of the Gods, Cosmopolitan, Red Rock, and more. Pool-season picks.",
      "Best Pools in Las Vegas",
-     [("Mandalay Bay Beach","A real sand beach, a wave pool, and a lazy river. Still the best big-pool complex on the Strip."),
-      ("Caesars Palace Garden of the Gods","Seven pools, Roman columns, and the best adult pool (Venus) if you're over it."),
-      ("Cosmopolitan Boulevard Pool","Pool parties above the Strip with live concerts. Views and noise for days."),
-      ("Red Rock Resort Backyard Pool","Two pools, cabanas, desert mountain backdrop. Our favorite off-Strip pool scene."),
-      ("Green Valley Ranch Pool Backyard","Grass, palm trees, Strip skyline views. Henderson's best-kept secret."),
-      ("Wynn Tower Suites Pool","Exclusive to Tower Suite guests — the quietest luxury pool on the Strip."),
-      ("Aria Liquid Pool","DayClub energy on weekends, chill vibes weekdays. Good food, young crowd."),
-      ("Venetian Voyagers Club Pool","Four pools, cabanas, hidden adults-only Tao Beach. Underrated."),
-      ("Bellagio Cypress Pool","Quiet and classy. Cabana rentals come with service and great cocktails."),
-      ("MGM Grand Wet Republic","Pool party central. Skip this if you want quiet; come here if you want chaos."),
-      ("Resorts World Pool Complex","Eight pools. Newest of the bunch. Kids welcome, families approved."),
-      ("Palms Pool","Reopened renovated and we love it. Infinity edge with Strip views."),
-      ("South Point Pool","Locals' pool. Cheap food, cheap drinks, zero pretense."),
-      ("Circa Stadium Swim","Six pools stacked like stadium seats around a 143-foot screen. 21+. Sports-bar DNA."),
+     [("Mandalay Bay Beach","A real sand beach, a wave pool, and a lazy river. Still the best big-pool complex on the Strip.","https://book.hotelroomdiscounters.com/url/4c92ea5b-8041-4a15-ad5f-8e7c64d17a8c?isPermanentLink=true"),
+      ("Caesars Palace Garden of the Gods","Seven pools, Roman columns, and the best adult pool (Venus) if you're over it.","https://book.hotelroomdiscounters.com/url/37fd4154-e924-4140-a926-1be749968985?isPermanentLink=true"),
+      ("Cosmopolitan Boulevard Pool","Pool parties above the Strip with live concerts. Views and noise for days.","https://book.hotelroomdiscounters.com/url/a9072bd7-e0de-4928-915b-7f3b6f19eb4b?isPermanentLink=true"),
+      ("Red Rock Resort Backyard Pool","Two pools, cabanas, desert mountain backdrop. Our favorite off-Strip pool scene.","https://book.hotelroomdiscounters.com/url/3547149e-31e6-4fa3-9e20-2895fe00f775?isPermanentLink=true"),
+      ("Green Valley Ranch Pool Backyard","Grass, palm trees, Strip skyline views. Henderson's best-kept secret.","https://book.hotelroomdiscounters.com/url/60287820-6e5a-4937-9157-bbf09089493c?isPermanentLink=true"),
+      ("Wynn Tower Suites Pool","Exclusive to Tower Suite guests — the quietest luxury pool on the Strip.","https://book.hotelroomdiscounters.com/url/f8b0e38f-c6fd-492e-9a3e-b997bd2e8815?isPermanentLink=true"),
+      ("Aria Liquid Pool","DayClub energy on weekends, chill vibes weekdays. Good food, young crowd.","https://book.hotelroomdiscounters.com/url/67bc5bd8-c767-4df5-ba17-fe6023f41c1c?isPermanentLink=true"),
+      ("Venetian Voyagers Club Pool","Four pools, cabanas, hidden adults-only Tao Beach. Underrated.","https://book.hotelroomdiscounters.com/url/c4641b79-1e63-4f8f-8660-dcd79cf737b1?isPermanentLink=true"),
+      ("Bellagio Cypress Pool","Quiet and classy. Cabana rentals come with service and great cocktails.","https://book.hotelroomdiscounters.com/url/d5e1e309-5600-4625-a5eb-f7fe775958f2?isPermanentLink=true"),
+      ("MGM Grand Wet Republic","Pool party central. Skip this if you want quiet; come here if you want chaos.","https://book.hotelroomdiscounters.com/url/eda6f82e-c1a8-4745-a3b8-15c3cef886d4?isPermanentLink=true"),
+      ("Resorts World Pool Complex","Eight pools. Newest of the bunch. Kids welcome, families approved.","https://book.hotelroomdiscounters.com/url/def2dbd9-8b53-47f0-9492-5a483ae3413c?isPermanentLink=true"),
+      ("Palms Pool","Reopened renovated and we love it. Infinity edge with Strip views.","https://book.hotelroomdiscounters.com/url/8a5c7665-1d99-4bc2-8fbb-96353a3aa443?isPermanentLink=true"),
+      ("South Point Pool","Locals' pool. Cheap food, cheap drinks, zero pretense.","https://book.hotelroomdiscounters.com/url/6b092939-7475-4bdf-a165-8982357e66d8?isPermanentLink=true"),
+      ("Circa Stadium Swim","Six pools stacked like stadium seats around a 143-foot screen. 21+. Sports-bar DNA.","https://book.hotelroomdiscounters.com/url/51a1024a-49bc-44f4-af9e-3cbcbf2833e7?isPermanentLink=true"),
       ("Waldorf Astoria Pool (SLS/Hilton)","Highest pool on the Strip. The quiet-luxury option.")]),
 
     ("best-day-trips", "Best Day Trips from Las Vegas 2026 | TheVegasHub",
@@ -837,18 +844,18 @@ LISTICLES = [
     ("strip-hotels-under-200", "Las Vegas Strip Hotels Under $200 in 2026 | TheVegasHub",
      "The best Las Vegas Strip hotels under $200 per night in 2026 — locals' picks for good rooms, good pools, and good locations without the luxury price tag.",
      "Strip Hotels Under $200",
-     [("Treasure Island (TI)","Center Strip, clean rooms, pedestrian bridge to Fashion Show Mall. Midweek often under $120."),
-      ("Luxor","South Strip, huge pyramid, walking distance to Allegiant Stadium. Tower rooms only."),
-      ("Excalibur","Cheapest real Strip hotel. Basic rooms, castle-themed, family-friendly. Often $79."),
-      ("Flamingo","Center Strip in the middle of everything. Go Rooms are the renovated ones — ask for one."),
-      ("MGM Grand","Huge complex, good pool, walkable to T-Mobile Arena. Midweek often under $150."),
-      ("Harrah's","Center Strip Carnaval Court. Old-school but a great location. Often under $130."),
-      ("LINQ","Attached to the High Roller observation wheel. Renovated rooms. Often under $150."),
-      ("Planet Hollywood","Center Strip, great pool, the Miracle Mile shops. Often under $170."),
-      ("Paris","Center Strip with Eiffel Tower. Rooms are average but views are not. Often under $180."),
-      ("Park MGM","South Strip, non-smoking, Dolby Theater venue. Often under $180."),
-      ("Rio","Off-Strip but huge all-suite rooms. Often under $100 during renovation."),
-      ("Westgate Las Vegas","Off-Strip near the Convention Center. Biggest rooms in the city. Often under $120.")]),
+     [("Treasure Island (TI)","Center Strip, clean rooms, pedestrian bridge to Fashion Show Mall. Midweek often under $120.","https://book.hotelroomdiscounters.com/url/a0f83e07-d06d-492b-bc03-a88f4ed1d83a?isPermanentLink=true"),
+      ("Luxor","South Strip, huge pyramid, walking distance to Allegiant Stadium. Tower rooms only.","https://book.hotelroomdiscounters.com/url/fd87ef10-fd15-4a55-8928-4d0b9e001946?isPermanentLink=true"),
+      ("Excalibur","Cheapest real Strip hotel. Basic rooms, castle-themed, family-friendly. Often $79.","https://book.hotelroomdiscounters.com/url/32e59033-e352-4828-ab85-9b183de1fd3b?isPermanentLink=true"),
+      ("Flamingo","Center Strip in the middle of everything. Go Rooms are the renovated ones — ask for one.","https://book.hotelroomdiscounters.com/url/f59ce8fb-703e-4058-96f3-94fa74d3ab56?isPermanentLink=true"),
+      ("MGM Grand","Huge complex, good pool, walkable to T-Mobile Arena. Midweek often under $150.","https://book.hotelroomdiscounters.com/url/eda6f82e-c1a8-4745-a3b8-15c3cef886d4?isPermanentLink=true"),
+      ("Harrah's","Center Strip Carnaval Court. Old-school but a great location. Often under $130.","https://book.hotelroomdiscounters.com/url/0e5b1d45-da6b-4f44-a52f-f21458995288?isPermanentLink=true"),
+      ("LINQ","Attached to the High Roller observation wheel. Renovated rooms. Often under $150.","https://book.hotelroomdiscounters.com/url/2a0a4ff9-6469-4e73-a614-5e72dcff6a57?isPermanentLink=true"),
+      ("Planet Hollywood","Center Strip, great pool, the Miracle Mile shops. Often under $170.","https://book.hotelroomdiscounters.com/url/0b42f1b2-7f5e-4c86-9ed5-aeabd4cf269d?isPermanentLink=true"),
+      ("Paris","Center Strip with Eiffel Tower. Rooms are average but views are not. Often under $180.","https://book.hotelroomdiscounters.com/url/d2a9e5ae-033e-4c3b-b5ae-dbfa56dfe7c9?isPermanentLink=true"),
+      ("Park MGM","South Strip, non-smoking, Dolby Theater venue. Often under $180.","https://book.hotelroomdiscounters.com/url/7e6e6b4d-1330-4daf-9690-1e3d075fa8ef?isPermanentLink=true"),
+      ("Rio","Off-Strip but huge all-suite rooms. Often under $100 during renovation.","https://book.hotelroomdiscounters.com/url/8cef1442-2bcb-4ce2-b973-08c8cd3db515?isPermanentLink=true"),
+      ("Westgate Las Vegas","Off-Strip near the Convention Center. Biggest rooms in the city. Often under $120.","https://book.hotelroomdiscounters.com/url/b080dd7c-4f40-4cde-85f1-a8996132260c?isPermanentLink=true")]),
 
     ("best-vegas-shows", "Best Vegas Shows Right Now (2026) | TheVegasHub",
      "The best Las Vegas shows right now in 2026 — residencies, Cirque du Soleil, Sphere productions, magic, comedy. Where to stay for each.",
@@ -1034,12 +1041,135 @@ LISTICLES = [
       ("Shake Shack","Don't be snobby. $15 combo is fine."),
       ("Du-par's","Downtown. Breakfast-for-dinner under $18. Pancakes and bacon."),
       ("Nacho Daddy","Downtown. Massive nachos to share under $20 per person.")]),
+
+    ("las-vegas-on-a-budget", "Las Vegas on a Budget: 12 Ways to Save in 2026 | TheVegasHub",
+     "How to do Las Vegas on a budget in 2026 — cheap Strip hotels, free shows, off-Strip eats, and the moves locals use to cut costs without missing anything.",
+     "Las Vegas on a Budget",
+     [("Visit Mid-Week","Sunday–Thursday rates are 40–60% lower than Friday–Saturday. Same pools, same casinos, same Strip — just cheaper rooms."),
+      ("Stay at Excalibur or Luxor","Both are real Strip hotels under $100 midweek. You'll spend your time at the pool and casino floor anyway."),
+      ("Eat in Chinatown","10 minutes from the Strip. Pho for $14, ramen for $18, Korean BBQ for $30/person. None of it is tourist-priced."),
+      ("Watch the Bellagio Fountains (Free)","Runs every 15–30 minutes from 3pm daily, every 15 minutes on weekends. Best free show in the city — zero need to go inside."),
+      ("Catch Fremont Street Experience (Free)","Hourly neon canopy light show after dark, with live bands every night on three stages. All free."),
+      ("Drink at the Sportsbook","Free drinks while gambling. Even minimal slot play gets you comped drinks — far cheaper than $18 club cocktails."),
+      ("Use the Free Strip Trams","Three free trams run on the Strip: Mandalay Bay–Excalibur–Luxor, Bellagio–Crystals–Aria–Veer, and Mirage–TI."),
+      ("Walk the Strip at Sunrise","Spectacular at 6am — no crowds, great light, cool air. Best free experience in Vegas."),
+      ("Skip the Nightclubs","Cover charges plus table minimums plus drinks = $200–400/person per night. The sportsbook has the same screens and costs nothing."),
+      ("Pack In-Room Snacks","Bring a small bag of snacks and drinks. Hotel mini-bars and convenience store prices on the Strip are 3–5× what you'd pay at a regular grocery store."),
+      ("Get a Total Rewards Card (Caesars)","Free loyalty card covers Caesars, Harrah's, LINQ, Paris, Flamingo, Horseshoe, Bally's. Free play, room discounts, and food comps accumulate fast."),
+      ("Watch at the Race & Sportsbook","Avoid $50 game tickets — watch every NFL game, UFC fight, and F1 race at a free (or nearly free) sportsbook seat with a cold beer.")]),
+
+    ("pool-parties-las-vegas", "Best Las Vegas Pool Parties 2026 | Dayclubs & Beach Clubs | TheVegasHub",
+     "The best Las Vegas pool parties and dayclubs in 2026 — Encore Beach Club, Marquee, Wet Republic, Drai's, and where to go without blowing your budget.",
+     "Best Las Vegas Pool Parties",
+     [("Encore Beach Club","21+. The top dayclub in Las Vegas — premier DJs, multiple pools, bungalows, and cabanas. Opens Memorial Day weekend. Cover $40–80/person."),
+      ("Marquee Dayclub at Cosmopolitan","21+. Open Thursday–Sunday. Strip views from the 8th floor. Known for celebrity DJ residencies and large bungalows."),
+      ("Wet Republic at MGM Grand","21+. Highest-capacity dayclub on the Strip. Multiple pools, good for large groups. Mid-range pricing."),
+      ("Drai's Beach Club at The Cromwell","21+ rooftop 11 floors up with direct Strip views. Hip-hop and R&B focused. Some winter programming."),
+      ("Ayu Dayclub at Resorts World","The newest mega-dayclub — multi-pool complex, large capacity. Newer property means shorter lines than the legacy clubs."),
+      ("Tao Beach at Venetian","21+. More intimate and quieter than Encore or Wet Republic. Better for groups that want the dayclub vibe without peak-intensity crowds."),
+      ("Stadium Swim at Circa","21+ all pools, Downtown. Six pools, 143-foot screen overhead showing sports. More laid-back than Strip dayclubs with lower prices."),
+      ("Moorea Beach Club at Mandalay Bay","21+. Topless-optional. Adults-only section within the Mandalay Bay beach complex. Quieter and less frenetic."),
+      ("Daylight Beach Club at Mandalay Bay","High-capacity indoor/outdoor dayclub inside Mandalay Bay. Backs onto the beach complex for seamless flow."),
+      ("Liquid Pool Lounge at Aria","21+ on selected days. More relaxed pace than the mega-clubs. Good for late-morning pool time before evening plans."),
+      ("Venus Pool at Caesars Palace","Adults-only, topless-optional, inside Garden of the Gods. Exclusively for Caesars guests. No dayclub cover, no DJ — a quiet contrast to everything else."),
+      ("Boulevard Pool at Cosmopolitan","8th-floor hotel pool with Strip views. Lower-key than Marquee Dayclub. Summer concert series uses this pool deck.")]),
+
+    ("grand-canyon-day-trip-from-las-vegas", "Grand Canyon Day Trip from Las Vegas 2026 | TheVegasHub",
+     "How to do a Grand Canyon day trip from Las Vegas in 2026 — West Rim vs South Rim, helicopter options, what to combine, and what locals skip.",
+     "Grand Canyon Day Trip from Las Vegas",
+     [("Grand Canyon West Rim (Skywalk)","2h15m from Las Vegas. Hualapai Tribe-operated. The Skywalk glass bridge extends 70 feet over the rim. Best for first-time visitors on a one-day schedule. Book the Skywalk add-on ($35–50) in advance."),
+      ("Grand Canyon South Rim","4h15m by car. The full classic Grand Canyon — Mather Point, Bright Angel Trail, Desert View Watchtower. Better as an overnight but doable in a very long day."),
+      ("Hoover Dam (En Route)","Only 45 minutes from Las Vegas. Easy add-on to any Grand Canyon day. Free to view from the bypass bridge, or take the powerplant tour for $15–30."),
+      ("Helicopter from Boulder City","Papillon and Maverick both fly Grand Canyon day trips from Boulder City (45 min from Vegas). Total flight 45–50 min each way plus canyon floor time. $400–600/person."),
+      ("Airplane Tour (Budget Option)","Small-plane tours from Henderson Executive Airport are $200–350/person. More distance, no canyon floor, but cheaper than helicopter."),
+      ("Valley of Fire (Quick Detour)","1 hour from Las Vegas en route to West Rim. Ancient red sandstone formations and Aztec petroglyphs. The Wave and Elephant Rock are 15-minute walks. Free with $15 state park fee."),
+      ("Antelope Canyon (2-Day Version)","4 hours from Las Vegas near Page, AZ. Combine with Horseshoe Bend for an overnight road trip. The most photographed slot canyon in the world — book a guided tour in advance."),
+      ("Zion National Park (Overnight)","2h45m from Las Vegas via I-15. Angels Landing is the signature hike (permit required). Combine with the Grand Canyon for a national park road trip."),
+      ("Organized Bus Tour","Round-trip bus tours to West Rim or South Rim cost $100–180/person with lunch included. Depart from the Strip, no driving required. Good for solo travelers."),
+      ("Self-Drive Tips","Fill gas before leaving Las Vegas. There is no fuel between Boulder City and the West Rim. Bring 2 liters of water per person — the canyon rim temperatures are 10–15°F hotter than downtown Las Vegas.")]),
 ]
 
+LISTICLE_FAQ = {
+    "best-pools-in-las-vegas": [
+        ("What is the best pool in Las Vegas?", "Mandalay Bay Beach is the best large-scale pool complex in Las Vegas, featuring a real sand beach, wave pool, and lazy river. For luxury, Caesars Garden of the Gods has seven pools including the adults-only Venus pool."),
+        ("Which Las Vegas Strip hotels have the best pools?", "Top hotels for pools include Mandalay Bay (beach and wave pool), Caesars Palace (Garden of the Gods), The Cosmopolitan (Boulevard Pool with Strip views), Wynn (Tower Suites Pool), Bellagio (Cypress Pool), and MGM Grand (Wet Republic dayclub)."),
+        ("Are Las Vegas hotel pools open to non-guests?", "Most Las Vegas hotel pools are reserved for hotel guests. Some pools offer dayclub access for a cover charge on weekends. Residents may access some Caesars pools for free on select days."),
+        ("What is the best adults-only pool in Las Vegas?", "The Venus pool at Caesars Palace is one of the best adults-only pools on the Strip — quiet, elegant, and rarely crowded. Encore Beach Club at Wynn is the top choice for adults who want a dayclub experience."),
+    ],
+    "strip-hotels-under-200": [
+        ("What is the cheapest hotel on the Las Vegas Strip?", "Excalibur is consistently the cheapest real Strip hotel, with rooms often available for $79/night midweek. Luxor and Flamingo are the next most affordable, regularly under $100-$120 on weekdays."),
+        ("Can you find Las Vegas Strip hotels under $100?", "Yes. Excalibur and Luxor often drop below $100 midweek. Rio Hotel & Casino (just off-Strip) frequently dips below $100 as well. Weekends on the Strip rarely see rates that low."),
+        ("Which Strip hotels have the best value under $200?", "The best-value Strip hotels under $200 include Treasure Island (center Strip, clean rooms), Flamingo (Go Rooms only), LINQ (renovated, attached to High Roller), Paris (Eiffel Tower views), and Park MGM (non-smoking)."),
+        ("Is it cheaper to stay on the Strip or off-Strip?", "Off-Strip hotels like Rio and Westgate Las Vegas offer lower rates and larger rooms, but you will need an Uber or car to reach the Strip. If you prefer to walk everywhere, budget Strip hotels like Excalibur are worth the slight premium."),
+    ],
+    "25-free-things-to-do-in-vegas": [
+        ("What are the best free things to do in Las Vegas?", "The best free things in Las Vegas include the Bellagio Fountains (every 15-30 min from 3pm), Fremont Street Experience neon light shows (hourly after dark), the Conservatory at Bellagio, Aria public art collection, and the Ethel M Chocolate Factory with free samples."),
+        ("Are there free shows in Las Vegas?", "Yes — several. The Fremont Street Experience canopy shows run every hour after dark and are completely free. The Bellagio Fountains run every 15-30 minutes and are free to watch from the street. Circus Circus has free acrobatic acts every 30 minutes above its midway."),
+        ("How do I enjoy Las Vegas on a small budget?", "Focus on free spectacles: Bellagio Fountains, Fremont Street Experience, walking the Strip at sunrise. Eat off-Strip in Chinatown (pho under $15, ramen under $18). Use the free tram between Mandalay Bay and Excalibur. Drink at the sportsbook instead of club."),
+        ("Is there anything free to do in Las Vegas during the day?", "Yes — Red Rock Canyon scenic loop ($20/car, free per person), Clark County Wetlands Park, Springs Preserve walking trails, the Forum Shops aquarium (7 free feeding shows daily), and watching the flamingos at Flamingo hotel's wildlife habitat."),
+    ],
+    "best-day-trips": [
+        ("What is the best day trip from Las Vegas?", "Hoover Dam (45 min each way) is the easiest and most impressive day trip from Las Vegas. Grand Canyon West Rim (2h15m) is the closest Grand Canyon experience. Red Rock Canyon (30 min) is the best morning hike. Valley of Fire (1h) is the most underrated."),
+        ("Can you do the Grand Canyon as a day trip from Las Vegas?", "Yes — Grand Canyon West Rim (Skywalk) is 2h15m from Las Vegas and makes a comfortable day trip. The South Rim is 4h15m each way and is better as an overnight. Many visitors do the West Rim plus Hoover Dam in one long day."),
+        ("How far is Zion National Park from Las Vegas?", "Zion National Park is about 2h45m from Las Vegas via I-15 through St. George, Utah. It makes a long day trip or an excellent overnight in Springdale. The best time to visit is March-May and September-November."),
+        ("What is the best day trip from Las Vegas for families?", "Hoover Dam is great for families (free bypass bridge, paid tours). Red Rock Canyon has easy, short scenic trails. Seven Magic Mountains (25 min) is a quick, photogenic stop. Grand Canyon West Rim has the Skywalk, which kids love."),
+    ],
+    "best-adults-only-pools": [
+        ("What are the best adults-only pool parties in Las Vegas?", "The top adults-only pool parties are Encore Beach Club (21+, premium DJs), Marquee Dayclub at Cosmopolitan (21+, great views), Drai's Beach Club at The Cromwell (21+, rooftop with Strip views), and Ayu Dayclub at Resorts World (21+, newest venue)."),
+        ("Which Las Vegas pools require guests to be 21+?", "Stadium Swim at Circa (21+ only, all pools), Waldorf Astoria Pool (guests only, adults), Bellagio Cypress Pool (guests only, adults), Drai's Beach Club (21+), Tao Beach at Venetian (21+), Encore Beach Club (21+), and Moorea Beach Club at Mandalay Bay (21+, topless-optional)."),
+        ("What is the best quiet adult pool in Las Vegas?", "The Waldorf Astoria Pool is the quietest luxury adult pool — guests only, no dayclub energy. The Bellagio Cypress Pool is the classic old-money quiet option. Wynn Tower Suites Pool is exclusive to Tower Suite guests and extremely peaceful."),
+    ],
+    "best-vegas-shows": [
+        ("What is the best show in Las Vegas right now?", "The Sphere's Postcard from Earth is the most technically impressive experience in Las Vegas right now — 16K resolution, wraparound audio, haptic seats. For live music, Adele at The Colosseum at Caesars Palace is the pinnacle residency. For circus, O by Cirque at Bellagio is the classic."),
+        ("Which Cirque du Soleil show should I see in Las Vegas?", "O at Bellagio is the most famous and visually spectacular — a water-based show in a 1.5-million-gallon pool. KÀ at MGM Grand has the most stunning flying stage. Mystère at Treasure Island is the best family-friendly and most affordable Cirque show."),
+        ("How far in advance should I book Las Vegas shows?", "Book major residencies (Adele, Usher, headliners) as soon as you know your dates — they sell out months in advance. Cirque shows can usually be booked 2-4 weeks out. The Sphere is often available 1-2 weeks out. Day-of resale is available at reduced prices for many shows."),
+    ],
+    "best-f1-hotels": [
+        ("What are the best hotels for the Las Vegas F1 Grand Prix?", "Hotels inside the track get you the best experience: Wynn (north-facing rooms look down the main straight), The Cosmopolitan (terrace suites face the pit), Venetian, Palazzo, and Bellagio. These hotels eliminate traffic issues and provide track views from your room."),
+        ("When is the Las Vegas F1 Grand Prix 2026?", "The Las Vegas Grand Prix runs in November each year, typically the third week of November. Exact 2026 dates are available on the Formula 1 official calendar. Book hotels immediately when dates are announced — F1 weekend rates are 3-5x normal prices."),
+        ("Can you watch the F1 from a hotel room in Las Vegas?", "Yes — some hotel rooms directly overlook the track. Wynn north-facing rooms above floor 20, Cosmopolitan terrace suites, and Waldorf Astoria north-facing rooms offer track views. The Paris Eiffel Tower observation deck becomes a grandstand during F1 weekend."),
+    ],
+    "best-bachelorette-suites": [
+        ("What are the best hotels for a bachelorette party in Las Vegas?", "Top bachelorette party hotels are The Cosmopolitan (terrace suites with wraparound balcony fountain views), Palms Sky Villas (multi-level with private pools), Nobu Hotel at Caesars (boutique Japanese-minimalist), and Palazzo Prestige Suites (massive rooms for groups)."),
+        ("Which Las Vegas hotel has the best bachelorette suite?", "The Palms Sky Villas are the ultimate bachelorette suites — multi-level penthouse villas with their own pool deck and mountain views. The Cosmopolitan Terrace Suite offers the most iconic photo backdrop (Bellagio Fountain views). SKYLOFTS at MGM include butler service."),
+        ("How much should I budget for a Las Vegas bachelorette party?", "Budget varies widely. Hotel suite: $500-5,000/night split among the group. Nightclub table: $2,000-8,000 minimum. Dinner: $80-200/person at a Strip restaurant. Pool party cabana: $500-2,000. Plan $300-600/person per day for a mid-range Las Vegas bachelorette weekend."),
+    ],
+    "las-vegas-on-a-budget": [
+        ("What is the cheapest way to visit Las Vegas?", "Visit mid-week (Sunday-Thursday) and avoid major events. Stay at Excalibur, Luxor, or Circus Circus (often under $60-80 midweek). Eat in Chinatown ($12-18 meals) or at the Garden Court Buffet downtown ($28). Watch the Bellagio Fountains and Fremont Street for free entertainment."),
+        ("Can you visit Las Vegas for cheap?", "Yes. The entertainment is surprisingly free-heavy — Bellagio Fountains, Fremont Street shows, casino floors, and the Strip walk are all free. Food is cheapest off-Strip in Chinatown. Budget hotels run $60-120 midweek. The main expense to control is drinks at clubs."),
+        ("How much spending money do I need for a weekend in Las Vegas?", "For a budget Vegas weekend (2 nights): hotel $120-200 total, food $100-150, entertainment/shows $50-100, drinks $80-150, transport $40-60. Budget $500-700 total for a frugal but fun 3-day Vegas trip. Mid-range runs $1,000-1,500/person."),
+    ],
+    "pool-parties-las-vegas": [
+        ("What are the best pool parties in Las Vegas?", "The top pool party venues are Encore Beach Club (21+, premium DJs), Marquee Dayclub at Cosmopolitan (21+, Strip views), MGM's Wet Republic (big energy, top DJs), Drai's Beach Club at The Cromwell (rooftop 21+), and Ayu Dayclub at Resorts World (newest, largest)."),
+        ("How much does it cost to get into a Las Vegas pool party?", "General admission to most dayclubs runs $30-50 for women and $40-80 for men on weekends. Table minimums start around $2,000-5,000 at premier venues like Encore Beach Club. Day passes to hotel pools (non-dayclub) are often free for guests or $20-35 for non-guests."),
+        ("When is pool party season in Las Vegas?", "Las Vegas pool party season runs approximately March/April through October. Peak season is May-September. The biggest DJ residencies run from Memorial Day weekend through Labor Day. Some venues like Drai's run indoor pool parties year-round."),
+    ],
+    "grand-canyon-day-trip-from-las-vegas": [
+        ("How far is the Grand Canyon from Las Vegas?", "The Grand Canyon West Rim (Skywalk) is about 2h15m from Las Vegas — the closest Grand Canyon experience. The Grand Canyon South Rim (the 'main' canyon) is 4h15m by car. Most Las Vegas visitors choose the West Rim for a day trip and the South Rim for an overnight."),
+        ("Is the Grand Canyon day trip from Las Vegas worth it?", "Yes — the West Rim is absolutely worth a day trip. The scale of the canyon is impossible to describe and must be seen in person. The Skywalk adds a unique experience. Allow 8-10 hours total (drive + tour). If you have 2 days, the South Rim is significantly more dramatic."),
+        ("What is the difference between Grand Canyon West and South Rim?", "West Rim is 2h15m from Vegas, operated by the Hualapai Tribe, includes the Skywalk glass bridge ($35-50 extra), and shows a narrower, lower section of the canyon. South Rim is 4h15m from Vegas, operated by the National Park Service, shows the classic Grand Canyon panorama that covers most photos you've seen."),
+    ],
+}
+
+LISTICLE_EXTRA_FOOTER = {
+    "strip-hotels-under-200": """    <div style="background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:18px 20px; margin-top:40px; font-size:13px; color:var(--text-muted); line-height:1.7;">
+      <strong style="color:rgba(245,245,245,.6); font-size:11px; letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:6px;">Pricing Disclaimer</strong>
+      Price ranges listed (e.g. "often under $200") reflect rates that have been observed for these properties at some point in time and are provided as general guidance only. Hotel pricing is dynamic and subject to change based on availability, travel dates, demand, and seasonality. Rates shown are not guaranteed. Always verify current pricing before booking.
+    </div>
+""",
+}
+
 def page_listicle(slug, title, desc, h1, items):
-    schema_items = [{"@type":"ListItem","position":i+1,"name":n,"description":d} for i,(n,d) in enumerate(items)]
+    faq_data = LISTICLE_FAQ.get(slug, [])
+    schema_items = [{"@type":"ListItem","position":i+1,"name":item[0],"description":item[1]} for i,item in enumerate(items)]
+
+    faq_schema = ""
+    if faq_data:
+        faq_entities = [{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in faq_data]
+        faq_schema = f'\n<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"FAQPage","mainEntity":faq_entities})}\n</script>'
+
     jsonld = f"""<script type="application/ld+json">
-{{"@context":"https://schema.org","@type":"ItemList","name":{json.dumps(h1)},"itemListElement":{json.dumps(schema_items)}}}
+{json.dumps({"@context":"https://schema.org","@type":"ItemList","name":h1,"itemListElement":schema_items})}
 </script>
 <script type="application/ld+json">
 {{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
@@ -1047,15 +1177,36 @@ def page_listicle(slug, title, desc, h1, items):
   {{"@type":"ListItem","position":2,"name":"Things to Do","item":"{SITE}/things-to-do"}},
   {{"@type":"ListItem","position":3,"name":{json.dumps(h1)},"item":"{SITE}/things-to-do/{slug}"}}
 ]}}
-</script>"""
-    rows = "".join(f"""      <div class="card" style="padding:24px; flex-direction:row; gap:20px; align-items:flex-start;">
+</script>{faq_schema}"""
+
+    def make_row(i, item):
+        n, d = item[0], item[1]
+        link = item[2] if len(item) > 2 else None
+        name_html = (f'<a href="{link}" target="_blank" rel="nofollow sponsored noopener" '
+                     f'style="color:inherit; text-decoration:underline; text-decoration-color:var(--neon-cyan);">{n}</a>') if link else n
+        return f"""      <div class="card" style="padding:24px; flex-direction:row; gap:20px; align-items:flex-start;">
         <div class="display neon-cyan" style="font-size:40px; min-width:60px; line-height:1;">{i+1:02d}</div>
         <div>
-          <h3 class="headline" style="font-size:22px; margin:0 0 6px;">{n}</h3>
+          <h3 class="headline" style="font-size:22px; margin:0 0 6px;">{name_html}</h3>
           <p style="margin:0; color:var(--text-muted);">{d}</p>
         </div>
       </div>
-""" for i,(n,d) in enumerate(items))
+"""
+    rows = "".join(make_row(i, item) for i, item in enumerate(items))
+
+    faq_html = ""
+    if faq_data:
+        faq_items = "".join(f"""      <div class="card" style="padding:24px; margin-bottom:16px;">
+        <h3 class="headline neon-cyan" style="font-size:20px; margin:0 0 8px;">{q}</h3>
+        <p style="margin:0; color:var(--text-muted); line-height:1.65;">{a}</p>
+      </div>
+""" for q, a in faq_data)
+        faq_html = f"""
+    <div style="margin-top:56px;">
+      <h2 class="headline neon-yellow" style="font-size:clamp(26px,4vw,38px); margin:0 0 20px;">Frequently Asked Questions</h2>
+{faq_items}    </div>"""
+
+    extra_footer = LISTICLE_EXTRA_FOOTER.get(slug, "")
 
     html = head(title, desc, f"/things-to-do/{slug}", extra_jsonld=jsonld) + HEADER + f"""
 <section class="section">
@@ -1065,8 +1216,10 @@ def page_listicle(slug, title, desc, h1, items):
       <h1 class="headline-glow" style="font-size:clamp(40px,6vw,72px); margin:12px 0 8px;">{h1.upper()}</h1>
       <p class="kicker">{desc}</p>
     </div>
+    <h2 class="headline neon-cyan" style="font-size:clamp(22px,3vw,30px); margin:0 0 20px;">Our picks, ranked by locals</h2>
     <div style="display:flex; flex-direction:column; gap:16px;">
 {rows}    </div>
+{extra_footer}{faq_html}
     <div style="text-align:center; margin-top:40px;">
       <button onclick="VegasHub.share()" class="btn btn-cyan">SHARE THIS LIST</button>
       <a class="btn btn-ghost" href="/things-to-do" style="margin-left:12px;">All Lists</a>
@@ -1859,7 +2012,7 @@ def page_readme():
 
 def page_sitemap():
     """Regenerate sitemap.xml including all hotel pages."""
-    today = "2026-04-17"
+    today = "2026-06-25"
     urls = [
         ("/",                                                 "weekly",  "1.0"),
         ("/hotels",                                           "weekly",  "0.9"),
@@ -1884,12 +2037,16 @@ def page_sitemap():
     for slug, *_ in WHY:
         urls.append((f"/why-vegas/{slug}", "monthly", "0.7"))
     urls.extend([
-        ("/packing-list", "monthly", "0.8"),
-        ("/about",        "yearly",  "0.5"),
-        ("/contact",      "yearly",  "0.5"),
-        ("/privacy",      "yearly",  "0.3"),
-        ("/terms",        "yearly",  "0.3"),
-        ("/disclosure",   "yearly",  "0.3"),
+        ("/packing-list",                       "monthly", "0.8"),
+        ("/travel-insurance",                   "monthly", "0.8"),
+        ("/newsletter",                         "yearly",  "0.5"),
+        ("/link",                               "yearly",  "0.3"),
+        ("/things-to-do/resort-fees",           "monthly", "0.7"),
+        ("/about",                              "yearly",  "0.5"),
+        ("/contact",                            "yearly",  "0.5"),
+        ("/privacy",                            "yearly",  "0.3"),
+        ("/terms",                              "yearly",  "0.3"),
+        ("/disclosure",                         "yearly",  "0.3"),
     ])
     lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for path, cf, pri in urls:

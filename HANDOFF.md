@@ -79,8 +79,11 @@ Set in **Vercel Dashboard → Project Settings → Environment Variables**:
 | `SENDY_API_KEY` | Newsletter subscribe — Sendy API key ⚠️ **MUST BE SET** |
 | `SENDY_LIST_ID` | Sendy list ID (currently `10`) ⚠️ **MUST BE SET** |
 | `SENDY_URL` | Sendy install URL (`https://clubfluent.com/sendy`) ⚠️ **MUST BE SET** |
+| `SENDY_ORIGIN_SECRET` | Secret header value that SiteGround `.htaccess` checks — blocks direct Sendy spam ⚠️ **MUST BE SET** |
 
 > ⚠️ **SENDY vars are not yet set in Vercel** (as of 2026-06-06). Newsletter forms will return 500 until these are added. The API key is NOT stored in the repo — Vercel env vars only.
+>
+> **To add them:** Vercel Dashboard → TheVegasHub project → Settings → Environment Variables. Add all four vars above. For `SENDY_ORIGIN_SECRET`, use the same value you put in the SiteGround `.htaccess` file.
 
 ---
 
@@ -139,6 +142,27 @@ Added to `css/site.css` and `js/site.js` — appears on every page as a floating
 - **Signup page:** `/newsletter`
 - **Homepage widget:** inline strip above footer in `index.html`
 - **GA4 event:** fires `newsletter_signup` with `method: 'newsletter_page'` or `'homepage'`
+
+### Sendy Security — Origin Secret Pattern
+
+The Sendy `/subscribe` endpoint on SiteGround is protected so only the Vercel proxy can reach it:
+
+1. **SiteGround `.htaccess`** (in `/sendy/` folder on clubfluent.com) — blocks all requests that don't include the secret header:
+   ```apache
+   <Files "subscribe">
+     SetEnvIf X-VH-Origin-Secret "your-secret-value" ALLOWED
+     Order Deny,Allow
+     Deny from all
+     Allow from env=ALLOWED
+   </Files>
+   ```
+   ✅ **Verified working** — direct requests to `https://clubfluent.com/sendy/subscribe` return **HTTP 403**.
+
+2. **Vercel proxy** (`api/subscribe.js`) reads `SENDY_ORIGIN_SECRET` from env and adds the `X-VH-Origin-Secret` header on every call to Sendy. Requests from the website go: Browser → Vercel serverless → Sendy (with secret) → response back.
+
+3. **Multi-site note:** If you ever add another site that subscribes to this same Sendy install, it needs the **same** `SENDY_ORIGIN_SECRET` value in its own Vercel env vars. Only `SENDY_LIST_ID` changes per site (to route subscribers to the correct list).
+
+> **To do:** Enable double opt-in — Sendy admin → List #10 → Edit List → Confirmation: On. This adds a confirmation email step and improves deliverability.
 
 ---
 
