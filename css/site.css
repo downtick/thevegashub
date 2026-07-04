@@ -22,6 +22,8 @@
   --bg-0:#000; --bg-1:#050005; --bg-2:#080010;
   filter:brightness(1.15) contrast(1.1);
 }
+[data-contrast="dark"] a{ color:var(--neon-cyan); }
+[data-contrast="dark"] a:hover, [data-contrast="dark"] a:focus{ color:var(--neon-pink); }
 
 /* Letter spacing */
 .a11y-spacing body,
@@ -195,6 +197,10 @@
   --card-bg:rgba(191,0,255,.06);
   --card-border:rgba(191,0,255,.32);
 }
+
+/* Global in-content link color — previously fell back to unreadable browser blue on the dark bg */
+a{ color:var(--neon-cyan); }
+a:hover, a:focus{ color:var(--neon-pink); }
 
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}

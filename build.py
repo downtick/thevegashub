@@ -74,6 +74,7 @@ HEADER = """<header class="site-header">
     </a>
     <nav class="site-nav">
       <a href="/hotels">Hotels</a>
+      <a href="/map">Map</a>
       <a href="/tours">Tours</a>
       <a href="/things-to-do">Things to Do</a>
       <a href="/why-vegas">Why Vegas</a>
@@ -106,6 +107,7 @@ FOOTER = """<footer class="site-footer">
       <div>
         <div class="display" style="color:var(--neon-pink); font-size:13px; margin-bottom:12px;">EXPLORE</div>
         <ul style="list-style:none; padding:0; margin:0; font-size:14px; line-height:2;">
+          <li><a href="/map">Hotel Map</a></li>
           <li><a href="/tours">Tours</a></li>
           <li><a href="/things-to-do">Things to Do</a></li>
           <li><a href="/why-vegas">Why Vegas</a></li>
@@ -2010,6 +2012,252 @@ def page_readme():
 
 # ---------------------------- SITEMAP ---------------------------- #
 
+# ---------------------------- HOTEL MAP ---------------------------- #
+
+# (x%, y%) positions on the schematic map, keyed by hotel slug. The stage is a
+# VERTICAL corridor: Fremont/Downtown cluster along the top (north), the Strip as
+# a central ribbon running north->south, and off-Strip hotels offset to the west
+# (left). Coordinates are the same 0-100 percentage space the inline SVG uses, so
+# the HTML dots and the SVG backdrop line up exactly (preserveAspectRatio="none").
+MAP_POSITIONS = {
+    # Fremont Street / Downtown — top band (north)
+    "plaza-downtown":         (29, 6),
+    "golden-nugget-downtown": (50, 9),
+    "fremont-hotel":          (70, 6),
+    # Strip — north to south (east side = right, west side = left)
+    "crockfords":             (40, 19),
+    "encore":                 (61, 22),
+    "wynn":                   (63, 26),
+    "trump-international":     (37, 28),
+    "treasure-island":        (40, 31),
+    "venetian":               (60, 34),
+    "palazzo":                (63, 38),
+    "caesars-palace":         (38, 44),
+    "flamingo":               (62, 46),
+    "bellagio":               (39, 50),
+    "cosmopolitan":           (61, 53),
+    "vdara":                  (34, 56),
+    "aria":                   (42, 59),
+    "signature-mgm":          (63, 67),
+    "mgm-grand":              (60, 71),
+    "excalibur":              (40, 76),
+    "luxor":                  (39, 84),
+    "mandalay-bay":           (42, 92),
+    # Off-Strip — west column
+    "otonomus":               (16, 38),
+    "westgate-flamingo-bay":  (13, 46),
+    "rio":                    (21, 44),
+    "palms":                  (16, 55),
+    "palms-place":            (23, 57),
+}
+
+MAP_ZONE = {"strip": "zone-strip", "off-strip": "zone-off", "downtown": "zone-downtown"}
+
+def page_map():
+    """Interactive stylized neon map of the Strip + Fremont hotels."""
+    map_hotels = [
+        h for h in HOTELS
+        if h.get("area") in ("strip", "off-strip", "downtown") and h["slug"] in MAP_POSITIONS
+    ]
+
+    dots = ""
+    for h in map_hotels:
+        x, y = MAP_POSITIONS[h["slug"]]
+        link = h.get("link", "")
+        is_todo = (not link) or link.startswith("TODO")
+        book_href = link if not is_todo else "/contact"
+        book_label = "DETAILS →" if is_todo else "BOOK NOW →"
+        book_rel = 'rel="nofollow sponsored noopener" target="_blank"' if book_href.startswith("http") else ""
+        zone = MAP_ZONE.get(h["area"], "zone-strip")
+        below = " pop-below" if y < 16 else ""
+        name = h["name"]
+        dots += f"""      <div class="map-dot {zone}{below}" style="left:{x}%; top:{y}%;" role="button" tabindex="0" aria-label="{name}">
+        <span class="map-dot-mark"></span>
+        <span class="map-pop">
+          <span class="map-pop-name">{name}</span>
+          <a class="map-pop-book" href="{book_href}" {book_rel}>{book_label}</a>
+        </span>
+      </div>
+"""
+
+    # Soft resort-parcel glow behind each dot (aligned to the same coordinates).
+    blocks = ""
+    for h in map_hotels:
+        x, y = MAP_POSITIONS[h["slug"]]
+        blocks += f'      <span class="map-block {MAP_ZONE.get(h["area"], "zone-strip")}" style="left:{x}%; top:{y}%;"></span>\n'
+
+    # Deterministic scatter of faint "city lights" for the night backdrop.
+    import random as _random
+    _rng = _random.Random(1971)
+    _palette = ["#00eaff", "#ff2eb0", "#bf00ff", "#ffe600", "#ffffff"]
+    specks = ""
+    for _ in range(72):
+        sx = round(_rng.uniform(4, 96), 1)
+        sy = round(_rng.uniform(4, 96), 1)
+        rad = round(_rng.uniform(0.3, 0.9), 2)
+        col = _rng.choice(_palette)
+        op = round(_rng.uniform(0.06, 0.20), 2)
+        specks += f'<circle cx="{sx}" cy="{sy}" r="{rad}" fill="{col}" opacity="{op}"/>'
+
+    n_strip = sum(1 for h in map_hotels if h["area"] == "strip")
+    n_off = sum(1 for h in map_hotels if h["area"] == "off-strip")
+    n_dt = sum(1 for h in map_hotels if h["area"] == "downtown")
+
+    jsonld_map = f"""<script type="application/ld+json">
+{{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {{"@type":"ListItem","position":1,"name":"Home","item":"{SITE}/"}},
+  {{"@type":"ListItem","position":2,"name":"Hotel Map","item":"{SITE}/map"}}
+]}}
+</script>"""
+
+    style = """
+<style>
+  .map-stage{ position:relative; width:100%; max-width:600px; margin:0 auto; aspect-ratio:5 / 7;
+    background:
+      radial-gradient(120% 70% at 50% 0%, rgba(191,0,255,.14) 0%, rgba(10,0,20,0) 55%),
+      radial-gradient(90% 55% at 50% 100%, rgba(0,234,255,.08) 0%, rgba(10,0,20,0) 60%),
+      linear-gradient(180deg, #05010e 0%, #0a0016 100%);
+    border:1px solid var(--card-border); border-radius:16px; overflow:visible; touch-action:manipulation; }
+  .map-svg{ position:absolute; inset:0; width:100%; height:100%; z-index:1; }
+  .svg-fremont{ stroke:var(--neon-pink); stroke-width:2.5; stroke-linecap:round; vector-effect:non-scaling-stroke;
+    opacity:.6; filter:drop-shadow(0 0 5px var(--neon-pink)); }
+  /* Las Vegas Blvd — illustrated road */
+  .road-bed{ fill:rgba(3,2,10,.55); }
+  .road-edge{ stroke:var(--neon-cyan); stroke-width:1.5; vector-effect:non-scaling-stroke; opacity:.45;
+    filter:drop-shadow(0 0 4px var(--neon-cyan)); }
+  .road-center{ stroke:rgba(255,230,0,.55); stroke-width:1.2; vector-effect:non-scaling-stroke; stroke-dasharray:2.5 3.5; }
+  .cross-st{ stroke:rgba(245,245,245,.16); stroke-width:1; vector-effect:non-scaling-stroke; stroke-dasharray:1 2; }
+  .cross-label{ position:absolute; right:2%; transform:translateY(-50%); z-index:2; font-family:'Oswald',sans-serif;
+    font-weight:500; font-size:9px; letter-spacing:.1em; color:rgba(245,245,245,.4); white-space:nowrap; pointer-events:none; }
+  /* soft resort-parcel glow behind each dot */
+  .map-block{ position:absolute; z-index:2; width:34px; height:22px; transform:translate(-50%,-50%);
+    border-radius:6px; filter:blur(4px); opacity:.13; pointer-events:none; }
+  .map-block.zone-strip{ background:var(--neon-cyan); }
+  .map-block.zone-off{ background:var(--neon-purple); }
+  .map-block.zone-downtown{ background:var(--neon-pink); }
+  .map-label{ position:absolute; z-index:2; font-family:'Bebas Neue','Oswald',sans-serif; letter-spacing:.18em;
+    font-size:12px; color:rgba(245,245,245,.55); white-space:nowrap; pointer-events:none; }
+  .label-fremont{ top:3%; left:50%; transform:translateX(-50%); color:rgba(255,46,176,.75); }
+  .label-strip{ top:52%; left:50%; transform:translate(-50%,-50%) rotate(-90deg); transform-origin:center;
+    color:rgba(0,234,255,.6); }
+  .map-dot{ position:absolute; z-index:3; width:16px; height:16px; transform:translate(-50%,-50%);
+    cursor:pointer; outline:none; }
+  .map-dot-mark{ display:block; width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,.85);
+    animation:mapPulse 2.6s ease-in-out infinite; }
+  .zone-strip .map-dot-mark{ background:var(--neon-cyan); box-shadow:0 0 6px var(--neon-cyan),0 0 14px rgba(0,234,255,.7); }
+  .zone-off .map-dot-mark{ background:var(--neon-purple); box-shadow:0 0 6px var(--neon-purple),0 0 14px rgba(191,0,255,.7); }
+  .zone-downtown .map-dot-mark{ background:var(--neon-pink); box-shadow:0 0 6px var(--neon-pink),0 0 14px rgba(255,46,176,.7); }
+  @keyframes mapPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.28); } }
+  .map-dot:hover, .map-dot:focus-visible, .map-dot:focus-within, .map-dot.open{ z-index:60; }
+  .map-dot:focus-visible .map-dot-mark{ outline:2px solid #fff; outline-offset:3px; }
+  .map-pop{ position:absolute; left:50%; bottom:calc(100% + 8px); transform:translate(-50%,4px);
+    min-width:160px; max-width:220px; background:rgba(5,0,12,.97); border:1px solid var(--neon-cyan);
+    border-radius:10px; padding:12px 14px; box-shadow:0 0 20px rgba(0,234,255,.35); text-align:center;
+    opacity:0; visibility:hidden; transition:opacity .15s ease, transform .15s ease; z-index:70; }
+  .pop-below .map-pop{ bottom:auto; top:calc(100% + 8px); }
+  .zone-off .map-pop{ border-color:var(--neon-purple); box-shadow:0 0 20px rgba(191,0,255,.35); }
+  .zone-downtown .map-pop{ border-color:var(--neon-pink); box-shadow:0 0 20px rgba(255,46,176,.35); }
+  .map-dot:hover .map-pop, .map-dot:focus-within .map-pop, .map-dot.open .map-pop{
+    opacity:1; visibility:visible; transform:translate(-50%,0); }
+  .map-pop-name{ display:block; font-family:'Oswald',sans-serif; font-weight:700; font-size:13px; line-height:1.3;
+    color:#fff; margin-bottom:10px; }
+  .map-pop-book{ display:inline-block; font-family:'Bebas Neue',sans-serif; letter-spacing:.06em; font-size:14px;
+    color:#000 !important; background:var(--neon-cyan); border-radius:6px; padding:7px 14px; text-decoration:none; }
+  .map-pop-book:hover{ background:#fff; color:#000 !important; }
+  .map-legend{ display:flex; flex-wrap:wrap; justify-content:center; gap:18px; margin:24px 0 0;
+    font-size:13px; color:var(--text-muted); }
+  .map-legend span{ display:inline-flex; align-items:center; gap:7px; }
+  .map-legend i{ width:12px; height:12px; border-radius:50%; display:inline-block; }
+  .lg-strip{ background:var(--neon-cyan); box-shadow:0 0 6px var(--neon-cyan); }
+  .lg-off{ background:var(--neon-purple); box-shadow:0 0 6px var(--neon-purple); }
+  .lg-downtown{ background:var(--neon-pink); box-shadow:0 0 6px var(--neon-pink); }
+  @media (max-width:560px){
+    .map-stage{ max-width:100%; aspect-ratio:4 / 7; }
+    .map-pop{ min-width:140px; }
+    .map-label{ font-size:10px; }
+    .map-block{ width:26px; height:16px; }
+    .cross-label{ font-size:8px; }
+  }
+</style>
+"""
+
+    html = head(
+        "Las Vegas Strip &amp; Fremont Hotel Map — Interactive Hotel Finder | TheVegasHub",
+        "Interactive map of Las Vegas Strip, off-Strip, and Fremont Street hotels. Tap or hover any hotel to see its name and book with member rates.",
+        "/map",
+        extra_jsonld=jsonld_map,
+    ) + style + HEADER + f"""
+<section class="section">
+  <div class="container">
+    <div style="text-align:center; max-width:720px; margin:0 auto 8px;">
+      <span class="pill pill-cyan">EXPLORE</span>
+      <h1 class="headline-glow" style="font-size:clamp(40px,7vw,72px); line-height:1.05; margin:14px 0 12px;">HOTEL MAP</h1>
+      <p class="sub" style="margin:0 auto;">The Las Vegas Strip, off-Strip, and Fremont Street at a glance. Tap or hover any glowing dot for the hotel name and a direct booking link.</p>
+    </div>
+
+    <div id="map-stage" class="map-stage">
+      <svg class="map-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <g class="map-specks">{specks}</g>
+        <rect class="road-bed" x="45" y="14.5" width="10" height="82.5"></rect>
+        <line class="road-edge" x1="45" y1="14.5" x2="45" y2="97"></line>
+        <line class="road-edge" x1="55" y1="14.5" x2="55" y2="97"></line>
+        <line class="road-center" x1="50" y1="15" x2="50" y2="96"></line>
+        <line class="cross-st" x1="18" y1="18" x2="82" y2="18"></line>
+        <line class="cross-st" x1="20" y1="31" x2="80" y2="31"></line>
+        <line class="cross-st" x1="14" y1="47" x2="86" y2="47"></line>
+        <line class="cross-st" x1="20" y1="74" x2="80" y2="74"></line>
+        <line class="svg-fremont" x1="22" y1="8" x2="78" y2="8"></line>
+      </svg>
+{blocks}      <span class="map-label label-fremont">◄ FREMONT ST ►</span>
+      <span class="map-label label-strip">LAS VEGAS BLVD</span>
+      <span class="cross-label" style="top:18%;">W SAHARA</span>
+      <span class="cross-label" style="top:31%;">SPRING MTN</span>
+      <span class="cross-label" style="top:47%;">FLAMINGO</span>
+      <span class="cross-label" style="top:74%;">TROPICANA</span>
+{dots}    </div>
+
+    <div class="map-legend">
+      <span><i class="lg-strip"></i> Strip ({n_strip})</span>
+      <span><i class="lg-off"></i> Off-Strip ({n_off})</span>
+      <span><i class="lg-downtown"></i> Fremont / Downtown ({n_dt})</span>
+    </div>
+
+    <div style="text-align:center; margin-top:32px;">
+      <a class="btn btn-ghost" href="/hotels">Browse all hotels</a>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){{
+  var stage = document.getElementById('map-stage');
+  if(!stage) return;
+  function closeAll(except){{
+    var open = stage.querySelectorAll('.map-dot.open');
+    for(var i=0;i<open.length;i++){{ if(open[i]!==except) open[i].classList.remove('open'); }}
+  }}
+  function toggle(dot){{
+    var was = dot.classList.contains('open');
+    closeAll(dot);
+    dot.classList.toggle('open', !was);
+  }}
+  stage.addEventListener('click', function(e){{
+    if(e.target.closest('.map-pop-book')) return;   // let the booking link work
+    var dot = e.target.closest('.map-dot');
+    if(dot){{ e.stopPropagation(); toggle(dot); }}
+    else {{ closeAll(null); }}
+  }});
+  stage.addEventListener('keydown', function(e){{
+    var dot = e.target.closest('.map-dot');
+    if(dot && (e.key==='Enter' || e.key===' ')){{ e.preventDefault(); toggle(dot); }}
+    if(e.key==='Escape'){{ closeAll(null); }}
+  }});
+  document.addEventListener('click', function(e){{ if(!e.target.closest('#map-stage')) closeAll(null); }});
+}})();
+</script>
+""" + FOOTER
+    write("map/index.html", html)
+
 def page_sitemap():
     """Regenerate sitemap.xml including all hotel pages."""
     today = "2026-06-25"
@@ -2025,6 +2273,7 @@ def page_sitemap():
         urls.append((f"/hotels/{h['slug']}", "weekly", "0.8"))
     # Tours, things-to-do, why-vegas, etc.
     urls.extend([
+        ("/map",                                              "monthly", "0.8"),
         ("/tours",                                            "weekly",  "0.9"),
         ("/things-to-do",                                     "weekly",  "0.9"),
         ("/things-to-do/atomic-golf",                         "monthly", "0.8"),
@@ -2064,6 +2313,7 @@ if __name__ == "__main__":
     for h in HOTELS:
         page_hotel(h, HOTELS)
     page_tours()
+    page_map()
     page_things_index()
     for slug, title, desc, h1, items in LISTICLES:
         page_listicle(slug, title, desc, h1, items)
