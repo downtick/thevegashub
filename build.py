@@ -75,6 +75,7 @@ HEADER = """<header class="site-header">
     <nav class="site-nav">
       <a href="/hotels">Hotels</a>
       <a href="/map">Map</a>
+      <a href="/events">Events</a>
       <a href="/tours">Tours</a>
       <a href="/things-to-do">Things to Do</a>
       <a href="/why-vegas">Why Vegas</a>
@@ -108,6 +109,7 @@ FOOTER = """<footer class="site-footer">
         <div class="display" style="color:var(--neon-pink); font-size:13px; margin-bottom:12px;">EXPLORE</div>
         <ul style="list-style:none; padding:0; margin:0; font-size:14px; line-height:2;">
           <li><a href="/map">Hotel Map</a></li>
+          <li><a href="/events">Events</a></li>
           <li><a href="/tours">Tours</a></li>
           <li><a href="/things-to-do">Things to Do</a></li>
           <li><a href="/why-vegas">Why Vegas</a></li>
@@ -2258,6 +2260,215 @@ def page_map():
 """ + FOOTER
     write("map/index.html", html)
 
+# ---------------------------- EVENTS ---------------------------- #
+
+HOTELS_BY_SLUG = {h["slug"]: h for h in HOTELS}
+
+# Third-party disclaimer shown on the events index and every event page.
+EVENTS_DISCLAIMER = """
+    <div class="card" style="padding:22px 24px; background:rgba(255,230,0,.06); border-color:var(--neon-yellow); margin:0 0 32px;">
+      <span class="pill">PLEASE NOTE</span>
+      <p style="margin:12px 0 0; color:var(--text-muted); line-height:1.7; font-size:14px;">
+        Every event listed here is organized and operated by an independent third party. TheVegasHub is
+        <strong>not affiliated with, endorsed by, or responsible for</strong> any event, organizer, or venue shown.
+        Dates, times, locations, pricing, and availability are set by the event organizers and are
+        <strong>subject to change or cancellation at any time without notice</strong>. Always confirm the details
+        directly with the official event organizer before making travel plans. Hotel links are affiliate links &mdash;
+        see our <a href="/disclosure">Disclosure</a>.
+      </p>
+    </div>"""
+
+# Booking CTA (user-requested link to thevegashub.com).
+EVENTS_BOOK_CTA = """
+    <div class="card" style="padding:32px; text-align:center; background:rgba(0,234,255,.06); border-color:var(--neon-cyan); margin-top:44px;">
+      <h2 class="headline neon-cyan" style="font-size:clamp(24px,4vw,34px); margin:0 0 10px;">Need a hotel for the trip?</h2>
+      <p style="margin:0 0 20px; color:var(--text-muted);">Compare Las Vegas, Henderson, Laughlin, and Mesquite hotels with member-rate booking links.</p>
+      <a class="btn btn-cyan" href="https://thevegashub.com" style="font-size:16px; padding:16px 36px;">Book a hotel at TheVegasHub.com →</a>
+    </div>"""
+
+EVENTS = [
+    {
+        "slug": "las-vegas-triathlon",
+        "name": "Las Vegas Triathlon",
+        "pill": "TRIATHLON",
+        "date": "October 10, 2026",
+        "start_iso": "2026-10-10", "end_iso": "2026-10-10",
+        "city": "Boulder City, NV", "region": "Boulder City",
+        "admission": "Free for spectators",
+        "summary": "A multisport competition utilizing Boulder Beach at Lake Mead as a swim-to-bike transition hub. Spectators gather at the finish-line race village to watch participants navigate the final miles along the paved River Mountain Loop trail.",
+        "best_for": "Endurance sports fans and families supporting participants.",
+        "planning_notes": [
+            "Wave starts begin at 6:30 AM &mdash; arrive by 6:00 AM to secure a viewing spot on the rocky shoreline.",
+            "Sturdy, closed-toe footwear is required for navigating the gravel and rock surfaces of Boulder Beach.",
+            "There is no natural shade at the race village; bring portable umbrellas and high-SPF sunscreen.",
+        ],
+        "ada": "The race village sits on paved lots and hard-packed dirt; accessible parking provides paved access to the transition area.",
+        "near_venue": "Closest to the venue: Boulder Dam Hotel, Boulder City Inn, and Best Western Hoover Dam Hotel in Boulder City. For casino-resort stays with member-rate booking, the Henderson resorts below are roughly 25 minutes away.",
+        "hotels_heading": "Where to Stay Near Boulder City",
+        "hotel_slugs": ["green-valley-ranch", "m-resort", "south-point"],
+    },
+    {
+        "slug": "laughlin-desert-classic",
+        "name": "Laughlin Desert Classic",
+        "pill": "OFF-ROAD RACE",
+        "date": "October 15–19, 2026",
+        "start_iso": "2026-10-15", "end_iso": "2026-10-19",
+        "city": "Laughlin, NV", "region": "Laughlin",
+        "admission": "Ticketed; pit access may require a separate fee or signed waiver",
+        "summary": "An off-road championship race featuring trophy trucks and UTVs on a sandy, multi-lap circuit. The layout lets fans watch technical jumps from tiered ridge-line viewing areas and mechanical repairs in the nearby pit zones.",
+        "best_for": "Action sports fans and off-road enthusiasts.",
+        "hotels_heading": "Where to Stay in Laughlin",
+        "hotel_slugs": ["aquarius-laughlin", "edgewater-laughlin", "harrahs-laughlin", "tropicana-laughlin"],
+    },
+    {
+        "slug": "hump-n-bump",
+        "name": "Hump N Bump",
+        "pill": "OFF-ROAD",
+        "date": "October 30 – November 1, 2026",
+        "start_iso": "2026-10-30", "end_iso": "2026-11-01",
+        "city": "Moapa Valley (Logandale), NV", "region": "Logandale",
+        "admission": "Ticketed trail access; fairgrounds staging area is free",
+        "summary": "An off-road gathering at the Clark County Fairgrounds where 4×4 vehicles navigate rock obstacles in the Logandale Trails. Spectators use sandstone ridges as natural platforms to watch drivers tackle technical ledges and deep sand washes.",
+        "best_for": "Off-road enthusiasts and fans of technical rock crawling.",
+        "near_venue": "Logandale sits about 45 minutes northeast of the Strip and roughly the same from Mesquite. The Mesquite resorts below make an easy base with member-rate booking.",
+        "hotels_heading": "Where to Stay Near Logandale",
+        "hotel_slugs": ["casablanca-mesquite", "virgin-river-mesquite", "eureka-mesquite"],
+    },
+    {
+        "slug": "formula-1-las-vegas-grand-prix",
+        "name": "Formula 1 Las Vegas Grand Prix",
+        "pill": "FORMULA 1",
+        "date": "November 19–21, 2026",
+        "start_iso": "2026-11-19", "end_iso": "2026-11-21",
+        "city": "Las Vegas, NV", "region": "Las Vegas",
+        "admission": "Ticketed; tiered grandstand seating and luxury hospitality packages",
+        "summary": "An international street race utilizing a 3.8-mile circuit through the Las Vegas Strip. The evening event lets spectators in grandstand zones track cars navigating 17 technical turns amid the resort corridor.",
+        "best_for": "International racing fans and marquee-event seekers.",
+        "hotels_heading": "Where to Stay on the Strip",
+        "hotel_slugs": ["bellagio", "caesars-palace", "cosmopolitan", "venetian"],
+    },
+]
+
+def _event_hotels_grid(e):
+    ev_hotels = [HOTELS_BY_SLUG[s] for s in e["hotel_slugs"] if s in HOTELS_BY_SLUG]
+    return '<div class="grid grid-3">\n' + "".join(hotel_card(h) for h in ev_hotels) + "\n    </div>"
+
+def page_event(e):
+    ev_schema = {
+        "@context": "https://schema.org", "@type": "Event",
+        "name": e["name"], "startDate": e["start_iso"], "endDate": e["end_iso"],
+        "eventStatus": "https://schema.org/EventScheduled",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "location": {"@type": "Place", "name": e["city"],
+                     "address": {"@type": "PostalAddress", "addressLocality": e["region"],
+                                 "addressRegion": "NV", "addressCountry": "US"}},
+        "description": e["summary"],
+        "organizer": {"@type": "Organization", "name": "Independent third-party event organizer"},
+        "image": f"{SITE}/images/og/og-default.jpg",
+    }
+    breadcrumb = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE}/"},
+        {"@type": "ListItem", "position": 2, "name": "Events", "item": f"{SITE}/events"},
+        {"@type": "ListItem", "position": 3, "name": e["name"], "item": f"{SITE}/events/{e['slug']}"},
+    ]}
+    jsonld = ('<script type="application/ld+json">' + json.dumps(ev_schema) + '</script>\n'
+              '<script type="application/ld+json">' + json.dumps(breadcrumb) + '</script>')
+
+    notes_html = ""
+    if e.get("planning_notes"):
+        lis = "".join(f'<li style="margin-bottom:10px;">{n}</li>' for n in e["planning_notes"])
+        notes_html = f"""
+    <div class="card" style="padding:28px; margin:24px 0;">
+      <span class="pill pill-cyan">PLANNING NOTES</span>
+      <ul style="margin:14px 0 0; padding-left:20px; color:var(--text-muted); line-height:1.6;">{lis}</ul>
+    </div>"""
+
+    ada_html = ""
+    if e.get("ada"):
+        ada_html = f"""
+    <div class="card" style="padding:22px 24px; margin:0 0 24px;">
+      <span class="pill">ACCESSIBILITY</span>
+      <p style="margin:12px 0 0; color:var(--text-muted); line-height:1.7;">{e['ada']}</p>
+    </div>"""
+
+    near_html = f'<p style="color:var(--text-muted); font-size:14px; margin:0 0 20px;">{e["near_venue"]}</p>' if e.get("near_venue") else ""
+
+    html = head(
+        f"{e['name']} — {e['date']} | TheVegasHub Events",
+        f"{e['name']} on {e['date']} in {e['city']}. {e['summary'][:110]}",
+        f"/events/{e['slug']}",
+        extra_jsonld=jsonld,
+    ) + HEADER + f"""
+<section class="section">
+  <div class="container" style="max-width:900px;">
+    <div class="section-head">
+      <span class="pill pill-pink">{e['pill']}</span>
+      <h1 class="headline-glow" style="font-size:clamp(36px,6vw,64px); line-height:1.05; margin:12px 0 10px;">{e['name'].upper()}</h1>
+      <p class="kicker">{e['date']} &middot; {e['city']} &middot; {e['admission']}</p>
+    </div>
+{EVENTS_DISCLAIMER}
+    <p style="font-size:18px; line-height:1.8; margin:0 0 18px;">{e['summary']}</p>
+    <p style="font-size:16px; line-height:1.7; margin:0 0 8px;"><strong class="neon-cyan">Best for:</strong> {e['best_for']}</p>
+{notes_html}
+{ada_html}
+    <h2 class="headline neon-cyan" style="font-size:clamp(24px,3.5vw,34px); margin:40px 0 8px;">{e['hotels_heading']}</h2>
+    {near_html}
+    {_event_hotels_grid(e)}
+{EVENTS_BOOK_CTA}
+    <div style="text-align:center; margin-top:32px;">
+      <a class="btn btn-ghost" href="/events">← All Upcoming Events</a>
+    </div>
+  </div>
+</section>
+""" + FOOTER
+    write(f"events/{e['slug']}.html", html)
+
+def page_events_index():
+    cards = ""
+    for e in EVENTS:
+        cards += f"""      <a class="card" href="/events/{e['slug']}" style="padding:28px; text-decoration:none;">
+        <span class="pill pill-pink">{e['pill']}</span>
+        <h3 class="headline" style="font-size:24px; margin:12px 0 6px;">{e['name']}</h3>
+        <p class="display neon-cyan" style="font-size:13px; margin:0 0 4px;">{e['date']}</p>
+        <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">{e['city']} &middot; {e['admission']}</p>
+        <p style="color:var(--text-muted); margin:0; line-height:1.6;">{e['summary'][:150]}&hellip;</p>
+        <span class="display neon-cyan" style="font-size:12px; display:block; margin-top:14px;">Event details &rarr;</span>
+      </a>
+"""
+
+    item_list = {"@context": "https://schema.org", "@type": "ItemList",
+                 "name": "Upcoming Las Vegas Events",
+                 "itemListElement": [
+                     {"@type": "ListItem", "position": i + 1, "name": e["name"], "url": f"{SITE}/events/{e['slug']}"}
+                     for i, e in enumerate(EVENTS)]}
+    breadcrumb = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE}/"},
+        {"@type": "ListItem", "position": 2, "name": "Events", "item": f"{SITE}/events"}]}
+    jsonld = ('<script type="application/ld+json">' + json.dumps(item_list) + '</script>\n'
+              '<script type="application/ld+json">' + json.dumps(breadcrumb) + '</script>')
+
+    html = head(
+        "Upcoming Las Vegas Events 2026 — Races, F1 &amp; Festivals | TheVegasHub",
+        "Upcoming events in and around Las Vegas — the F1 Grand Prix, off-road races, and the Las Vegas Triathlon. Dates, spectator info, and where to stay.",
+        "/events",
+        extra_jsonld=jsonld,
+    ) + HEADER + f"""
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="pill pill-cyan">EVENTS</span>
+      <h1 class="headline-glow" style="font-size:clamp(44px,7vw,80px); margin:12px 0 8px;">UPCOMING EVENTS</h1>
+      <p class="kicker">Races, motorsport, and marquee events in and around Las Vegas — with spectator notes and where to stay.</p>
+    </div>
+{EVENTS_DISCLAIMER}
+    <div class="grid grid-3">
+{cards}    </div>
+{EVENTS_BOOK_CTA}
+  </div>
+</section>
+""" + FOOTER
+    write("events/index.html", html)
+
 def page_sitemap():
     """Regenerate sitemap.xml including all hotel pages."""
     today = "2026-06-25"
@@ -2274,6 +2485,7 @@ def page_sitemap():
     # Tours, things-to-do, why-vegas, etc.
     urls.extend([
         ("/map",                                              "monthly", "0.8"),
+        ("/events",                                           "weekly",  "0.8"),
         ("/tours",                                            "weekly",  "0.9"),
         ("/things-to-do",                                     "weekly",  "0.9"),
         ("/things-to-do/atomic-golf",                         "monthly", "0.8"),
@@ -2282,6 +2494,8 @@ def page_sitemap():
         urls.append((f"/things-to-do/{slug}", "monthly", "0.8"))
     for a in ATTRACTIONS:
         urls.append((f"/things-to-do/{a['slug']}", "monthly", "0.7"))
+    for e in EVENTS:
+        urls.append((f"/events/{e['slug']}", "weekly", "0.7"))
     urls.append(("/why-vegas", "monthly", "0.8"))
     for slug, *_ in WHY:
         urls.append((f"/why-vegas/{slug}", "monthly", "0.7"))
@@ -2314,6 +2528,9 @@ if __name__ == "__main__":
         page_hotel(h, HOTELS)
     page_tours()
     page_map()
+    page_events_index()
+    for e in EVENTS:
+        page_event(e)
     page_things_index()
     for slug, title, desc, h1, items in LISTICLES:
         page_listicle(slug, title, desc, h1, items)
