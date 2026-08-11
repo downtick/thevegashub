@@ -18,6 +18,9 @@ BING_CODE = "3EEE76DDDF64D0FF9681E1D1AF528A5D"
 SITE = "https://thevegashub.com"
 
 def head(title, desc, path, og_image="og-default.jpg", extra_jsonld=""):
+    # Safety net: never emit a meta description Google will truncate (>160 chars).
+    if len(desc) > 160:
+        desc = desc[:156].rstrip(" .,—-") + "…"
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -283,10 +286,12 @@ def page_hotel(h, all_hotels):
     city_slug = city_slug_for(h)
     city_label = {"downtown-fremont":"Downtown Fremont","henderson":"Henderson","mesquite":"Mesquite","laughlin":"Laughlin","grand-canyon":"Grand Canyon Area","las-vegas-strip":"Las Vegas"}.get(city_slug, city)
 
-    # Meta description — 155 chars max
-    meta_desc = (note[:140] + "…") if len(note) > 140 else note
-    if not meta_desc:
-        meta_desc = f"{name} in {city} — member rates, insider tips, and instant booking through TheVegasHub."
+    # Meta description — aim 130-158 chars: unique note + consistent CTA.
+    _cta = " Compare rooms, read local insider tips, and book direct with member rates at TheVegasHub."
+    _body = note if note else f"{name} in {city}."
+    meta_desc = (_body.rstrip() + _cta)
+    if len(meta_desc) > 158:
+        meta_desc = meta_desc[:157].rstrip(" .,—-") + "…"
 
     # JSON-LD Hotel schema
     hotel_jsonld = f"""<script type="application/ld+json">
@@ -330,7 +335,7 @@ def page_hotel(h, all_hotels):
         </a>\n""" for r in related)
 
     html = head(
-        f"{name} — Member Rates & Insider Tips | TheVegasHub",
+        f"{name} | TheVegasHub",
         meta_desc,
         f"/hotels/{slug}",
         og_image=img.lstrip("/"),
@@ -716,7 +721,7 @@ def page_hotels_index():
 def page_tours():
     html = head(
         "Las Vegas Tours — Grand Canyon, Hoover Dam, Helicopters | TheVegasHub",
-        "Hand-picked Las Vegas tours and day trips — Grand Canyon helicopters, Hoover Dam, Red Rock Canyon, Sphere, and more — with real-time pricing and instant booking.",
+        "Hand-picked Las Vegas tours and day trips — Grand Canyon helicopters, Hoover Dam, Red Rock Canyon, and more — with real-time pricing and instant booking.",
         "/tours",
     ) + HEADER + """
 <section class="section">
@@ -1352,7 +1357,7 @@ def page_attraction(a):
     book_rel = 'rel="nofollow sponsored" target="_blank"' if a["book_href"].startswith("http") else ""
 
     html = head(
-        f"{a['name']} — {a['tagline']} | TheVegasHub",
+        f"{a['name']} | TheVegasHub",
         a["intro"][:155],
         f"/things-to-do/{a['slug']}",
         extra_jsonld=jsonld_attr,
@@ -1621,7 +1626,7 @@ def page_packing_list():
 </style>
 
 <div class="print-header">
-  <h1 style="font-size:28px; margin:0;">THE VEGAS HUB — Las Vegas Packing List</h1>
+  <h2 style="font-size:28px; margin:0;">THE VEGAS HUB — Las Vegas Packing List</h2>
   <p style="margin:4px 0;">TheVegasHub.com · Insider Las Vegas travel · © TheVegasHub.com</p>
 </div>
 
@@ -2471,7 +2476,8 @@ def page_events_index():
 
 def page_sitemap():
     """Regenerate sitemap.xml including all hotel pages."""
-    today = "2026-06-25"
+    import datetime
+    today = datetime.date.today().isoformat()  # refreshed on every build
     urls = [
         ("/",                                                 "weekly",  "1.0"),
         ("/hotels",                                           "weekly",  "0.9"),
@@ -2503,7 +2509,6 @@ def page_sitemap():
         ("/packing-list",                       "monthly", "0.8"),
         ("/travel-insurance",                   "monthly", "0.8"),
         ("/newsletter",                         "yearly",  "0.5"),
-        ("/link",                               "yearly",  "0.3"),
         ("/things-to-do/resort-fees",           "monthly", "0.7"),
         ("/about",                              "yearly",  "0.5"),
         ("/contact",                            "yearly",  "0.5"),

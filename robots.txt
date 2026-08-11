@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /_og_template/
+Disallow: /_mockups/
 
 Sitemap: https://thevegashub.com/sitemap.xml
