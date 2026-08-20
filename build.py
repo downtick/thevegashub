@@ -113,6 +113,8 @@ FOOTER = """<footer class="site-footer">
         <ul style="list-style:none; padding:0; margin:0; font-size:14px; line-height:2;">
           <li><a href="/map">Hotel Map</a></li>
           <li><a href="/events">Events</a></li>
+          <li><a href="/best-time-to-visit-las-vegas">Best Time to Visit</a></li>
+          <li><a href="/where-to-stay-in-las-vegas">Where to Stay</a></li>
           <li><a href="/tours">Tours</a></li>
           <li><a href="/things-to-do">Things to Do</a></li>
           <li><a href="/why-vegas">Why Vegas</a></li>
@@ -2474,6 +2476,173 @@ def page_events_index():
 """ + FOOTER
     write("events/index.html", html)
 
+# ---------------------------- GUIDES (pillar pages) ---------------------------- #
+
+GUIDES = [
+    {
+        "slug": "best-time-to-visit-las-vegas",
+        "title": "Best Time to Visit Las Vegas (2026) | TheVegasHub",
+        "desc": "When to visit Las Vegas: month-by-month weather, the cheapest months to book, the event weeks that spike rates, and pool season. Plan your trip dates.",
+        "h1": "Best Time to Visit Las Vegas",
+        "pill": "TRIP PLANNING",
+        "kicker": "Month-by-month weather, the cheapest weeks to book, and the dates to avoid.",
+        "intro": """<p>The two best stretches are mid-March through May and mid-September through November. You get warm days, cool-enough nights, and room rates that aren't set for a convention crowd. Winter is the cheapest time to sleep on the Strip. Summer is the hottest, and midweek in July it's often cheaper than winter — if you can handle 105 degrees.</p>
+<p>Below is what each season actually feels like, the weeks rooms cost the most, and the best month for the kind of trip you're taking.</p>""",
+        "sections": [
+            ("The weather, by season", """<p>Spring (March to May): highs climb from the low 70s in March to the low 90s by late May. Nights stay in the 50s and 60s. This is the most comfortable stretch of the year for walking the Strip.</p>
+<p>Summer (June to August): daytime highs run 100 to 110. July averages a high near 105, and the pavement makes it feel hotter. Nights only drop to the mid-80s. Plan on being indoors or in a pool from noon to 5pm.</p>
+<p>Fall (September to November): September still runs mid-90s. October cools to the low 80s. By November days sit around 65 and nights drop into the 40s. October is a lot of people's favorite month here.</p>
+<p>Winter (December to February): highs of 55 to 60, nights near 40, and it gets windy. You won't swim in an unheated pool, but you can walk all day without sweating through your shirt.</p>"""),
+            ("The cheapest months to book", """<p>January and February are the low season. After the first week of January, midweek rooms on the Strip drop to some of the lowest rates of the year. February is similar, minus one weekend (more on that below).</p>
+<p>High summer — mid-July through August, Sunday through Thursday — is the other bargain window. The heat scares people off, so a room that runs $220 on a March Saturday can fall under $80 on a July Tuesday.</p>
+<p>The pattern under all of this: Sunday through Thursday is always cheaper than Friday and Saturday, in every month. Shift your trip one day earlier and you'll often save more than any promo code.</p>"""),
+            ("The weeks to expect high rates", """<p>A handful of dates fill the city and push rates up. If your trip is flexible, these are the ones to dodge:</p>
+<ul>
+<li>New Year's Eve — the single most expensive night of the year on the Strip.</li>
+<li>CES, the first full week of January — a business crowd of 100,000-plus takes over. Rooms spike for about four nights, then crash right after.</li>
+<li>Super Bowl weekend, early February — Vegas has turned into a Super Bowl destination, and rooms follow.</li>
+<li>March Madness, mid-to-late March — sportsbooks fill for the first-weekend games.</li>
+<li>EDC, mid-May — three nights of the electronic dance festival move rates across the whole Strip, not just the host hotel.</li>
+<li>The <a href="/events/formula-1-las-vegas-grand-prix">Formula 1 Grand Prix</a>, mid-to-late November — the biggest rate jump on the calendar. A room near the circuit can run four to five times its normal price.</li>
+<li>National Finals Rodeo, the first ten days of December — a lock-out for value on the south end especially.</li>
+<li>Big fight weekends — UFC and boxing cards land on Mexican Independence weekend (mid-September) and Cinco de Mayo, among others. They move fast and move rates with them.</li>
+</ul>"""),
+            ("Pool season runs March to October", """<p>Most Strip pools open in March and close in late October. Dayclubs — Encore Beach Club, Marquee, Wet Republic — run their loudest from May through September. If a pool scene is the point of your trip, come between Memorial Day and Labor Day.</p>
+<p>Two exceptions worth knowing: Stadium Swim at Circa downtown is heated and open year-round, and a few resort pools keep one heated pool going through winter. Our <a href="/things-to-do/best-pools-in-las-vegas">pool guide</a> has the full list.</p>"""),
+            ("The best month for your kind of trip", """<p>On a budget: January or February, midweek. Or high summer midweek if the heat doesn't stop you.</p>
+<p>For the pools and dayclubs: May through September.</p>
+<p>For walking, sightseeing, and eating your way down the Strip: March, April, October, and November. Warm days, no heat exhaustion.</p>
+<p>Traveling with kids on summer break: June through August. You're locked into the heat, so book a hotel with a pool you'll actually use, and plan indoor mornings.</p>
+<p>A couples trip: April and October hit the sweet spot — warm evenings, patios open, rates lower than peak.</p>"""),
+            ("Month-by-month at a glance", """<ul>
+<li><strong>January:</strong> cold nights, cheap rooms — except CES week and the NYE hangover. Good value.</li>
+<li><strong>February:</strong> cool, quiet, cheap. Watch Super Bowl weekend.</li>
+<li><strong>March:</strong> warming up, pools reopen, March Madness fills sportsbooks late in the month.</li>
+<li><strong>April:</strong> near-perfect weather, moderate rates. One of the best months.</li>
+<li><strong>May:</strong> hot by late month, pool season on, EDC spikes mid-May.</li>
+<li><strong>June:</strong> heat sets in, summer-break families arrive, rooms still reasonable midweek.</li>
+<li><strong>July:</strong> hottest month, lowest midweek rates of the year.</li>
+<li><strong>August:</strong> still very hot, cheap midweek, dayclubs busy.</li>
+<li><strong>September:</strong> heat eases late, fight weekends spike rates.</li>
+<li><strong>October:</strong> ideal weather, one of the most popular months.</li>
+<li><strong>November:</strong> cool and pleasant — until F1 weekend, which is its own animal.</li>
+<li><strong>December:</strong> chilly, NFR fills early December, holidays and NYE close the year hot.</li>
+</ul>
+<p>Once you've picked your dates, the next call is where on (or off) the Strip to stay — that's covered in <a href="/where-to-stay-in-las-vegas">where to stay in Las Vegas</a>. Remember that nearly every resort adds a nightly <a href="/things-to-do/resort-fees">resort fee</a> of $35 to $55 on top of the room rate.</p>"""),
+        ],
+        "faq": [
+            ("What is the cheapest month to visit Las Vegas?", "January and February, midweek (Sunday through Thursday), after the first week of January. Midweek dates in July and August also run cheap because of the heat."),
+            ("What is the hottest month in Las Vegas?", "July, with average highs near 105°F and nights in the mid-80s. June through August all sit above 100 most days."),
+            ("When is pool season in Las Vegas?", "Most pools open in March and close in late October, and dayclubs peak May through September. Stadium Swim at Circa downtown is heated and open year-round."),
+            ("When are Las Vegas hotel rates highest?", "New Year's Eve, CES week (early January), Super Bowl weekend, EDC (mid-May), the Formula 1 Grand Prix (mid-to-late November), and National Finals Rodeo (early December)."),
+            ("What is the best month for a first Las Vegas trip?", "April or October — warm days, cool nights, and rates below the summer and event-week peaks."),
+        ],
+    },
+    {
+        "slug": "where-to-stay-in-las-vegas",
+        "title": "Where to Stay in Las Vegas | TheVegasHub",
+        "desc": "Where to stay in Las Vegas by area — Center Strip, South Strip, North Strip, Downtown Fremont, off-Strip, and Henderson — with the best pick for your trip.",
+        "h1": "Where to Stay in Las Vegas",
+        "pill": "HOTEL GUIDE",
+        "kicker": "The Strip is four miles long. Here's which part to book for your trip.",
+        "intro": """<p>Quick answer. First trip, want to walk to the famous stuff: stay Center Strip. Cheapest big-name rooms: South Strip or Downtown. Late nights and clubs: Center to North Strip. Quiet, cheaper, and you've got a car or you're visiting family: Henderson or off-Strip.</p>
+<p>The Strip is about four miles long. "On the Strip" can mean a two-minute walk to the Bellagio fountains or a 25-minute walk in the heat to get there. Which end you pick matters more than most first-timers expect. Here's how the areas break down.</p>""",
+        "sections": [
+            ("Center Strip — best for first-timers", """<p>This is the core: Bellagio, Caesars Palace, the <a href="/hotels/cosmopolitan">Cosmopolitan</a>, Paris, Planet Hollywood, the Flamingo, and the LINQ. The Bellagio fountains, the Sphere views, the best pedestrian bridges, and the shortest walks between casinos are all here.</p>
+<p>Stay in this stretch and you can leave your room, see five landmark hotels, and be back without a rideshare. That convenience is why it's the priciest area on Friday and Saturday. If it's your first Vegas trip, pay for the location — you'll walk everywhere and save the cab money.</p>"""),
+            ("South Strip — value, families, and sports", """<p>MGM Grand, <a href="/hotels/mandalay-bay">Mandalay Bay</a>, <a href="/hotels/luxor">Luxor</a>, <a href="/hotels/excalibur">Excalibur</a>, and Park MGM sit at the south end, next to T-Mobile Arena and a short walk from Allegiant Stadium. Luxor and Excalibur are two of the cheapest big-name rooms in the city, which makes this end popular with families and anyone in town for a game or a concert.</p>
+<p>The trade-off is distance. From Mandalay Bay to the Bellagio is a 25-minute walk or a tram-plus-walk. Plan on rideshares to reach the center, or lean into the south-end pools, arenas, and restaurants.</p>"""),
+            ("North Strip — luxury and the Sphere", """<p><a href="/hotels/wynn">Wynn</a>, <a href="/hotels/encore">Encore</a>, Resorts World, the <a href="/hotels/venetian">Venetian</a>, and the <a href="/hotels/palazzo">Palazzo</a> anchor the north end, with the Sphere and Fashion Show mall right here. This is where the newest luxury towers and the quieter, more polished pools are.</p>
+<p>It's calmer than the center and a walk to the Sphere for a show. The far north thins out — Circus Circus up here is the budget outlier, cheap but a real hike from the action. Great area if you want a nicer room and don't mind a rideshare to the middle.</p>"""),
+            ("Downtown and Fremont Street — cheaper, older, more fun than people expect", """<p>Downtown is a 10-to-15-minute rideshare north of the Strip, and it's a different city. The Golden Nugget, the Plaza, the Fremont, the D, and Circa (21-and-up) sit under the Fremont Street Experience light canopy. Rooms run cheaper, table minimums are lower, and the drinks cost less than the Strip.</p>
+<p>Stay down here if your budget is tight, you like old-school Vegas, or you want to gamble without $25 minimums. You'll rideshare to the Strip when you want it, but plenty of trips never leave. Our <a href="/hotels/downtown-fremont">Downtown Fremont hotels</a> page has the full list.</p>"""),
+            ("Off-Strip — quiet and cheaper, if you don't mind a ride", """<p>The Rio, the Palms, Westgate, and Virgin Hotels sit a few minutes off the Strip. You give up the walk-everywhere location and get bigger rooms, shorter lines, and often free or cheaper parking. These work well for a return visitor who already knows the Strip and would rather have a quiet base and a rideshare habit.</p>"""),
+            ("Henderson and the suburbs — resort feel, local prices", """<p>Green Valley Ranch and the <a href="/hotels/m-resort">M Resort</a> sit in Henderson, 20 to 30 minutes southeast of the Strip. These are locals' resorts: real spas, quiet pools, cheaper rooms, and none of the Strip crush. You need a car to make it work.</p>
+<p>This is the pick if you're visiting family in the valley, playing golf, or you simply want to sleep somewhere calm. Same for the far northwest — Red Rock Resort out by Summerlin is a resort in its own right, close to the canyon, far from the neon.</p>"""),
+            ("How to choose in one line", """<ul>
+<li>First Vegas trip, want to walk to everything → Center Strip.</li>
+<li>Lowest price on a name-brand room → Luxor or Excalibur (South Strip), or Downtown.</li>
+<li>Clubs and late nights → Center to North Strip.</li>
+<li>Sports and arenas → South Strip.</li>
+<li>Newest luxury and the Sphere → North Strip.</li>
+<li>Quiet, a car, or visiting family → Henderson or off-Strip.</li>
+</ul>
+<p>Every resort adds a nightly <a href="/things-to-do/resort-fees">resort fee</a> of roughly $35 to $55 on top of the advertised rate, so compare the all-in price, not the headline. To see where each hotel actually sits, use the <a href="/map">hotel map</a>. Not sure when to come? Read <a href="/best-time-to-visit-las-vegas">the best time to visit Las Vegas</a> first.</p>"""),
+        ],
+        "faq": [
+            ("Where should a first-timer stay in Las Vegas?", "Center Strip — near the Bellagio fountains and Caesars Palace — so you can walk to the most famous hotels without a rideshare."),
+            ("Where are the cheapest hotels on the Strip?", "The south end: Luxor and Excalibur are two of the cheapest big-name rooms. Downtown Fremont is cheaper still."),
+            ("Is it better to stay on the Strip or Downtown?", "The Strip for landmarks and walkability; Downtown for cheaper rooms, lower table minimums, and old-Vegas Fremont Street. Downtown is a 10-to-15-minute rideshare from the Strip."),
+            ("Where should I stay to be near Allegiant Stadium or T-Mobile Arena?", "The South Strip — Mandalay Bay, Luxor, Excalibur, MGM Grand, and Park MGM are the closest hotels."),
+            ("Do all Las Vegas hotels charge a resort fee?", "Nearly all do — about $35 to $55 per night on top of the room rate — so compare the all-in price when you book."),
+        ],
+    },
+]
+
+def page_guide(g):
+    import datetime
+    today = datetime.date.today().isoformat()
+    article = {
+        "@context": "https://schema.org", "@type": "Article",
+        "headline": g["h1"], "description": g["desc"],
+        "author": {"@type": "Organization", "name": "TheVegasHub"},
+        "publisher": {"@type": "Organization", "name": "TheVegasHub"},
+        "mainEntityOfPage": f"{SITE}/{g['slug']}",
+        "image": f"{SITE}/images/og/og-default.jpg",
+        "datePublished": today, "dateModified": today,
+    }
+    faq_entities = [{"@type": "Question", "name": q,
+                     "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in g["faq"]]
+    faqpage = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": faq_entities}
+    breadcrumb = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE}/"},
+        {"@type": "ListItem", "position": 2, "name": g["h1"], "item": f"{SITE}/{g['slug']}"}]}
+    jsonld = "\n".join('<script type="application/ld+json">' + json.dumps(x) + '</script>'
+                       for x in (article, faqpage, breadcrumb))
+
+    sections_html = "".join(
+        f'<h2 class="headline neon-cyan" style="font-size:clamp(24px,3.5vw,32px); margin:36px 0 14px;">{h2}</h2>\n{body}\n'
+        for h2, body in g["sections"])
+
+    faq_cards = "".join(f"""      <div class="card" style="padding:24px; margin-bottom:14px;">
+        <h3 class="headline" style="font-size:19px; margin:0 0 8px;">{q}</h3>
+        <p style="margin:0; color:var(--text-muted); line-height:1.7;">{a}</p>
+      </div>
+""" for q, a in g["faq"])
+
+    style = """
+<style>
+  .guide p{ font-size:17px; line-height:1.8; margin:0 0 16px; }
+  .guide ul{ margin:0 0 18px; padding-left:22px; }
+  .guide li{ margin-bottom:9px; line-height:1.7; }
+  .guide .lead p{ font-size:19px; }
+  .guide h2:first-of-type{ margin-top:8px; }
+</style>
+"""
+
+    html = head(g["title"], g["desc"], f"/{g['slug']}", extra_jsonld=jsonld) + style + HEADER + f"""
+<section class="section">
+  <div class="container" style="max-width:820px;">
+    <div class="section-head">
+      <span class="pill pill-cyan">{g['pill']}</span>
+      <h1 class="headline-glow" style="font-size:clamp(36px,6vw,64px); line-height:1.05; margin:12px 0 10px;">{g['h1'].upper()}</h1>
+      <p class="kicker">{g['kicker']}</p>
+    </div>
+    <div class="guide">
+      <div class="lead">{g['intro']}</div>
+{sections_html}    </div>
+
+    <h2 class="headline neon-yellow" style="font-size:clamp(24px,3.5vw,32px); margin:44px 0 16px;">Frequently Asked Questions</h2>
+{faq_cards}
+    <div style="text-align:center; margin-top:36px;">
+      <a class="btn btn-cyan" href="/hotels">Find a Hotel</a>
+      <a class="btn btn-ghost" href="/map" style="margin-left:12px;">Hotel Map</a>
+    </div>
+  </div>
+</section>
+""" + FOOTER
+    write(f"{g['slug']}/index.html", html)
+
 def page_sitemap():
     """Regenerate sitemap.xml including all hotel pages."""
     import datetime
@@ -2502,6 +2671,8 @@ def page_sitemap():
         urls.append((f"/things-to-do/{a['slug']}", "monthly", "0.7"))
     for e in EVENTS:
         urls.append((f"/events/{e['slug']}", "weekly", "0.7"))
+    for g in GUIDES:
+        urls.append((f"/{g['slug']}", "monthly", "0.8"))
     urls.append(("/why-vegas", "monthly", "0.8"))
     for slug, *_ in WHY:
         urls.append((f"/why-vegas/{slug}", "monthly", "0.7"))
@@ -2536,6 +2707,8 @@ if __name__ == "__main__":
     page_events_index()
     for e in EVENTS:
         page_event(e)
+    for g in GUIDES:
+        page_guide(g)
     page_things_index()
     for slug, title, desc, h1, items in LISTICLES:
         page_listicle(slug, title, desc, h1, items)
