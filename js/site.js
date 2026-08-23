@@ -243,3 +243,26 @@ window.VegasHub.print = function() { window.print(); };
     if (choice === 'accept' && window.__loadGA) window.__loadGA();
   };
 })();
+
+/* ---- Theme toggle: light is the default; switch to dark, persisted ---- */
+(function () {
+  var root = document.documentElement;
+  function isDark() { return root.getAttribute('data-theme') === 'dark'; }
+  function setIcon(btn) {
+    if (!btn) return;
+    btn.textContent = isDark() ? '☀️' : '🌙';
+    btn.setAttribute('title', isDark() ? 'Switch to light theme' : 'Switch to dark theme');
+    btn.setAttribute('aria-pressed', isDark() ? 'true' : 'false');
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    setIcon(btn);
+    btn.addEventListener('click', function () {
+      var next = isDark() ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('vh_theme', next); } catch (e) {}
+      setIcon(btn);
+    });
+  });
+})();

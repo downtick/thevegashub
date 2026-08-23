@@ -22,10 +22,11 @@ def head(title, desc, path, og_image="og-default.jpg", extra_jsonld=""):
     if len(desc) > 160:
         desc = desc[:156].rstrip(" .,—-") + "…"
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{{var q=new URLSearchParams(location.search).get('theme'),s=localStorage.getItem('vh_theme'),t=q||s;if(t==='dark')document.documentElement.setAttribute('data-theme','dark');else if(t==='light')document.documentElement.setAttribute('data-theme','light');}}catch(e){{}}</script>
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta name="msvalidate.01" content="{BING_CODE}">
@@ -85,6 +86,7 @@ HEADER = """<header class="site-header">
       <a href="/packing-list">Packing List</a>
       <a href="/about">About</a>
     </nav>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Switch theme">🌙</button>
     <button class="menu-toggle" aria-label="Open menu">☰</button>
   </div>
 </header>
@@ -196,6 +198,39 @@ def write(rel_path, html):
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html)
     print(f"  wrote {rel_path}")
+
+def md_to_html(md):
+    """Minimal markdown -> HTML for guide/landmark bodies: ## / ### headings,
+    - lists, [text](url) links, **bold**, and blank-line-separated paragraphs."""
+    def inline(s):
+        s = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', s)
+        s = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', s)
+        return s
+    out, para, listbuf = [], [], []
+    def flush_para():
+        if para:
+            out.append("<p>" + inline(" ".join(para).strip()) + "</p>")
+            para.clear()
+    def flush_list():
+        if listbuf:
+            out.append("<ul>" + "".join("<li>" + inline(x) + "</li>" for x in listbuf) + "</ul>")
+            listbuf.clear()
+    for raw in md.strip().split("\n"):
+        line = raw.strip()
+        if not line:
+            flush_para(); flush_list()
+        elif line.startswith("## "):
+            flush_para(); flush_list()
+            out.append('<h2 class="headline neon-cyan" style="font-size:clamp(24px,3.5vw,32px); margin:34px 0 12px;">' + inline(line[3:]) + "</h2>")
+        elif line.startswith("### "):
+            flush_para(); flush_list()
+            out.append('<h3 class="headline" style="font-size:20px; margin:22px 0 8px;">' + inline(line[4:]) + "</h3>")
+        elif line.startswith("- "):
+            flush_para(); listbuf.append(line[2:])
+        else:
+            flush_list(); para.append(line)
+    flush_para(); flush_list()
+    return "\n".join(out)
 
 # ---------------------------- PER-HOTEL PAGES ---------------------------- #
 
@@ -1480,6 +1515,290 @@ WHY = [
      "LVCC: Westgate, Las Vegas Hilton, Wynn, Encore, Resorts World. Mandalay Bay Convention Center: Mandalay Bay, Luxor, Delano. Venetian Expo: Venetian, Palazzo. Caesars Forum: Harrah's, LINQ, Flamingo. Monorail runs Convention Center ↔ MGM Grand."),
 ]
 
+# Full-length guide bodies (markdown), keyed by slug. Override the short WHY
+# blurbs above. Authored against the blog-writing word list.
+WHY_BODY = {
+    "bachelor-parties": '''Planning a bachelor party here is mostly about three bookings: the right suite, a day at a pool club, and a dinner reservation before the night club. Get those three locked and the weekend runs itself. Miss them and you'll spend Saturday in lines.
+
+## Book a suite, not four separate rooms
+
+A suite is the move for a group. It gives you a pre-game spot, a place to leave bags, and one room number everyone routes back to. The [Palazzo](/hotels/palazzo) has some of the largest standard suites on the Strip — sunken living room, room for eight to pre-party. [Cosmopolitan](/hotels/cosmopolitan) Terrace suites come with a wraparound balcony over the Strip, which is rare and worth the upgrade for photos alone. If the group is big and the budget is real, the Palms Sky Villas are a different tier — multiple bedrooms, a private pool on some, the kind of thing you rent once.
+
+Whatever you book, put the suite on one card and split it after. Trying to divide a suite bill at checkout with eight hungover guys never goes well.
+
+## Pool clubs run the daytime
+
+The dayclub is where a Vegas bachelor party actually happens. Wet Republic at MGM Grand is the classic high-energy one. Encore Beach Club draws the biggest DJs. Tao Beach at the Venetian reopened newer and slightly calmer. Buy a table if the group is more than four — a table gets you in without the line, a spot to sit, and bottle service you were going to buy anyway.
+
+Book the table two weeks out for a Saturday, more for a holiday weekend. Dayclubs run their loudest May through September, so check [when you're coming](/best-time-to-visit-las-vegas) — a November bachelor party is a very different, mostly-indoor weekend.
+
+## Eat before the club, always
+
+The single most common bachelor-party mistake is going to the nightclub hungry at 11pm. Book a real dinner at 8 or 9 — a steakhouse, a big group table, something with substance. You'll drink better, last longer, and not make bad decisions on an empty stomach. Then walk into the club fed.
+
+Most clubs let a table host add your group to the list. If you're not buying a nightclub table, get on the guest list before midnight — after that, the cover and the line both jump.
+
+## Get a driver, skip the valet
+
+Do not valet on a bachelor party. The valet line at 2am on a Saturday can run 45 minutes, and it will end the night on a sour note while everyone stands around. Use rideshare for small hops. For the whole night, a booked driver or a party bus is worth it for a group of eight — one price, no waiting, no one's phone hunting for a surge-priced ride at closing time.
+
+Locals use a handful of limo companies that quote flat rates for the night. Book ahead; the good ones sell out on fight weekends and holidays.
+
+## A sane schedule for two nights
+
+Two nights is the right length. Here's a version that works:
+
+- Friday: land, check in, late lunch, an easy pool afternoon, dinner, then a bar crawl or a lower-key club to warm up.
+- Saturday: the big day — dayclub in the afternoon, nap and shower, the steakhouse dinner, then the headline nightclub.
+- Sunday: recovery brunch, checkout, done.
+
+Don't stack two nightclub nights back to back. Nobody makes it, and the groom least of all.
+
+## Where to keep it cheaper
+
+You can run a good bachelor weekend without Sky Villa money. Stay [Downtown](/where-to-stay-in-las-vegas) at a place like the Golden Nugget, keep the table minimums low, and rideshare to one Strip dayclub for the marquee afternoon. You trade the walk-everywhere location for cheaper rooms, cheaper drinks, and a Fremont Street night that most groups end up rating higher than the club anyway.
+
+Lock the suite, the pool table, and the dinner first. Everything else you can figure out when you land — start with the [hotel map](/map) to see how close your picks actually sit.''',
+
+    "family-with-kids": '''Vegas with kids works better than most parents expect, as long as you pick the right hotel and plan around two things: the pool and the casino smoke. Get those right and the rest of the city has more for a 9-year-old than you'd think.
+
+## The best hotels for families
+
+Four Strip hotels are built for this. [Excalibur](/hotels/excalibur) is a literal castle with an arcade and a kid-friendly price — the easiest first pick. [Mandalay Bay](/hotels/mandalay-bay) has the best family pool on the Strip: a real sand beach, a wave pool, and a lazy river. Circus Circus runs free circus acts every half hour plus the indoor Adventuredome theme park, which saves any 105-degree afternoon. Resorts World is the newest option, with a pool complex big enough that kids never get bored.
+
+Book a hotel with a pool your kids will actually use. In summer, the pool is the trip — plan on being in it from late morning through the afternoon heat, then heading out once the sun drops.
+
+## Rooms away from the smoke
+
+The casino floor is the one real downside of Vegas with kids. Most Strip hotels still allow smoking on the gaming floor, and you walk through it to reach the elevators. Two ways around it: pick a non-gaming hotel, or pick a room tower far from the casino.
+
+The non-gaming options are the cleanest fix. [Vdara](/hotels/vdara), [Trump International](/hotels/trump-international), and the [Signature at MGM](/hotels/signature-mgm) have no casino at all — no smoke, quieter lobbies, and many rooms with kitchens for cheaper breakfasts. They sit a short walk or tram ride from the action without putting a slot floor between your kids and the pool.
+
+## What to actually do
+
+Beyond the pool, the city has real attractions for kids:
+
+- Shark Reef at Mandalay Bay — a walk-through aquarium with sharks and a tunnel.
+- The Discovery Children's Museum downtown — three floors of hands-on exhibits, ideal for under-10s.
+- Springs Preserve — desert trails, a small museum, and animal exhibits, away from the Strip.
+- Ethel M Chocolate Factory and its cactus garden in Henderson — a free, easy afternoon.
+- The Adventuredome at Circus Circus — indoor roller coasters and rides when it's too hot outside.
+
+The [Bellagio fountains](/things-to-do/bellagio-fountains) and the Fremont Street light show are both free and both land well with kids at night.
+
+## Getting around without a meltdown
+
+Distances on the Strip are deceiving — Mandalay Bay to the Bellagio is a 25-minute walk in the heat, which is a lot with a stroller. Use the free trams between the south-end hotels (Mandalay Bay–Luxor–Excalibur, and Bellagio–Aria–Park MGM), rideshare for longer hops, and do your walking early in the morning before the pavement bakes. Our [where-to-stay guide](/where-to-stay-in-las-vegas) breaks down which part of the Strip keeps your walks short.
+
+## When to bring the kids
+
+Summer break lines up with the hottest months — June through August run over 100 degrees most days. That's fine if you commit to a pool hotel and treat mornings and evenings as your outdoor time. If you have flexibility, spring break in March or a fall trip in October gives you 80-degree days and far more comfortable sightseeing. The [best-time guide](/best-time-to-visit-las-vegas) has the month-by-month breakdown.
+
+One booking note: nearly every resort charges a nightly [resort fee](/things-to-do/resort-fees) of $35 to $55 on top of the room, and it usually covers the pool and wifi. Factor it into the comparison so the "cheap" room doesn't surprise you at checkout.''',
+
+    "sports-fans": '''Las Vegas turned into a real sports town fast. The Raiders, the Golden Knights, a Formula 1 race down the Strip, and a UFC home base all landed within a few years, and a Major League Baseball team is on the way. Where you stay depends entirely on which venue you're headed to — the right hotel is a walk, the wrong one is a 30-minute ride in game-day traffic.
+
+## Raiders at Allegiant Stadium
+
+Allegiant Stadium sits just west of the south Strip. The walkable hotels are [Luxor](/hotels/luxor), [Mandalay Bay](/hotels/mandalay-bay), and [Excalibur](/hotels/excalibur) — all a 10-to-15-minute walk over the pedestrian bridge, no rideshare surge, no parking hunt. Mandalay Bay is the closest of the three. Stay here for a Raiders game and you can walk to the stadium and back, which on a sold-out Sunday is worth more than any room upgrade. Full breakdown on our [hotels near Allegiant Stadium](/hotels-near-allegiant-stadium) page.
+
+Rideshare pickup after an NFL game is a mess — the surge is real and the lots empty slowly. Walking beats it every time, so book the location.
+
+## Golden Knights and UFC at T-Mobile Arena
+
+T-Mobile Arena sits behind New York-New York, mid-south Strip. The walkable picks are [MGM Grand](/hotels/mgm-grand), Park MGM, and New York-New York, all connected to the arena by the outdoor Toshiba Plaza. This is where the Golden Knights play and where most big UFC cards land. Stay in this cluster and you walk out of your hotel, cross the plaza, and you're at your seat.
+
+Fight weekends spike hotel rates across the whole city, so book early and check the [best-time guide](/best-time-to-visit-las-vegas) for which weekends fill up.
+
+## Formula 1 down the Strip
+
+The [F1 Las Vegas Grand Prix](/events/formula-1-las-vegas-grand-prix) is different from every other event here — the track is the Strip itself. The circuit runs past Wynn, the Venetian, and the Bellagio, so the best move is to stay inside the track at a hotel with a room facing the circuit. [Wynn](/hotels/wynn), the [Venetian](/hotels/venetian), and the [Cosmopolitan](/hotels/cosmopolitan) all put you trackside with no need to cross closed roads. See our [hotels near the F1 circuit](/hotels-near-f1-circuit) page for the trackside rooms.
+
+F1 weekend is the single biggest rate spike on the Vegas calendar — a trackside room can run four to five times its normal price, and the good ones sell out months ahead. If you want to be there, book early.
+
+## Watching, not attending
+
+Plenty of sports trips here are about watching, not going to a game. The sportsbooks are the draw, and they're open to non-guests. The Circa book downtown is the largest in the world — three stories, a giant screen, stadium seating. On the Strip, the Westgate SuperBook is the old-school giant. Out in the suburbs, the Durango Casino sportsbook is newer and a local favorite for game day without the tourist crush.
+
+March Madness is the peak sportsbook weekend of the year — the first Thursday and Friday fill every book in town. Book a room early and get to your book by mid-morning to claim a seat.
+
+## Quick pick by venue
+
+- Raiders / Allegiant Stadium → Mandalay Bay, Luxor, or Excalibur (walk the bridge).
+- Golden Knights or UFC / T-Mobile Arena → MGM Grand, Park MGM, or New York-New York.
+- F1 Grand Prix → a trackside room at Wynn, the Venetian, or the Cosmopolitan.
+- Watching games → Circa (downtown), Westgate, or Durango sportsbooks.
+
+Use the [hotel map](/map) to see how close each hotel actually sits to your venue before you book, and check [where to stay](/where-to-stay-in-las-vegas) if you want the wider neighborhood breakdown.''',
+
+    "first-timers": '''Your first Vegas trip comes down to a few decisions that are easy to get wrong: where to stay, how long to go, and what to book before you land. Get these right and the Strip is one of the easiest big trips to pull off. Get them wrong and you'll spend the first day fixing avoidable mistakes.
+
+## Stay on the Center Strip
+
+For a first trip, pay for the center. [Cosmopolitan](/hotels/cosmopolitan), Bellagio, Caesars Palace, and the [Venetian](/hotels/venetian) all sit in the walkable core, near the Bellagio fountains and the best pedestrian bridges. From here you can leave your room, see five landmark hotels on foot, and be back without a rideshare.
+
+The temptation is to book a cheaper room at the far south or north end to save $40 a night. Don't, not on your first trip — you'll spend the savings on cabs and burn an hour a day walking in the heat. Our [where-to-stay guide](/where-to-stay-in-las-vegas) breaks down every area if you want to compare.
+
+## Three nights is the sweet spot
+
+Three nights is right for a first trip. Two feels rushed; you land, you're jet-lagged, and it's over. Four or five and the late nights start to catch up with you. Three gives you two full days and nights — enough for the Strip, one show, a pool afternoon, and a night downtown, without the burnout that hits everyone by day four.
+
+## Book shows before you fly
+
+The good shows sell out. Cirque du Soleil's "O" at the Bellagio, the residencies at the Sphere, the headliners at the Colosseum — these move weeks ahead. Buy your show first, then set your hotel dates around it. Working backward from a sold-out show after you've already booked the room is how people end up seeing nothing. Our [shows guide](/things-to-do/best-vegas-shows) covers what's worth it.
+
+## The mistakes every newbie makes
+
+A short list of things first-timers get wrong:
+
+- Driving on the Strip. Never do this. Traffic crawls, parking is a maze, and rideshare or the Monorail is faster and cheaper. If you rent a car for a day trip, valet it and leave it.
+- Skipping Fremont Street. Downtown's [Fremont Street Experience](/things-to-do/fremont-street-experience) — the neon canopy, the free shows, the cheaper drinks — is the one thing first-timers skip and later wish they hadn't. Go for a night.
+- Underestimating the walk. Hotels look close together and aren't. Mandalay Bay to the Bellagio is 25 minutes on foot.
+- Forgetting the resort fee. Nearly every hotel adds $35 to $55 a night on top of the rate. Compare the [all-in price](/things-to-do/resort-fees), not the headline.
+
+## Walk the Strip in the morning
+
+The Strip at 8am is a different place — cool, empty, and easy to photograph without a crowd in every shot. Do your sightseeing walk early, then retreat to a pool or air conditioning through the afternoon heat, and come back out when the sun drops and the neon takes over. This one habit makes a summer trip far more pleasant.
+
+## Getting around
+
+Skip the rental car for a Strip-only trip. Rideshare handles the longer hops, the Monorail runs behind the east-side hotels from the Convention Center down to MGM Grand, and the free trams connect a few south-end resorts. For anything off the Strip — Downtown, Red Rock Canyon, Hoover Dam — rideshare or a [booked tour](/tours) is the move.
+
+Pick your dates with the [best-time guide](/best-time-to-visit-las-vegas), then use the [hotel map](/map) to see exactly where each center-Strip hotel sits. That's the whole first-trip playbook.''',
+
+    "couples": '''A couples trip to Vegas is a different city than the bachelor-party version. Skip the club, book a good dinner and a spa morning, and the Strip turns into one of the better short romantic getaways in the country — fountains, rooftop views, and a lot of it walkable at night.
+
+## Rooms worth the upgrade
+
+Two upgrades are worth the money on a couples trip. A Bellagio fountain-view room puts the water show outside your window every half hour — you can watch it from bed, which is the kind of thing you book once and remember. The [Wynn](/hotels/wynn) Tower Suites come with a separate, quieter pool and a spa that's among the best in the city.
+
+If you'd rather skip the casino entirely, [Vdara](/hotels/vdara) is the pick: no gaming floor, no smoke, a calm lobby, and a rooftop pool, all a two-minute walk from the Bellagio. It's the quiet-luxury option that couples who've done the loud version tend to graduate to.
+
+## Book dinner with a view
+
+The meal is the centerpiece of a couples night here. A few reservations worth planning around: a fountain-view table at a Bellagio restaurant so you catch the water show between courses, the Eiffel Tower restaurant at Paris for the Strip from above, or a quiet high-end room away from the crowds if you want to actually hear each other. Book the reservation before you book the show — the good tables at 8pm fill first.
+
+## Pick a show, skip the club
+
+Vegas shows are what you do instead of the nightclub. The romantic picks: Cirque du Soleil's "O" at the Bellagio, an intimate headliner residency, or "Absinthe" if you want to laugh through a late show. Our [shows guide](/things-to-do/best-vegas-shows) has the current lineup and what's actually worth the ticket. One show a night is plenty — leave time for a slow walk and a drink after.
+
+## A spa morning changes the trip
+
+The move that separates a couples trip from a party trip is a slow morning. Book a spa day — the Wynn, the Aria, and the Waldorf Astoria all run couples treatments — and don't schedule anything before noon. A morning in the spa followed by a late poolside lunch resets the whole trip and is the opposite of the 2am-checkout version of Vegas.
+
+## Free and romantic
+
+You don't have to spend to make it feel like a getaway. The [Bellagio fountains](/things-to-do/bellagio-fountains) run free every half hour and every fifteen minutes after 8pm — the late shows on the lake bridge are a genuine moment. The Conservatory inside the Bellagio changes with the seasons and is free to walk through. And a slow evening stroll from the Bellagio up to the Venetian, fountains on one side and the canal on the other, costs nothing and is most couples' favorite hour of the trip.
+
+## Make it a wedding or honeymoon
+
+Plenty of couples come to Vegas to get married, elope, or honeymoon, and the city makes all three easy. If that's the plan, our [weddings and honeymoons guide](/why-vegas/weddings-honeymoons) covers the chapels, the outdoor permits at Red Rock and Valley of Fire, and the honeymoon hotels.
+
+Pick warm, comfortable dates with the [best-time guide](/best-time-to-visit-las-vegas) — April and October are ideal for patio dinners — and use the [hotel map](/map) to land on a room close to the fountains. That's the couples version of Vegas.''',
+
+    "weddings-honeymoons": '''Getting married in Vegas is genuinely easy — a Clark County license, a chapel slot, and you can be married the same afternoon. The city does about 80,000 weddings a year, so the process is smooth and the options run from a $200 chapel to a red-rock overlook at sunrise. Here's how to pick.
+
+## The license comes first
+
+Before any ceremony, both people go to the Clark County Marriage License Bureau downtown, in person, with a valid ID. No blood test, no waiting period — you can get the license and marry the same day. The bureau keeps long hours, including evenings and weekends, which is why so many late-night ceremonies happen. Do this first; a chapel can't marry you without it.
+
+## The classic chapels
+
+The chapels are the reason people fly here to marry. A few worth knowing:
+
+- A Little White Wedding Chapel — the iconic one, home of the drive-thru "Tunnel of Love." This is the Vegas wedding people picture.
+- Graceland Chapel — the original Elvis-officiant chapel, still the most fun version if you want the show.
+- Chapel of the Flowers — the polished, photograph-friendly option that reads well with parents and looks good in pictures.
+
+Chapels book slots by the half hour and sell out on weekends and holidays, especially anything with a memorable date. Reserve ahead rather than walking in.
+
+## Outdoor and desert ceremonies
+
+If a chapel isn't your style, the desert around Vegas is the alternative. Red Rock Canyon and Valley of Fire State Park both allow permitted ceremonies against red-sandstone backdrops — you book a permit and usually a photographer who knows the spots. The Neon Museum's Boneyard, full of old Vegas signs, is the offbeat urban option for couples who want something that only exists here.
+
+These take more planning than a chapel — permits, a photographer, and timing around the light — but the photos are unlike anything you'll get indoors. Come in spring or fall; a July noon in the desert is brutal for a ceremony. The [best-time guide](/best-time-to-visit-las-vegas) has the comfortable months.
+
+## Where to honeymoon after
+
+Once you're married, the honeymoon hotels are the same short list of quiet-luxury rooms couples book anyway. The [Wynn](/hotels/wynn) Tower Suites come with the city's best spa. The Waldorf Astoria (formerly the Mandarin) is non-gaming, calm, and adults-lean, with a sky-high lobby bar. Crockfords at Resorts World is the newest luxury tower on the Strip. Any of the three gives you a room away from the casino crush for the nights after the ceremony.
+
+## Make it a full couples trip
+
+A wedding weekend is better with a couples itinerary wrapped around it — a fountain-view dinner, a show instead of a club, and a slow spa morning. Our [couples guide](/why-vegas/couples) has those picks, and most of them pair naturally with a chapel afternoon.
+
+## A simple plan
+
+- Get the marriage license downtown, in person, day-of or the day before.
+- Book the chapel slot or the outdoor permit ahead — weekends fill.
+- Reserve a honeymoon room away from the casino floor.
+- Plan the ceremony for a comfortable month, not a July afternoon.
+
+Use the [hotel map](/map) to keep your chapel, dinner, and room close together, and read [where to stay](/where-to-stay-in-las-vegas) to pick the right stretch of the Strip for the weekend.''',
+
+    "shows-residencies": '''The smartest way to plan a show trip to Vegas is backwards: pick the show first, then book the dates it's playing, then book the hotel attached to the venue. Residencies run on set nights, so locking your dates to your show keeps you from flying in the week your headliner is dark.
+
+## Stay at the venue's hotel
+
+Every big Vegas venue is attached to a hotel, and staying there means you walk to your seat instead of fighting post-show rideshare traffic. The pairings worth knowing:
+
+- The [Sphere](/things-to-do/sphere) — stay at the [Venetian](/hotels/venetian) or the [Palazzo](/hotels/palazzo), both connected by a walkway. The Sphere sits right behind them.
+- The Colosseum at Caesars Palace — stay at [Caesars](/hotels/caesars-palace). The theater is inside the hotel.
+- Dolby Live at Park MGM — stay at Park MGM or New York-New York next door.
+- T-Mobile Arena (the big concerts) — stay at [MGM Grand](/hotels/mgm-grand) or New York-New York, both a short walk across the plaza.
+
+Post-show, a walkable room is worth more than a nicer one a rideshare away. Fifteen thousand people leaving the Sphere at once is not the moment to be hunting a surge-priced car.
+
+## The Sphere is its own thing
+
+The Sphere changed what a Vegas show can be. The 366-foot sphere behind the Venetian runs two kinds of nights: the immersive "Postcard from Earth" experience during the day and early evening, and concert residencies — the Eagles, U2's run, Dead & Company, Anyma — at night. Either way, it's a venue unlike anything else, and it's the one show first-timers should build a trip around. Our [Sphere guide](/things-to-do/sphere) covers what's playing and where to sit.
+
+## Cirque and the long-running shows
+
+Beyond the residencies, Vegas has a bench of shows that run year-round, so your dates are flexible. Cirque du Soleil alone has several — "O" at the Bellagio (the water show), "Mystère" at Treasure Island, "KÀ" at MGM. "Absinthe" at Caesars is the raunchy, funny late-night pick. These don't require date-planning the way a residency does; you can catch them any week. Our [full shows guide](/things-to-do/best-vegas-shows) ranks what's worth the ticket.
+
+## Buy before you book the hotel
+
+The order matters. Popular residency nights and the best Cirque seats sell out weeks ahead, and prices climb as the date fills. Buy the ticket first. Then set your hotel dates to match — flying in for a Sphere trip only to find your act is dark that week is the avoidable mistake here.
+
+One resale tip: for concerts that don't sell out, the resale market often drops below face value in the last 90 minutes before curtain. If your dates are set and the show has open seats, waiting can pay off — though for a must-see residency, buy early and don't gamble on it.
+
+## Build the trip around the calendar
+
+Because residencies cluster on certain weekends, the show calendar can decide your dates for you. If you're flexible on timing, cross-check the [best-time guide](/best-time-to-visit-las-vegas) so you land on comfortable weather and reasonable rates as well as the right show nights. Then use the [hotel map](/map) to book the room closest to your venue.''',
+
+    "conventions": '''Vegas runs on conventions — CES alone brings over 100,000 people every January — and the one thing that decides your week is how far your hotel is from your show floor. The city has four main convention venues, spread miles apart, so "on the Strip" isn't specific enough. Match your hotel to your venue and you walk to the floor; miss it and you're in a rideshare line every morning.
+
+## Las Vegas Convention Center (LVCC)
+
+The LVCC on Paradise Road is the biggest venue in town and hosts CES and most of the mega-shows. The closest hotels are Westgate (attached by its own walkway), the Las Vegas Hilton, and the north-Strip resorts — [Wynn](/hotels/wynn), [Encore](/hotels/encore), and Resorts World — all a short ride or the Monorail away. Full breakdown on our [hotels near the Convention Center](/hotels-near-convention-center) page.
+
+The Monorail is the key here: it runs behind the east-side Strip hotels from the Convention Center station down to MGM Grand, which skips the traffic entirely during a big show. If your event is at the LVCC, staying near a Monorail stop is worth more than staying on the Strip itself.
+
+## Mandalay Bay Convention Center
+
+Mandalay Bay's convention space anchors the south end. Stay at [Mandalay Bay](/hotels/mandalay-bay), [Luxor](/hotels/luxor), or Delano and you're connected by tram or a covered walk — no rideshare needed all week. This is one of the easiest venues to stay near, because the three connected hotels cover every budget from Luxor's value rooms up to Delano's suites.
+
+## Venetian Expo
+
+The Venetian Expo (the old Sands Expo) sits behind the [Venetian](/hotels/venetian) and [Palazzo](/hotels/palazzo), and staying in either puts you an indoor walk from the floor. It's the most comfortable convention stay on the Strip — you never step outside to reach your session, which in July or during F1 traffic is a real advantage.
+
+## Caesars Forum
+
+Caesars Forum sits behind the Linq, between Caesars Palace and the Strip. The walkable hotels are Harrah's, the Linq, and the Flamingo, all a few minutes on foot. Caesars Palace itself is a slightly longer but covered walk. Stay in this cluster and you're at the Forum in ten minutes without a car.
+
+## Book early and expect high rates
+
+Convention weeks are the most expensive, most sold-out weeks of the year. CES in early January, and the big shows through spring and fall, push rates up and fill rooms months ahead. Book as soon as your dates are set. If your company isn't covering a room block, our [where-to-stay guide](/where-to-stay-in-las-vegas) helps you find a nearby hotel that isn't priced for the show.
+
+## A few business-travel notes
+
+- Pick a hotel with fast in-room wifi and a real desk — the non-gaming towers like the Signature at MGM and Vdara are quieter for calls between sessions.
+- The Monorail is faster than rideshare during any big convention. Buy a multi-day pass.
+- Build in a day. Vegas is a good place to add 24 hours to a work trip — a show, a pool afternoon, or a [Grand Canyon day trip](/tours) turns a convention into a real visit.
+
+Use the [hotel map](/map) to see exactly how far your hotel sits from your venue before you book.''',
+}
+
 def page_why(slug, title, desc, h1, body):
     jsonld = f"""<script type="application/ld+json">
 {{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
@@ -1488,18 +1807,19 @@ def page_why(slug, title, desc, h1, body):
   {{"@type":"ListItem","position":3,"name":{json.dumps(h1)},"item":"{SITE}/why-vegas/{slug}"}}
 ]}}
 </script>"""
+    body_html = md_to_html(WHY_BODY[slug]) if slug in WHY_BODY else f'<p style="font-size:18px; line-height:1.8;">{body}</p>'
     html = head(title, desc, f"/why-vegas/{slug}", extra_jsonld=jsonld) + HEADER + f"""
 <section class="section">
-  <div class="container" style="max-width:800px;">
+  <div class="container" style="max-width:820px;">
     <div class="section-head">
       <span class="pill pill-yellow">WHY VEGAS</span>
       <h1 class="headline-glow" style="font-size:clamp(40px,6vw,72px); margin:12px 0 8px;">{h1.upper()}</h1>
       <p class="kicker">{desc}</p>
     </div>
-    <div class="card" style="padding:32px;">
-      <p style="font-size:18px; line-height:1.8;">{body}</p>
+    <div class="guide">
+{body_html}
     </div>
-    <div style="text-align:center; margin-top:32px;">
+    <div style="text-align:center; margin-top:36px;">
       <a class="btn btn-cyan" href="/hotels">Find a Hotel</a>
       <a class="btn btn-ghost" href="/why-vegas" style="margin-left:12px;">All Trip Types</a>
     </div>
@@ -2643,6 +2963,148 @@ def page_guide(g):
 """ + FOOTER
     write(f"{g['slug']}/index.html", html)
 
+# ---------------------------- LANDMARK LANDING PAGES ---------------------------- #
+
+LANDMARKS = [
+    {
+        "slug": "hotels-near-sphere",
+        "title": "Hotels Near the Sphere Las Vegas | TheVegasHub",
+        "desc": "The closest hotels to the Sphere in Las Vegas — the Venetian and Palazzo connect by walkway, with north-Strip and center-Strip options a short walk away.",
+        "h1": "Hotels Near the Sphere",
+        "pill": "HOTELS NEAR",
+        "kicker": "The closest places to stay for a Sphere show — ranked by how short the walk back is.",
+        "body": '''The [Sphere](/things-to-do/sphere) sits just east of the Strip, directly behind the Venetian and Palazzo. If you're seeing a show there, the walk from your room matters — 15,000 people leave at once, and a hotel you can walk back to beats a rideshare line every time. These are the closest places to stay.
+
+## Connected by walkway — the Venetian and Palazzo
+
+The [Venetian](/hotels/venetian) and the [Palazzo](/hotels/palazzo) are the two hotels physically closest to the Sphere, linked to it by a pedestrian walkway. You can leave the show and be in your room in under ten minutes without stepping onto a road. For a Sphere night, these are the pick — same complex, all-suite rooms, and the shortest possible walk back.
+
+## A short walk — north-Strip hotels
+
+Just north, [Wynn](/hotels/wynn), [Encore](/hotels/encore), and Resorts World are a 5-to-10-minute walk from the Sphere. You trade the covered walkway for a slightly longer stroll and get the newest luxury rooms on the Strip in return. Any of the three works well if the Venetian is booked or you want a different room style.
+
+## Across the Strip — Caesars and the center
+
+The center-Strip hotels — Caesars Palace, the [Cosmopolitan](/hotels/cosmopolitan), and the Flamingo — are a 10-to-15-minute walk or a quick rideshare. These make sense if you're pairing a Sphere show with a few days of center-Strip sightseeing and don't mind the short hop east on show night.
+
+## Booking notes
+
+Sphere nights sell out, and hotel rates near the venue climb on big residency weekends. Buy your show ticket first, then book the room — flying in to find your act is dark that week is the avoidable mistake. Nearly every hotel adds a nightly [resort fee](/things-to-do/resort-fees) of $35 to $55 on top of the rate, so compare the all-in price.
+
+To see exactly how close each hotel sits to the Sphere, use the [hotel map](/map). For what's actually playing and where to sit, read the [Sphere guide](/things-to-do/sphere).''',
+    },
+    {
+        "slug": "hotels-near-allegiant-stadium",
+        "title": "Hotels Near Allegiant Stadium Las Vegas | TheVegasHub",
+        "desc": "The closest hotels to Allegiant Stadium — Mandalay Bay, Luxor, and Excalibur are a short walk over the pedestrian bridge from the Raiders' home.",
+        "h1": "Hotels Near Allegiant Stadium",
+        "pill": "HOTELS NEAR",
+        "kicker": "Walk to Raiders games and skip the post-game rideshare surge.",
+        "body": '''Allegiant Stadium — home of the Raiders — sits just west of the south Strip, across Interstate 15. On a game day the smart move is to walk, not drive: the post-game rideshare surge is brutal and the lots empty slowly. A few south-Strip hotels put you a 10-to-15-minute walk from the gates.
+
+## The walkable three
+
+[Mandalay Bay](/hotels/mandalay-bay) is the closest Strip hotel to the stadium, a straight shot across the pedestrian bridge over I-15. [Luxor](/hotels/luxor) and [Excalibur](/hotels/excalibur) sit right behind it and share the same walk — both are among the cheapest big-name rooms in the city, which makes them the value pick for a game weekend. Stay in any of the three and you walk to kickoff and walk back after, no car, no surge.
+
+## A little farther — the rest of the south Strip
+
+Park MGM, New York-New York, and [MGM Grand](/hotels/mgm-grand) are a longer 20-minute walk or a short rideshare to the stadium. These are the better base if you're also going to a Golden Knights game or a concert at T-Mobile Arena, which sits behind New York-New York — you'd be walking distance to both venues.
+
+## Getting there
+
+The pedestrian bridge from Mandalay Bay is the fastest route on foot and avoids stadium traffic entirely. If you drive, book parking in advance — game-day lots sell out and street parking near the stadium is restricted. Rideshare drop-off is fine going in; coming out, walking back to a south-Strip hotel beats the pickup line most nights.
+
+## Booking notes
+
+Raiders home games and big stadium concerts push hotel rates up across the south Strip, and they sell out early for marquee opponents. Book as soon as the schedule drops. Nearly every hotel adds a nightly [resort fee](/things-to-do/resort-fees) of $35 to $55 on top of the rate.
+
+Use the [hotel map](/map) to see how close each hotel sits to the stadium, and read our [sports-fan guide](/why-vegas/sports-fans) for the full venue-by-venue breakdown.''',
+    },
+    {
+        "slug": "hotels-near-f1-circuit",
+        "title": "Hotels Near the F1 Las Vegas Circuit | TheVegasHub",
+        "desc": "Where to stay for the F1 Las Vegas Grand Prix — trackside hotels on the Strip circuit like Wynn, the Venetian, and the Cosmopolitan, with booking tips.",
+        "h1": "Hotels Near the F1 Circuit",
+        "pill": "HOTELS NEAR",
+        "kicker": "The track is the Strip. The best rooms face the circuit — here's where to book.",
+        "body": '''The [Formula 1 Las Vegas Grand Prix](/events/formula-1-las-vegas-grand-prix) is unlike any other race because the track is the Strip itself. The 3.8-mile circuit runs right down Las Vegas Boulevard, past the Bellagio, the Venetian, and Wynn. That changes the hotel math completely: the best rooms are the ones inside the track with a window facing the circuit, so you never cross a closed road on race weekend.
+
+## Stay inside the track
+
+[Wynn](/hotels/wynn), the [Venetian](/hotels/venetian), and the [Cosmopolitan](/hotels/cosmopolitan) all sit trackside, with rooms that look down onto the circuit. A room facing the track means you can watch cars from your window and reach the grandstands without crossing closed roads — during F1 weekend, whole stretches of the Strip shut down, so being inside the track is worth far more than usual.
+
+## The rest of the circuit corridor
+
+The rest of the center- and north-Strip hotels along the route — Caesars Palace, the Flamingo, Resorts World, [Encore](/hotels/encore) — put you within walking distance of the circuit even without a trackside room. These are the fallback when the marquee trackside rooms sell out, which they do months ahead.
+
+## Book early, expect the biggest spike of the year
+
+F1 weekend is the single largest hotel-rate spike on the Vegas calendar. A trackside room can run four to five times its normal price, and the best ones book up months before the November race. If you want to be there, reserve as early as you can and lock the room before you buy anything else.
+
+A trackside view also lets you skip a grandstand ticket if you'd rather watch from your room — for some fans that's the whole reason to book the room in the first place.
+
+## Booking notes
+
+Confirm your room actually faces the track before you pay the premium — not every room in a trackside hotel has the view. Nearly every hotel adds a nightly [resort fee](/things-to-do/resort-fees) of $35 to $55 on top of the rate, and F1-weekend rates are steep to begin with, so compare the all-in number.
+
+See the full dates and details on our [F1 event page](/events/formula-1-las-vegas-grand-prix), and use the [hotel map](/map) to find a room on the circuit.''',
+    },
+    {
+        "slug": "hotels-near-convention-center",
+        "title": "Hotels Near the Las Vegas Convention Center | TheVegasHub",
+        "desc": "The closest hotels to the Las Vegas Convention Center (LVCC) — Westgate, the north-Strip resorts, and every hotel on the Monorail line to the halls.",
+        "h1": "Hotels Near the Convention Center",
+        "pill": "HOTELS NEAR",
+        "kicker": "Match your hotel to the LVCC and the Monorail, not just a spot on the Strip.",
+        "body": '''The Las Vegas Convention Center (LVCC) on Paradise Road is the biggest venue in the city and the home of CES and most mega-shows. It sits a block east of the Strip, not on it, so the hotels that work best for a convention aren't always the famous ones — they're the ones near a Monorail stop or a short walk from the halls.
+
+## Closest to the halls
+
+Westgate is the closest hotel to the LVCC, connected by its own walkway, and the Las Vegas Hilton sits right beside it. If your show is at the LVCC and you want the shortest possible morning walk, these two are the pick — you're at the floor in minutes without a car.
+
+## North-Strip hotels on the Monorail
+
+The north-Strip resorts — [Wynn](/hotels/wynn), [Encore](/hotels/encore), and Resorts World — are a short ride from the LVCC and near the Monorail line. The Monorail is the key to a convention stay: it runs behind the east-side Strip hotels from the Convention Center station down to MGM Grand, skipping traffic entirely during a big show. A room near a Monorail stop beats a fancier room stuck in show-week gridlock.
+
+## The rest of the Monorail line
+
+Every hotel along the Monorail — the [Venetian](/hotels/venetian), Harrah's, the Flamingo, Bally's, [MGM Grand](/hotels/mgm-grand) — is a reasonable LVCC base because the train drops you at the Convention Center door. If you want to stay in the center of the Strip and still commute easily to the halls, pick a hotel with a Monorail station and buy a multi-day pass.
+
+## Booking notes
+
+Convention weeks are the most expensive, most sold-out weeks of the year — CES in early January fills the city, and rates spike months ahead. Book as soon as your dates are set. If your company isn't covering a room block, our [where-to-stay guide](/where-to-stay-in-las-vegas) helps you find a nearby room that isn't priced for the show. The quieter non-gaming towers, like the Signature at MGM and Vdara, are better for calls between sessions.
+
+Use the [hotel map](/map) to see how far each hotel sits from the LVCC, and read our full [convention guide](/why-vegas/conventions) for the other venues — Mandalay Bay, the Venetian Expo, and Caesars Forum.''',
+    },
+]
+
+def page_landmark(l):
+    breadcrumb = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE}/"},
+        {"@type": "ListItem", "position": 2, "name": "Hotels", "item": f"{SITE}/hotels"},
+        {"@type": "ListItem", "position": 3, "name": l["h1"], "item": f"{SITE}/{l['slug']}"}]}
+    jsonld = '<script type="application/ld+json">' + json.dumps(breadcrumb) + '</script>'
+    body_html = md_to_html(l["body"])
+    html = head(l["title"], l["desc"], f"/{l['slug']}", extra_jsonld=jsonld) + HEADER + f"""
+<section class="section">
+  <div class="container" style="max-width:820px;">
+    <div class="section-head">
+      <span class="pill pill-cyan">{l['pill']}</span>
+      <h1 class="headline-glow" style="font-size:clamp(34px,6vw,60px); line-height:1.05; margin:12px 0 10px;">{l['h1'].upper()}</h1>
+      <p class="kicker">{l['kicker']}</p>
+    </div>
+    <div class="guide">
+{body_html}
+    </div>
+    <div style="text-align:center; margin-top:36px;">
+      <a class="btn btn-cyan" href="/hotels">Find a Hotel</a>
+      <a class="btn btn-ghost" href="/map" style="margin-left:12px;">Hotel Map</a>
+    </div>
+  </div>
+</section>
+""" + FOOTER
+    write(f"{l['slug']}/index.html", html)
+
 def page_sitemap():
     """Regenerate sitemap.xml including all hotel pages."""
     import datetime
@@ -2673,6 +3135,8 @@ def page_sitemap():
         urls.append((f"/events/{e['slug']}", "weekly", "0.7"))
     for g in GUIDES:
         urls.append((f"/{g['slug']}", "monthly", "0.8"))
+    for l in LANDMARKS:
+        urls.append((f"/{l['slug']}", "monthly", "0.7"))
     urls.append(("/why-vegas", "monthly", "0.8"))
     for slug, *_ in WHY:
         urls.append((f"/why-vegas/{slug}", "monthly", "0.7"))
@@ -2709,6 +3173,8 @@ if __name__ == "__main__":
         page_event(e)
     for g in GUIDES:
         page_guide(g)
+    for l in LANDMARKS:
+        page_landmark(l)
     page_things_index()
     for slug, title, desc, h1, items in LISTICLES:
         page_listicle(slug, title, desc, h1, items)

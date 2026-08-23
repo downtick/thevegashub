@@ -202,6 +202,56 @@
 a{ color:var(--neon-cyan); }
 a:hover, a:focus{ color:var(--neon-pink); }
 
+/* Long-form guide / landing-page body */
+.guide p{ font-size:17px; line-height:1.8; margin:0 0 16px; }
+.guide ul{ margin:0 0 18px; padding-left:22px; }
+.guide li{ margin-bottom:9px; line-height:1.7; }
+.guide .lead p{ font-size:19px; }
+.guide h2:first-of-type{ margin-top:8px; }
+
+/* ============================================================
+   LIGHT THEME (preview) — activate with <html data-theme="light">
+   or by adding ?theme=light to any URL.
+   ============================================================ */
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]){
+  --neon-purple:#7e22ce; --neon-cyan:#0e7490; --neon-pink:#be185d; --neon-yellow:#a16207;
+  --bg-0:#faf8fd; --bg-1:#f2ecfa; --bg-2:#e9e0f5;
+  --text:#1b1024; --text-muted:rgba(27,16,36,.64);
+  --card-bg:#ffffff; --card-border:rgba(126,34,206,.20);
+}
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) body{
+  background:radial-gradient(1200px 600px at 50% -10%, #efe4fb 0%, #f7f3fc 42%, #fdfcff 100%) fixed;
+  color:var(--text);
+}
+/* headings and hard-coded white text flip to dark */
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .headline,
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .headline-glow{ color:var(--text) !important; text-shadow:none !important; }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .neon-marquee{ color:var(--neon-pink) !important; text-shadow:none !important; }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .site-header [style*="color:#fff"],
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .site-footer [style*="color:#fff"],
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) h1[style*="color:#fff"],
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) h2[style*="color:#fff"],
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) h3[style*="color:#fff"]{ color:var(--text) !important; }
+/* header + footer surfaces */
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .site-header{ background:rgba(255,255,255,.9); border-bottom:1px solid rgba(126,34,206,.18); }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .site-nav a{ color:rgba(27,16,36,.78); }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .site-footer{ background:rgba(248,245,252,.7); border-top:1px solid rgba(126,34,206,.18); }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .site-footer a{ color:rgba(27,16,36,.7); }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .menu-toggle{ color:var(--text); }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .site-nav.open{ background:#fff; }
+/* buttons */
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-cyan,
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-pink{ color:#fff !important; }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-ghost{ color:var(--text); border-color:rgba(27,16,36,.35); }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-ghost:hover{ border-color:var(--text); background:rgba(27,16,36,.05); }
+/* photo heroes keep light text over the image */
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .hero,
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .hero *{ color:#fff !important; }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .hero .headline,
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .hero .headline-glow{ text-shadow:0 2px 12px rgba(0,0,0,.5) !important; }
+/* map night-city stage stays dark even in light theme (it's a night map) */
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .map-stage .map-label{ color:rgba(245,245,245,.6); }
+
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
@@ -384,6 +434,8 @@ body{
   .menu-toggle{display:block !important;}
 }
 .menu-toggle{display:none; background:none; border:none; color:#fff; font-size:24px; cursor:pointer;}
+.theme-toggle{ background:none; border:1px solid var(--card-border); color:var(--text); font-size:15px; line-height:1; width:38px; height:38px; border-radius:50%; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; margin-left:12px; flex:0 0 auto; transition:border-color .2s, transform .15s;}
+.theme-toggle:hover{ border-color:var(--neon-cyan); transform:scale(1.06);}
 
 /* Footer */
 .site-footer{
