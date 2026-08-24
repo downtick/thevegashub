@@ -201,6 +201,8 @@
 /* Global in-content link color — previously fell back to unreadable browser blue on the dark bg */
 a{ color:var(--neon-cyan); }
 a:hover, a:focus{ color:var(--neon-pink); }
+/* Card containers are links, but their inner text must not look like an inline link */
+a.card, a.card:hover, a.card:focus{ color:var(--text); text-decoration:none; }
 
 /* Long-form guide / landing-page body */
 .guide p{ font-size:17px; line-height:1.8; margin:0 0 16px; }
@@ -214,11 +216,18 @@ a:hover, a:focus{ color:var(--neon-pink); }
    or by adding ?theme=light to any URL.
    ============================================================ */
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]){
-  --neon-purple:#7e22ce; --neon-cyan:#0e7490; --neon-pink:#be185d; --neon-yellow:#a16207;
+  --neon-purple:#6b1a9c; --neon-cyan:#0b6070; --neon-pink:#a8155a; --neon-yellow:#8a5200;
   --bg-0:#faf8fd; --bg-1:#f2ecfa; --bg-2:#e9e0f5;
-  --text:#1b1024; --text-muted:rgba(27,16,36,.64);
+  --text:#160f1e; --text-muted:rgba(22,15,30,.82);
   --card-bg:#ffffff; --card-border:rgba(126,34,206,.20);
 }
+/* Bebas Neue is a tall condensed face — open the letter-spacing in light mode
+   so the flat (un-glowed) headings don't read as one connected word. */
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .headline,
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .headline-glow,
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .display{ letter-spacing:.09em; }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .section-head p.kicker{ color:var(--text-muted); font-size:16px; }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .sub{ color:rgba(22,15,30,.82) !important; }
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) body{
   background:radial-gradient(1200px 600px at 50% -10%, #efe4fb 0%, #f7f3fc 42%, #fdfcff 100%) fixed;
   color:var(--text);
@@ -248,7 +257,11 @@ a:hover, a:focus{ color:var(--neon-pink); }
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .hero,
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .hero *{ color:#fff !important; }
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .hero .headline,
-:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .hero .headline-glow{ text-shadow:0 2px 12px rgba(0,0,0,.5) !important; }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .hero .headline-glow,
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .hero .neon-marquee{
+  color:#fff !important;
+  text-shadow:0 1px 2px rgba(0,0,0,.95), 0 2px 6px rgba(0,0,0,.7) !important;
+}
 /* map night-city stage stays dark even in light theme (it's a night map) */
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .map-stage .map-label{ color:rgba(245,245,245,.6); }
 
