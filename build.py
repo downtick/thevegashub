@@ -3105,6 +3105,130 @@ def page_landmark(l):
 """ + FOOTER
     write(f"{l['slug']}/index.html", html)
 
+# ---------------------------- HALLOWEEN (seasonal marketing) ---------------------------- #
+
+# (slug, tag, Halloween blurb) — featured hotels for Halloween weekend.
+HALLOWEEN_HOTELS = [
+    ("encore",       "XS · ENCORE BEACH CLUB", "XS and Encore Beach Club throw the Strip's biggest Halloween-weekend parties — costume contests, headline DJs, and the after-dark pool editions if the weather holds."),
+    ("cosmopolitan", "MARQUEE",                "Marquee's Halloween party plus a Strip-view Terrace suite to pre-game in. Center-Strip, so every other club is a short walk away."),
+    ("mgm-grand",    "HAKKASAN",               "Hakkasan goes all-out for Halloween weekend, and it's in your building. Costume-up, ride the elevator down, and skip the 2am rideshare line."),
+    ("crockfords",   "ZOUK · RESORTS WORLD",   "Zouk runs one of the newest, loudest Halloween parties on the Strip — and Crockfords puts you in the quiet luxury tower right above it."),
+    ("bellagio",     "CONSERVATORY",           "The Conservatory's harvest display, the fountains, and a central base for club-hopping. The grown-up Halloween-weekend pick."),
+    ("luxor",        "VALUE PICK",             "A giant black pyramid is about as spooky as a hotel gets — and it's one of the cheapest big-name rooms for a weekend that won't be cheap."),
+]
+
+def page_halloween():
+    cards = ""
+    for slug, tag, blurb in HALLOWEEN_HOTELS:
+        h = HOTELS_BY_SLUG.get(slug)
+        if not h:
+            continue
+        link = h.get("link", "")
+        book_href = link if link.startswith("http") else "/hotels/" + slug
+        book_rel = 'rel="nofollow sponsored noopener" target="_blank"' if link.startswith("http") else ""
+        cards += f"""      <div class="card hw-card">
+        <a href="/hotels/{slug}"><img class="card-img" src="{h.get('image','/images/og/og-default.jpg')}" alt="{h['alt']}" loading="lazy" onerror="this.src='/images/og/og-default.jpg'"></a>
+        <div class="card-body">
+          <span class="hw-pill">{tag}</span>
+          <h3 class="headline" style="font-size:24px; margin:10px 0 8px;">{h['name']}</h3>
+          <p style="color:var(--text-muted); font-size:14px; line-height:1.6; margin:0 0 16px; flex:1;">{blurb}</p>
+          <a href="{book_href}" {book_rel} class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW →</a>
+        </div>
+      </div>
+"""
+
+    breadcrumb = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE}/"},
+        {"@type": "ListItem", "position": 2, "name": "Las Vegas Halloween", "item": f"{SITE}/las-vegas-halloween"}]}
+    jsonld = '<script type="application/ld+json">' + json.dumps(breadcrumb) + '</script>'
+
+    style = """
+<style>
+  .hw-hero{ position:relative; text-align:center; padding:84px 20px 58px; overflow:hidden;
+    background:
+      radial-gradient(60% 65% at 18% 20%, rgba(155,48,255,.42), transparent 60%),
+      radial-gradient(55% 60% at 84% 26%, rgba(255,122,24,.34), transparent 60%),
+      linear-gradient(160deg,#1a0e2b 0%, #0b0713 72%);
+    border-bottom:1px solid rgba(255,122,24,.25); }
+  .hw-pumpkin{ font-size:clamp(40px,8vw,60px); line-height:1; filter:drop-shadow(0 0 18px rgba(255,122,24,.6)); }
+  .hw-title{ font-family:'Bebas Neue','Oswald',sans-serif; font-size:clamp(44px,9vw,96px); line-height:.98; letter-spacing:.07em; margin:6px 0 14px; color:#fff;
+    text-shadow:0 0 14px rgba(255,122,24,.5), 0 0 34px rgba(155,48,255,.45); }
+  .hw-sub{ color:rgba(255,255,255,.88); max-width:660px; margin:0 auto 26px; font-size:clamp(16px,2vw,20px); line-height:1.6; }
+  .hw-cta{ display:inline-block; font-family:'Bungee',sans-serif; font-size:14px; letter-spacing:.05em; color:#160a24 !important;
+    background:linear-gradient(90deg,#ff7a18,#9b30ff); padding:15px 32px; border-radius:999px; text-decoration:none; box-shadow:0 0 26px rgba(255,122,24,.45); }
+  .hw-cta:hover{ filter:brightness(1.08); color:#160a24 !important; }
+  .hw-pill{ display:inline-block; font-family:'Bungee',sans-serif; font-size:10px; letter-spacing:.12em; padding:5px 11px; border-radius:999px;
+    color:#b34e08; border:1px solid rgba(255,122,24,.55); background:rgba(255,122,24,.10); }
+  .hw-h2{ font-family:'Bebas Neue','Oswald',sans-serif; font-size:clamp(26px,4vw,40px); letter-spacing:.05em; margin:48px 0 14px; color:#b34e08; }
+  :root[data-theme="dark"] .hw-h2{ color:#ff934d; }
+  :root[data-theme="dark"] .hw-pill{ color:#ff934d; }
+  .hw-body p{ font-size:17px; line-height:1.8; margin:0 0 16px; }
+  .hw-body ul{ margin:0 0 18px; padding-left:22px; }
+  .hw-body li{ margin-bottom:11px; line-height:1.7; }
+  .hw-hotels .card{ border-color:rgba(155,48,255,.42); }
+  .hw-hotels .card:hover{ border-color:#ff7a18; }
+  .hw-band{ text-align:center; margin:52px 0 8px; padding:36px 22px; border-radius:16px;
+    background:linear-gradient(135deg, rgba(155,48,255,.14), rgba(255,122,24,.14)); border:1px solid rgba(155,48,255,.32); }
+</style>
+"""
+
+    html = head(
+        "Las Vegas Halloween 2026 — Where to Stay | TheVegasHub",
+        "Halloween 2026 in Las Vegas falls on a Saturday. Where to stay for the Strip's biggest costume-party weekend — featured hotels, club parties, and booking links.",
+        "/las-vegas-halloween",
+        extra_jsonld=jsonld,
+    ) + style + HEADER + f"""
+<section class="hw-hero">
+  <div class="container">
+    <div class="hw-pumpkin">🎃</div>
+    <h1 class="hw-title">HALLOWEEN IN LAS VEGAS</h1>
+    <p class="hw-sub">Halloween 2026 lands on a Saturday — the biggest costume-party weekend the Strip does all year. Here's where to stay and what to do.</p>
+    <a class="hw-cta" href="#stay">🦇 Find Your Halloween Hotel</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:900px;">
+    <div class="hw-body">
+      <p style="font-size:19px; line-height:1.8;">The nightclubs throw the largest Halloween parties in the country, the dayclubs run haunted pool editions while it's still warm, and rooms book up weeks ahead. Pick your hotel early — here's the plan.</p>
+
+      <h2 class="hw-h2">Why Vegas owns Halloween</h2>
+      <p>The nightclubs are the main event. XS at Encore, Hakkasan at MGM Grand, Marquee at the Cosmopolitan, and Zouk at Resorts World all throw huge Halloween-weekend parties with costume contests and headline DJs. Tables sell out early — book two to three weeks ahead for the Saturday.</p>
+      <p>Late October in Vegas still hits the 70s and low 80s, so the dayclubs keep going. Encore Beach Club and Wet Republic run their Halloween pool editions when the weather holds. If you want the pool-party version of the weekend, this is your last window before the pools close for winter.</p>
+      <p>Off the Strip, haunted houses run across the valley all October and draw the biggest crowds the two weekends before the 31st. Area15 and its Omega Mart lean fully into the season, and they're indoor and open all day — a good move for the afternoon before the clubs.</p>
+
+      <h2 class="hw-h2" id="stay">Where to stay for Halloween weekend</h2>
+      <p>Pick a hotel with a party in the building and you can costume-up, take the elevator down, and skip the rideshare line at 2am. These six put you at the door of the best Halloween-weekend parties on the Strip. Every one books through TheVegasHub with member rates.</p>
+    </div>
+
+    <div class="grid grid-3 hw-hotels" style="margin-top:24px;">
+{cards}    </div>
+
+    <div class="hw-body">
+      <h2 class="hw-h2">Spooky things to do</h2>
+      <ul>
+        <li>The Strip lights up orange and purple, and the costume crowds make it the best free people-watching of the year. Walk it after dark.</li>
+        <li>The <a href="/things-to-do/bellagio-fountains">Bellagio</a> Conservatory runs its harvest and fall display through October — pumpkins, giant scarecrows, and it's free to walk through.</li>
+        <li><a href="/things-to-do/fremont-street-experience">Fremont Street</a> downtown fills with costumes and cheaper drinks. The light-canopy shows plus a costume crowd is a night on its own.</li>
+        <li>Want daylight before the dark? A <a href="/tours">Grand Canyon or Hoover Dam day trip</a> gets you out of the city before the night starts.</li>
+      </ul>
+    </div>
+
+    <div class="hw-band">
+      <h2 class="hw-h2" style="margin:0 0 10px;">Book before it sells out</h2>
+      <p style="max-width:620px; margin:0 auto 20px; color:var(--text-muted); line-height:1.7;">Halloween weekend is one of the fastest-booking weekends of the fall, and a Saturday-night Halloween makes it worse. Lock your room early. Every hotel adds a nightly <a href="/things-to-do/resort-fees">resort fee</a> of $35 to $55 on top of the rate.</p>
+      <a class="hw-cta" href="/hotels">🎃 Browse All Hotels</a>
+    </div>
+
+    <div style="text-align:center; margin-top:28px;">
+      <a class="btn btn-ghost" href="/where-to-stay-in-las-vegas">Where to Stay Guide</a>
+      <a class="btn btn-ghost" href="/best-time-to-visit-las-vegas" style="margin-left:10px;">Best Time to Visit</a>
+    </div>
+  </div>
+</section>
+""" + FOOTER
+    write("las-vegas-halloween/index.html", html)
+
 def page_sitemap():
     """Regenerate sitemap.xml including all hotel pages."""
     import datetime
@@ -3137,6 +3261,7 @@ def page_sitemap():
         urls.append((f"/{g['slug']}", "monthly", "0.8"))
     for l in LANDMARKS:
         urls.append((f"/{l['slug']}", "monthly", "0.7"))
+    urls.append(("/las-vegas-halloween", "monthly", "0.7"))
     urls.append(("/why-vegas", "monthly", "0.8"))
     for slug, *_ in WHY:
         urls.append((f"/why-vegas/{slug}", "monthly", "0.7"))
@@ -3175,6 +3300,7 @@ if __name__ == "__main__":
         page_guide(g)
     for l in LANDMARKS:
         page_landmark(l)
+    page_halloween()
     page_things_index()
     for slug, title, desc, h1, items in LISTICLES:
         page_listicle(slug, title, desc, h1, items)
