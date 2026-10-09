@@ -265,6 +265,16 @@ a.card, a.card:hover, a.card:focus{ color:var(--text); text-decoration:none; }
 /* map night-city stage stays dark even in light theme (it's a night map) */
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .map-stage .map-label{ color:rgba(245,245,245,.6); }
 
+/* Cookie banner keeps a fixed dark background in every theme, so its text and
+   buttons must stay light. In light mode they were inheriting dark theme colors
+   and turning invisible — you couldn't read or click the opt-out. */
+#vh-cookies{ color:rgba(245,245,245,.92) !important; }
+#vh-cookies div, #vh-cookies p, #vh-cookies span{ color:rgba(245,245,245,.9) !important; }
+#vh-cookies .neon-cyan, #vh-cookies a{ color:#00eaff !important; }
+#vh-cookies .btn-ghost{ color:#fff !important; border-color:rgba(255,255,255,.6) !important; background:transparent !important; }
+#vh-cookies .btn-ghost:hover{ background:rgba(255,255,255,.12) !important; }
+#vh-cookies .btn-cyan{ background:#00eaff !important; color:#05121a !important; }
+
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
