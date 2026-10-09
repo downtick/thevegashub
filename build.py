@@ -3229,6 +3229,209 @@ def page_halloween():
 """ + FOOTER
     write("las-vegas-halloween/index.html", html)
 
+# ---------------------------- HOLIDAY PAGES (seasonal marketing) ---------------------------- #
+
+SEASONAL = [
+    ("las-vegas-halloween",       "Halloween"),
+    ("thanksgiving-in-las-vegas", "Thanksgiving"),
+    ("christmas-in-las-vegas",    "Christmas"),
+    ("new-years-in-las-vegas",    "New Year's"),
+]
+
+HOLIDAYS = [
+    {
+        "slug": "thanksgiving-in-las-vegas",
+        "title": "Thanksgiving in Las Vegas 2026 | TheVegasHub",
+        "desc": "Thanksgiving in Las Vegas 2026 — the best turkey-day buffets, football at the sportsbooks, Black Friday shopping, and where to stay on the Strip.",
+        "h1": "Thanksgiving in Las Vegas", "hero_prefix": "Thanksgiving", "emoji": "🦃",
+        "hero_sub": "Thanksgiving 2026 is a Thursday — turkey-day buffets, three NFL games, Black Friday deals, and a 60-degree holiday. Here's where to feast and stay.",
+        "cta": "🍗 Find Your Thanksgiving Hotel",
+        "hero_grad": "radial-gradient(60% 65% at 18% 20%, rgba(166,50,24,.40), transparent 60%), radial-gradient(55% 60% at 84% 26%, rgba(224,138,20,.34), transparent 60%), linear-gradient(160deg,#241206 0%, #120a04 72%)",
+        "hero_border": "rgba(224,138,20,.25)", "glow": "rgba(224,138,20,.5)", "glow2": "rgba(166,50,24,.45)",
+        "title_accent": "#ffb15a", "btn_bg": "#e08a14", "btn_ink": "#241206",
+        "ink": "#9a4e0a", "ink_dark": "#ffa94d",
+        "pill_border": "rgba(224,138,20,.55)", "pill_bg": "rgba(224,138,20,.10)",
+        "card_border": "rgba(166,50,24,.38)", "card_hover": "#e08a14",
+        "band_grad": "linear-gradient(135deg, rgba(166,50,24,.12), rgba(224,138,20,.13))", "band_border": "rgba(224,138,20,.30)",
+        "intro": "Thanksgiving in Las Vegas is the easy holiday — someone else cooks the turkey, the football is on a hundred screens, and the weather sits in the low 60s. No dishes, no travel-day cooking, and the best buffets in the country are a short walk from your room. Here's where to feast and where to stay.",
+        "sections": [
+            ("The Vegas Thanksgiving, in three parts", '''<p><strong>The feast.</strong> Nearly every big hotel runs a Thanksgiving menu — carved turkey, stuffing, the whole spread — at its buffets and steakhouses. Bacchanal at Caesars and Wicked Spoon at the Cosmopolitan are the headline buffets; the fine-dining rooms at Wynn and Bellagio do plated turkey dinners. Book the restaurant two to three weeks out. Thanksgiving dinner reservations fill before the rooms do.</p>
+<p><strong>The football.</strong> Three NFL games run all Thanksgiving Day, and the sportsbooks turn into the best sports bars in the country — stadium seating, wall-sized screens, and a bet on the game if you want one. Get to your book by late morning on Thursday to claim a seat.</p>
+<p><strong>The shopping.</strong> Black Friday in Vegas means the outlet malls and the Strip shops open early with real markdowns. The Las Vegas North and South Premium Outlets and the Fashion Show mall are the big three. Go early, before the Strip wakes up.</p>'''),
+        ],
+        "stay_h2": "Where to stay for Thanksgiving weekend",
+        "stay_intro": "Pick a hotel with a great kitchen in the building and the holiday runs itself — roll downstairs to the feast, catch the football, and never touch a dish. These six put you on top of the best Thanksgiving dinners on the Strip.",
+        "hotels": [
+            ("caesars-palace", "BACCHANAL BUFFET",      "Bacchanal Buffet is the best spread in the city, and it runs a full Thanksgiving feast. The Forum Shops handle your Black Friday run."),
+            ("cosmopolitan",   "WICKED SPOON",          "Wicked Spoon's holiday service plus a Strip-view suite, dead center for walking to every other restaurant."),
+            ("bellagio",       "DINING + CONSERVATORY", "Plated turkey dinners in the fine-dining rooms, and the Conservatory turns to its fall harvest display for the week."),
+            ("wynn",           "WYNN RESTAURANTS",      "Some of the best Thanksgiving dinners on the Strip, steps from a quiet luxury room to nap it off."),
+            ("mgm-grand",      "SPORTSBOOK + DINING",   "A dozen restaurants for the feast and a sportsbook built for the three-game Thursday."),
+            ("mandalay-bay",   "FAMILY ROOMS",          "Big rooms for the family, a warm pool deck, and a calmer south-Strip base for the long weekend."),
+        ],
+        "close_h2": "Make a weekend of it",
+        "close_p": '''Thanksgiving falls four days after the Formula 1 race in 2026, so the city is already in high gear. Stretch the trip into the weekend — the <a href="/things-to-do/bellagio-fountains">Bellagio fountains</a>, a show, or a <a href="/tours">Grand Canyon or Hoover Dam day trip</a> on the Friday while everyone else is shopping. Book the room early. A Thursday-holiday Thanksgiving fills the Strip fast, and every hotel adds a nightly <a href="/things-to-do/resort-fees">resort fee</a> of $35 to $55 on top of the rate.''',
+    },
+    {
+        "slug": "christmas-in-las-vegas",
+        "title": "Christmas in Las Vegas 2026 | TheVegasHub",
+        "desc": "Christmas in Las Vegas 2026 — holiday light displays, the Bellagio Conservatory, the Cosmopolitan ice rink, shows, and where to stay on the Strip.",
+        "h1": "Christmas in Las Vegas", "hero_prefix": "Christmas", "emoji": "🎄",
+        "hero_sub": "Christmas 2026 falls on a Friday — a long weekend of holiday lights, an ice rink on the Strip, and a 60-degree Christmas. Here's where to stay.",
+        "cta": "🎁 Find Your Christmas Hotel",
+        "hero_grad": "radial-gradient(60% 65% at 18% 20%, rgba(46,139,87,.38), transparent 60%), radial-gradient(55% 60% at 84% 26%, rgba(212,47,47,.38), transparent 60%), linear-gradient(160deg,#0c1f14 0%, #0a0f0b 72%)",
+        "hero_border": "rgba(212,47,47,.28)", "glow": "rgba(212,47,47,.5)", "glow2": "rgba(46,139,87,.45)",
+        "title_accent": "#8fe3b0", "btn_bg": "#d42f2f", "btn_ink": "#ffffff",
+        "ink": "#b01e2e", "ink_dark": "#ff8a8a",
+        "pill_border": "rgba(46,139,87,.55)", "pill_bg": "rgba(46,139,87,.10)",
+        "card_border": "rgba(46,139,87,.40)", "card_hover": "#d42f2f",
+        "band_grad": "linear-gradient(135deg, rgba(212,47,47,.12), rgba(46,139,87,.13))", "band_border": "rgba(46,139,87,.32)",
+        "intro": "Christmas 2026 falls on a Friday, which makes it a long holiday weekend — and Las Vegas does Christmas better than people expect. The hotels deck out their lobbies, the Strip glows, there's an ice rink on a pool deck, and the desert gives you a 60-degree Christmas instead of a shovel. Here's where to stay and what to see.",
+        "sections": [
+            ("The lights are the main event", '''<p>Las Vegas goes all-in on holiday decor, and most of it is free to walk through. The Bellagio Conservatory turns into a full Christmas scene — giant ornaments, a towering tree, and the fountains running holiday music out front. The Venetian decks its canal and painted-sky ceiling top to bottom. Wynn and Encore fill their atriums with carousels and hanging gardens of ornaments.</p>
+<p>Off the Strip, two drive-through and walk-through light shows run all December — the Ethel M Holiday Cactus Garden in Henderson wraps its whole cactus garden in lights, and the bigger ticketed displays set up at the speedway and the park. They draw families every night in the two weeks before Christmas.</p>'''),
+            ("A warm-weather Christmas", '''<p>A Vegas Christmas is a 60-degree day, not a snowstorm. The pools mostly close for winter, but the ice rink on the Cosmopolitan's Boulevard Pool deck opens for the season — outdoor skating with the Strip right there. The shows run through the holiday too, several of them in Christmas editions. Book those before you book the hotel; the good nights sell out.</p>'''),
+        ],
+        "stay_h2": "Where to stay for Christmas",
+        "stay_intro": "These six put you inside or next to the best holiday displays in the city, so the lights are a walk from your room, not a drive.",
+        "hotels": [
+            ("bellagio",       "CONSERVATORY",   "The Conservatory's Christmas display and the fountains in holiday mode — the most photographed Christmas spot in Vegas is in your lobby."),
+            ("venetian",       "HOLIDAY DECOR",  "Decked top to bottom, with a Christmas scene under the painted-sky ceiling and the Sphere glowing next door."),
+            ("cosmopolitan",   "ICE RINK",       "The ice rink on the Boulevard Pool deck, Strip-view suites, and the best people-watching in town."),
+            ("wynn",           "ATRIUM DISPLAY", "Wynn and Encore go all-out on holiday decor; the atrium alone is worth the walk over."),
+            ("aria",           "CITYCENTER",     "A central CityCenter base with holiday art installations and quiet luxury for the week between the holidays."),
+            ("caesars-palace", "FORUM SHOPS",    "The Forum Shops dressed for Christmas and Bacchanal Buffet for the holiday feast."),
+        ],
+        "close_h2": "Plan the week between the holidays",
+        "close_p": '''The stretch from Christmas to New Year's is one of the busiest weeks of the year on the Strip, and it runs right into the biggest party night of all. Book early, pair your dates with a show, and read our <a href="/new-years-in-las-vegas">New Year's in Las Vegas</a> guide if you're staying through the 31st. Every hotel adds a nightly <a href="/things-to-do/resort-fees">resort fee</a> of $35 to $55 on top of the rate.''',
+    },
+    {
+        "slug": "new-years-in-las-vegas",
+        "title": "New Year's in Las Vegas 2026 | TheVegasHub",
+        "desc": "New Year's Eve in Las Vegas 2026 — Strip fireworks, the biggest nightclub countdowns, and where to stay for the best midnight view. Book early.",
+        "h1": "New Year's in Las Vegas", "hero_prefix": "New Year's", "emoji": "🎆",
+        "hero_sub": "New Year's Eve 2026 — Strip fireworks off eight rooftops, the biggest countdowns on earth, and the best midnight view from your room. Book early.",
+        "cta": "🥂 Find Your New Year's Hotel",
+        "hero_grad": "radial-gradient(60% 65% at 18% 20%, rgba(155,48,255,.42), transparent 60%), radial-gradient(55% 60% at 82% 26%, rgba(224,186,64,.34), transparent 60%), linear-gradient(160deg,#17122b 0%, #0a0810 72%)",
+        "hero_border": "rgba(224,186,64,.28)", "glow": "rgba(224,186,64,.5)", "glow2": "rgba(155,48,255,.45)",
+        "title_accent": "#ffd86b", "btn_bg": "#e0ba40", "btn_ink": "#17122b",
+        "ink": "#6a1fb8", "ink_dark": "#ffd86b",
+        "pill_border": "rgba(155,48,255,.50)", "pill_bg": "rgba(155,48,255,.10)",
+        "card_border": "rgba(155,48,255,.42)", "card_hover": "#e0ba40",
+        "band_grad": "linear-gradient(135deg, rgba(155,48,255,.15), rgba(224,186,64,.16))", "band_border": "rgba(155,48,255,.34)",
+        "intro": "New Year's Eve is the biggest night of the year in Las Vegas. The Strip closes to cars and fills with a few hundred thousand people, fireworks launch off eight hotel rooftops at midnight, and the nightclubs throw the loudest countdowns on earth. It's also the most expensive and fastest-booking night of the year — so the plan matters. Here's where to stay and how to do it.",
+        "sections": [
+            ("The fireworks are the whole show", '''<p>At midnight, fireworks fire from the rooftops of eight Strip hotels at once — an eight-minute show down the whole four-mile corridor. The street party is free: the Strip shuts to traffic in the evening and becomes one long pedestrian zone. If you just want to stand in it, you can, but get there early and know that once you're in, leaving is slow.</p>
+<p>The better seat is up high. A Strip-view room or a balcony suite puts the fireworks outside your window with no crowd, no security line, and a warm place to stand. Those rooms book months ahead and command the year's top rates, so the earlier you lock one, the better.</p>'''),
+            ("The club countdowns", '''<p>If midnight means a party, the nightclubs run the biggest ones anywhere. XS at Encore, Hakkasan at MGM Grand, Omnia at Caesars, and Zouk at Resorts World all throw New Year's Eve countdowns with headline DJs and a balloon drop at twelve. Tables and tickets go on sale months out and sell through — book as early as you can, and expect New Year's pricing on everything.</p>'''),
+        ],
+        "stay_h2": "Where to stay for New Year's Eve",
+        "stay_intro": "The right room on New Year's Eve is worth more than any other night of the year — it's your fireworks seat, your warm base, and your skip-the-crowd pass. These six put you at the center of it.",
+        "hotels": [
+            ("cosmopolitan",   "BALCONY SUITES · MARQUEE", "Terrace suites with private balconies over the Strip — the best fireworks seat in the city, and Marquee's countdown is downstairs."),
+            ("encore",         "XS COUNTDOWN",             "XS throws the biggest New Year's party on the Strip. Book the table months ahead and sleep steps from the door."),
+            ("wynn",           "NEXT TO XS",               "Right next to XS and the fireworks, with the quieter luxury rooms to recover in on the 1st."),
+            ("mgm-grand",      "HAKKASAN",                 "Hakkasan's countdown is in your building, and the south Strip has a clear line to the midnight show."),
+            ("bellagio",       "FOUNTAIN VIEWS",           "Fountain-view rooms frame the fireworks and the water show together — the grown-up New Year's pick."),
+            ("caesars-palace", "OMNIA · CENTER STRIP",     "Center-Strip and walking distance to Omnia and the heart of the party. Book early; this is the priciest night of the year."),
+        ],
+        "close_h2": "Book it now, not later",
+        "close_p": '''Nothing in Vegas books earlier or sells out harder than New Year's Eve. Rooms, club tables, and dinner reservations all go months ahead, and prices only climb as the date fills. If New Year's on the Strip is the plan, lock the room first and build everything else around it. Every hotel adds a nightly <a href="/things-to-do/resort-fees">resort fee</a> of $35 to $55 on top of the rate, and holiday rates are steep to begin with, so compare the all-in price. Coming for the whole week? Start with our <a href="/christmas-in-las-vegas">Christmas in Las Vegas</a> guide.''',
+    },
+]
+
+def page_holiday(h):
+    cards = ""
+    for slug, tag, blurb in h["hotels"]:
+        ho = HOTELS_BY_SLUG.get(slug)
+        if not ho:
+            continue
+        link = ho.get("link", "")
+        book_href = link if link.startswith("http") else "/hotels/" + slug
+        book_rel = 'rel="nofollow sponsored noopener" target="_blank"' if link.startswith("http") else ""
+        cards += f"""      <div class="card hol-card">
+        <a href="/hotels/{slug}"><img class="card-img" src="{ho.get('image','/images/og/og-default.jpg')}" alt="{ho['alt']}" loading="lazy" onerror="this.src='/images/og/og-default.jpg'"></a>
+        <div class="card-body">
+          <span class="hol-pill">{tag}</span>
+          <h3 class="headline" style="font-size:24px; margin:10px 0 8px;">{ho['name']}</h3>
+          <p style="color:var(--text-muted); font-size:14px; line-height:1.6; margin:0 0 16px; flex:1;">{blurb}</p>
+          <a href="{book_href}" {book_rel} class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW →</a>
+        </div>
+      </div>
+"""
+    sections_html = "".join(f'<h2 class="hol-h2">{t}</h2>\n{body}\n' for t, body in h["sections"])
+    xlinks = "".join(f'<a class="btn btn-ghost" href="/{s}" style="margin:4px;">{lbl}</a>'
+                     for s, lbl in SEASONAL if s != h["slug"])
+
+    breadcrumb = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{SITE}/"},
+        {"@type": "ListItem", "position": 2, "name": h["h1"], "item": f"{SITE}/{h['slug']}"}]}
+    jsonld = '<script type="application/ld+json">' + json.dumps(breadcrumb) + '</script>'
+
+    style = f"""<style>
+  .hol-hero{{ position:relative; text-align:center; padding:84px 20px 58px; overflow:hidden;
+    background:{h['hero_grad']}; border-bottom:1px solid {h['hero_border']}; }}
+  .hol-emoji{{ font-size:clamp(40px,8vw,60px); line-height:1; filter:drop-shadow(0 0 18px {h['glow']}); }}
+  .hol-title{{ font-family:'Bebas Neue','Oswald',sans-serif; font-size:clamp(44px,9vw,96px); line-height:.98; letter-spacing:.07em; margin:6px 0 14px; color:#fff;
+    text-shadow:0 0 14px {h['glow']}, 0 0 34px {h['glow2']}; }}
+  .hol-sub{{ color:rgba(255,255,255,.88); max-width:660px; margin:0 auto 26px; font-size:clamp(16px,2vw,20px); line-height:1.6; }}
+  .hol-cta{{ display:inline-block; font-family:'Bungee',sans-serif; font-size:14px; letter-spacing:.05em; color:{h['btn_ink']} !important;
+    background:{h['btn_bg']}; padding:15px 32px; border-radius:999px; text-decoration:none; box-shadow:0 0 26px {h['glow']}; }}
+  .hol-cta:hover{{ filter:brightness(1.08); color:{h['btn_ink']} !important; }}
+  .hol-pill{{ display:inline-block; font-family:'Bungee',sans-serif; font-size:10px; letter-spacing:.12em; padding:5px 11px; border-radius:999px;
+    color:{h['ink']}; border:1px solid {h['pill_border']}; background:{h['pill_bg']}; }}
+  .hol-h2{{ font-family:'Bebas Neue','Oswald',sans-serif; font-size:clamp(26px,4vw,40px); letter-spacing:.05em; margin:48px 0 14px; color:{h['ink']}; }}
+  :root[data-theme="dark"] .hol-h2{{ color:{h['ink_dark']}; }}
+  :root[data-theme="dark"] .hol-pill{{ color:{h['ink_dark']}; }}
+  .hol-body p{{ font-size:17px; line-height:1.8; margin:0 0 16px; }}
+  .hol-hotels .card{{ border-color:{h['card_border']}; }}
+  .hol-hotels .card:hover{{ border-color:{h['card_hover']}; }}
+  .hol-band{{ text-align:center; margin:52px 0 8px; padding:36px 22px; border-radius:16px;
+    background:{h['band_grad']}; border:1px solid {h['band_border']}; }}
+</style>
+"""
+
+    html = head(h["title"], h["desc"], f"/{h['slug']}", extra_jsonld=jsonld) + style + HEADER + f"""
+<section class="hol-hero">
+  <div class="container">
+    <div class="hol-emoji">{h['emoji']}</div>
+    <h1 class="hol-title">{h['hero_prefix']} in <span style="color:{h['title_accent']};">Las Vegas</span></h1>
+    <p class="hol-sub">{h['hero_sub']}</p>
+    <a class="hol-cta" href="#stay">{h['cta']}</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:900px;">
+    <div class="hol-body">
+      <p style="font-size:19px; line-height:1.8;">{h['intro']}</p>
+{sections_html}
+      <h2 class="hol-h2" id="stay">{h['stay_h2']}</h2>
+      <p>{h['stay_intro']}</p>
+    </div>
+
+    <div class="grid grid-3 hol-hotels" style="margin-top:24px;">
+{cards}    </div>
+
+    <div class="hol-band">
+      <h2 class="hol-h2" style="margin:0 0 10px;">{h['close_h2']}</h2>
+      <p style="max-width:640px; margin:0 auto 4px; color:var(--text-muted); line-height:1.7;">{h['close_p']}</p>
+    </div>
+
+    <div style="text-align:center; margin-top:28px;">
+      <a class="btn btn-cyan" href="/hotels">Browse All Hotels</a>
+      <a class="btn btn-ghost" href="/where-to-stay-in-las-vegas" style="margin-left:10px;">Where to Stay</a>
+    </div>
+
+    <div style="text-align:center; margin-top:38px; padding-top:26px; border-top:1px solid var(--card-border);">
+      <p style="color:var(--text-muted); font-size:13px; margin:0 0 10px;">More Las Vegas holiday guides</p>
+      {xlinks}
+    </div>
+  </div>
+</section>
+""" + FOOTER
+    write(f"{h['slug']}/index.html", html)
+
 def page_sitemap():
     """Regenerate sitemap.xml including all hotel pages."""
     import datetime
@@ -3262,6 +3465,8 @@ def page_sitemap():
     for l in LANDMARKS:
         urls.append((f"/{l['slug']}", "monthly", "0.7"))
     urls.append(("/las-vegas-halloween", "monthly", "0.7"))
+    for hol in HOLIDAYS:
+        urls.append((f"/{hol['slug']}", "monthly", "0.7"))
     urls.append(("/why-vegas", "monthly", "0.8"))
     for slug, *_ in WHY:
         urls.append((f"/why-vegas/{slug}", "monthly", "0.7"))
@@ -3301,6 +3506,8 @@ if __name__ == "__main__":
     for l in LANDMARKS:
         page_landmark(l)
     page_halloween()
+    for hol in HOLIDAYS:
+        page_holiday(hol)
     page_things_index()
     for slug, title, desc, h1, items in LISTICLES:
         page_listicle(slug, title, desc, h1, items)
