@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var q=new URLSearchParams(location.search).get('theme'),s=localStorage.getItem('vh_theme'),t=q||s;if(t==='dark')document.documentElement.setAttribute('data-theme','dark');else if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}</script>
+<title>Confirm Your Subscription | TheVegasHub</title>
+<meta name="description" content="Confirm you want to rejoin the TheVegasHub newsletter.">
+<meta name="msvalidate.01" content="3EEE76DDDF64D0FF9681E1D1AF528A5D">
+<link rel="canonical" href="https://thevegashub.com/newsletter/confirm">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Confirm Your Subscription | TheVegasHub">
+<meta property="og:description" content="Confirm you want to rejoin the TheVegasHub newsletter.">
+<meta property="og:url" content="https://thevegashub.com/newsletter/confirm">
+<meta property="og:image" content="https://thevegashub.com/images/og/og-default.jpg">
+<meta property="og:site_name" content="TheVegasHub">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Confirm Your Subscription | TheVegasHub">
+<meta name="twitter:description" content="Confirm you want to rejoin the TheVegasHub newsletter.">
+<meta name="twitter:image" content="https://thevegashub.com/images/og/og-default.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Bungee&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0010">
+<meta name="robots" content="noindex, nofollow">
+<script>
+  // GA4 loader — deferred until cookie consent decision
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  window.__loadGA = function() {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-MYGBD31ZHC';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-MYGBD31ZHC', {'anonymize_ip': true});
+  };
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" style="text-decoration:none; display:flex; align-items:baseline; gap:10px;">
+      <span class="neon-cyan flicker" style="font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:.05em;">VH</span>
+      <span class="display" style="color:#fff; font-family:'Bungee',sans-serif; font-size:18px; letter-spacing:.08em;">THE VEGAS HUB</span>
+    </a>
+    <nav class="site-nav">
+      <a href="/hotels">Hotels</a>
+      <a href="/map">Map</a>
+      <a href="/events">Events</a>
+      <a href="/tours">Tours</a>
+      <a href="/things-to-do">Things to Do</a>
+      <a href="/why-vegas">Why Vegas</a>
+      <a href="/packing-list">Packing List</a>
+      <a href="/about">About</a>
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Switch theme">🌙</button>
+    <button class="menu-toggle" aria-label="Open menu">☰</button>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container" style="max-width:640px;">
+    <div class="section-head">
+      <span class="pill pill-cyan">NEWSLETTER</span>
+      <h1 class="headline-glow" style="font-size:clamp(36px,5vw,60px); margin:12px 0 8px;">REJOIN OUR NEWSLETTER</h1>
+    </div>
+    <div class="card" style="padding:36px; text-align:center; flex-direction:column;">
+      <form id="nl-confirm-form" method="post" action="/api/newsletter-confirm" hidden>
+        <p style="color:var(--text-muted); line-height:1.65; margin:0 0 20px;">Press the button to confirm you want to receive our emails again.</p>
+        <input type="hidden" name="e">
+        <input type="hidden" name="l">
+        <input type="hidden" name="x">
+        <input type="hidden" name="s">
+        <button type="submit" class="btn btn-cyan" style="font-size:15px; padding:14px 32px;">Yes, resubscribe me</button>
+      </form>
+      <p id="nl-confirm-msg" style="color:var(--text-muted); line-height:1.65; margin:0;">That link isn't valid. Please sign up again from the <a href="/newsletter" style="color:var(--neon-cyan);">newsletter form</a>.</p>
+    </div>
+  </div>
+</section>
+<script>
+(function () {
+  var MESSAGES = {
+    ok: "You're back on the list. Thanks for rejoining!",
+    expired: 'That link has expired. Please sign up again and we will send you a new one.',
+    invalid: "That link isn't valid. Please sign up again from the newsletter form.",
+    error: 'Something went wrong on our side. Please try again in a few minutes.'
+  };
+  var q = new URLSearchParams(location.search);
+  var msg = document.getElementById('nl-confirm-msg');
+  var form = document.getElementById('nl-confirm-form');
+  var status = q.get('status');
+  if (status && MESSAGES.hasOwnProperty(status)) {
+    msg.textContent = MESSAGES[status];
+  } else if (q.get('e') && q.get('l') && q.get('x') && q.get('s')) {
+    ['e', 'l', 'x', 's'].forEach(function (k) { form.elements[k].value = q.get(k); });
+    form.hidden = false;
+    msg.hidden = true;
+  }
+})();
+</script>
+<footer class="site-footer">
+  <div class="container">
+    <div class="grid grid-4" style="gap:32px; margin-bottom:32px;">
+      <div>
+        <div class="display" style="color:#fff; margin-bottom:12px;">THE VEGAS HUB</div>
+        <p style="color:var(--text-muted); font-size:14px;">Insider Las Vegas travel — hotels, tours, and trip tools curated by 30-year locals.</p>
+      </div>
+      <div>
+        <div class="display" style="color:var(--neon-cyan); font-size:13px; margin-bottom:12px;">HOTELS</div>
+        <ul style="list-style:none; padding:0; margin:0; font-size:14px; line-height:2;">
+          <li><a href="/hotels/las-vegas-strip">Las Vegas Strip</a></li>
+          <li><a href="/hotels/downtown-fremont">Downtown Fremont</a></li>
+          <li><a href="/hotels/henderson">Henderson</a></li>
+          <li><a href="/hotels/mesquite">Mesquite</a></li>
+          <li><a href="/hotels/laughlin">Laughlin</a></li>
+          <li><a href="/hotels/grand-canyon">Grand Canyon</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="display" style="color:var(--neon-pink); font-size:13px; margin-bottom:12px;">EXPLORE</div>
+        <ul style="list-style:none; padding:0; margin:0; font-size:14px; line-height:2;">
+          <li><a href="/map">Hotel Map</a></li>
+          <li><a href="/events">Events</a></li>
+          <li><a href="/best-time-to-visit-las-vegas">Best Time to Visit</a></li>
+          <li><a href="/where-to-stay-in-las-vegas">Where to Stay</a></li>
+          <li><a href="/tours">Tours</a></li>
+          <li><a href="/things-to-do">Things to Do</a></li>
+          <li><a href="/why-vegas">Why Vegas</a></li>
+          <li><a href="/packing-list">Packing List</a></li>
+          <li><a href="https://book.hotelroomdiscounters.com/booknow/cars/" rel="nofollow sponsored" target="_blank">Rental Cars</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="display" style="color:var(--neon-yellow); font-size:13px; margin-bottom:12px;">COMPANY</div>
+        <ul style="list-style:none; padding:0; margin:0; font-size:14px; line-height:2;">
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/disclosure">Disclosure</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(191,0,255,.15); padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text-muted);">
+      <div>© <span data-current-year>2026</span> TheVegasHub.com · Headquartered in Las Vegas</div>
+      <div>Some links are <a href="/disclosure" style="color:var(--text-muted); text-decoration:underline;">affiliate links</a>. We may earn a commission — at no extra cost to you.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- Cookie consent banner -->
+<div id="vh-cookies" style="display:none; position:fixed; bottom:16px; left:16px; right:16px; max-width:620px; margin:0 auto; background:rgba(5,0,12,.96); border:1px solid var(--neon-cyan); border-radius:10px; padding:18px 20px; box-shadow:0 0 24px rgba(0,234,255,.35); z-index:9998; font-size:14px;">
+  <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px;">
+      <div class="display neon-cyan" style="font-size:13px; margin-bottom:6px;">COOKIES &amp; ANALYTICS</div>
+      <div style="color:var(--text-muted); line-height:1.55;">We use cookies for analytics and affiliate attribution. Essential cookies are always on. <a href="/privacy" style="color:var(--neon-cyan);">Privacy Policy</a>.</div>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="VegasHub.cookies('reject')" class="btn btn-ghost" style="font-size:12px; padding:10px 14px;">Essential only</button>
+      <button onclick="VegasHub.cookies('accept')" class="btn btn-cyan" style="font-size:12px; padding:10px 14px;">Accept all</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/site.js"></script>
+</body>
+</html>

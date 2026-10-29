@@ -5,6 +5,13 @@
 //   SENDY_API_KEY   — your Sendy API key
 //   SENDY_LIST_ID   — Sendy list ID (the hash shown in your Sendy list settings)
 //   SENDY_URL       — base URL of your Sendy install, e.g. https://clubfluent.com/sendy
+//   SMTP2GO_API_KEY — sends the "confirm you want back in" email to previously unsubscribed addresses
+//
+// Subscribes go through api/_lib/sendyConsent.js so an opt-out is never undone silently.
+
+const { subscribeWithConsent, confirmEmailContent, sendViaSmtp2go } = require('./_lib/sendyConsent');
+
+const SITE_URL = 'https://thevegashub.com';
 
 const rateLimits = new Map(); // IP → last-submit ms (resets on cold-start; fine for MVP)
 
@@ -82,57 +89,36 @@ module.exports = async (req, res) => {
     return res.end(JSON.stringify({ error: 'Please enter a valid email address.' }));
   }
 
-  // ── Pull secrets from env (never from request) ──
-  const apiKey        = process.env.SENDY_API_KEY;
-  const listId        = process.env.SENDY_LIST_ID;
-  const sendyUrl      = (process.env.SENDY_URL || '').replace(/\/$/, '');
-  const originSecret  = process.env.SENDY_ORIGIN_SECRET; // optional but strongly recommended
-
-  if (!apiKey || !listId || !sendyUrl) {
+  // ── Pull config from env (never from request) ──
+  const listId = process.env.SENDY_LIST_ID;
+  if (!process.env.SENDY_API_KEY || !listId || !process.env.SENDY_URL) {
     console.error('[subscribe] missing env vars — SENDY_API_KEY, SENDY_LIST_ID, or SENDY_URL not set');
     res.statusCode = 500;
     return res.end(JSON.stringify({ error: 'Newsletter signup is temporarily unavailable.' }));
   }
 
-  // ── Call Sendy subscribe API ──
-  // Sendy expects form-encoded, not JSON
-  const params = new URLSearchParams({
-    api_key:  apiKey,
-    email:    email,
-    list:     listId,
-    boolean:  'true',  // return plain text response instead of redirect
-    ...(name ? { name } : {}),
+  // ── Subscribe without undoing an opt-out (see api/_lib/sendyConsent.js) ──
+  // Previously unsubscribed addresses get an emailed confirm link instead.
+  const outcome = await subscribeWithConsent({
+    email,
+    name: name || undefined,
+    listId,
+    mode: 'newsletter',
+    siteUrl: SITE_URL,
+    sendConfirmEmail: (to, url) => {
+      const { subject, html, text } = confirmEmailContent('TheVegasHub', url);
+      return sendViaSmtp2go({
+        sender: process.env.CONTACT_FROM_EMAIL || 'no-reply@thevegashub.com',
+        to, subject, html, text,
+      });
+    },
   });
 
-  try {
-    const sendyHeaders = { 'Content-Type': 'application/x-www-form-urlencoded' };
-    // If SENDY_ORIGIN_SECRET is set, send it so .htaccess on SiteGround can
-    // reject any request that didn't come through this proxy.
-    if (originSecret) sendyHeaders['X-VH-Origin-Secret'] = originSecret;
-
-    const r = await fetch(`${sendyUrl}/subscribe`, {
-      method:  'POST',
-      headers: sendyHeaders,
-      body:    params.toString(),
-    });
-
-    const text = (await r.text()).trim();
-    // Sendy responses: "1" = success, "Already subscribed." = duplicate, anything else = error
-    if (text === '1') {
-      rateLimits.set(ip, now);
-      return res.end(JSON.stringify({ ok: true }));
-    }
-    if (text.toLowerCase().includes('already subscribed')) {
-      rateLimits.set(ip, now);
-      return res.end(JSON.stringify({ ok: true, alreadySubscribed: true }));
-    }
-    // Any other Sendy response is an error
-    console.error('[subscribe] Sendy error:', text);
+  if (outcome === 'failed') {
     res.statusCode = 502;
     return res.end(JSON.stringify({ error: 'Something went wrong. Please try again.' }));
-  } catch (e) {
-    console.error('[subscribe] fetch failed:', e?.message);
-    res.statusCode = 500;
-    return res.end(JSON.stringify({ error: 'Something went wrong. Please try again.' }));
   }
+  // Same response for every other outcome so the form never reveals who is or was on the list.
+  rateLimits.set(ip, now);
+  return res.end(JSON.stringify({ ok: true }));
 };

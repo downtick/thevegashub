@@ -3487,6 +3487,62 @@ def page_sitemap():
     lines.append('</urlset>')
     write("sitemap.xml", "\n".join(lines) + "\n")
 
+# ---------------------------- NEWSLETTER CONFIRM ---------------------------- #
+
+def page_newsletter_confirm():
+    """Landing page for the emailed "confirm you want back in" link sent to
+    previously unsubscribed addresses (see api/subscribe.js). Opening the link
+    does NOT subscribe (mail scanners pre-fetch links); the button POSTs to
+    /api/newsletter-confirm, which redirects back here with ?status=."""
+    html = head(
+        "Confirm Your Subscription | TheVegasHub",
+        "Confirm you want to rejoin the TheVegasHub newsletter.",
+        "/newsletter/confirm",
+        extra_jsonld='<meta name="robots" content="noindex, nofollow">',
+    ) + HEADER + """
+<section class="section">
+  <div class="container" style="max-width:640px;">
+    <div class="section-head">
+      <span class="pill pill-cyan">NEWSLETTER</span>
+      <h1 class="headline-glow" style="font-size:clamp(36px,5vw,60px); margin:12px 0 8px;">REJOIN OUR NEWSLETTER</h1>
+    </div>
+    <div class="card" style="padding:36px; text-align:center; flex-direction:column;">
+      <form id="nl-confirm-form" method="post" action="/api/newsletter-confirm" hidden>
+        <p style="color:var(--text-muted); line-height:1.65; margin:0 0 20px;">Press the button to confirm you want to receive our emails again.</p>
+        <input type="hidden" name="e">
+        <input type="hidden" name="l">
+        <input type="hidden" name="x">
+        <input type="hidden" name="s">
+        <button type="submit" class="btn btn-cyan" style="font-size:15px; padding:14px 32px;">Yes, resubscribe me</button>
+      </form>
+      <p id="nl-confirm-msg" style="color:var(--text-muted); line-height:1.65; margin:0;">That link isn't valid. Please sign up again from the <a href="/newsletter" style="color:var(--neon-cyan);">newsletter form</a>.</p>
+    </div>
+  </div>
+</section>
+<script>
+(function () {
+  var MESSAGES = {
+    ok: "You're back on the list. Thanks for rejoining!",
+    expired: 'That link has expired. Please sign up again and we will send you a new one.',
+    invalid: "That link isn't valid. Please sign up again from the newsletter form.",
+    error: 'Something went wrong on our side. Please try again in a few minutes.'
+  };
+  var q = new URLSearchParams(location.search);
+  var msg = document.getElementById('nl-confirm-msg');
+  var form = document.getElementById('nl-confirm-form');
+  var status = q.get('status');
+  if (status && MESSAGES.hasOwnProperty(status)) {
+    msg.textContent = MESSAGES[status];
+  } else if (q.get('e') && q.get('l') && q.get('x') && q.get('s')) {
+    ['e', 'l', 'x', 's'].forEach(function (k) { form.elements[k].value = q.get(k); });
+    form.hidden = false;
+    msg.hidden = true;
+  }
+})();
+</script>
+""" + FOOTER
+    write("newsletter/confirm/index.html", html)
+
 # ---------------------------- MAIN ---------------------------- #
 
 if __name__ == "__main__":
@@ -3519,6 +3575,7 @@ if __name__ == "__main__":
     page_packing_list()
     page_about()
     page_contact()
+    page_newsletter_confirm()
     page_legal()
     page_sitemap()
     page_readme()

@@ -313,7 +313,7 @@
       const res  = await fetch('/api/subscribe', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, website: hp}) });
       const data = await res.json();
       if (data.ok) {
-        form.innerHTML = '<p style="color:var(--neon-cyan); font-size:16px; font-weight:600;">You\'re in! Check your inbox.</p>';
+        form.innerHTML = '<p style="color:var(--neon-cyan); font-size:16px; font-weight:600;">Thanks! If you\'d unsubscribed before, check your inbox for a link to confirm.</p>';
         if (typeof gtag !== 'undefined') gtag('event','newsletter_signup',{method:'homepage'});
       } else {
         msg.style.cssText = 'display:block; color:var(--neon-pink);';
