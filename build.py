@@ -3515,7 +3515,8 @@ def page_newsletter_confirm():
         <input type="hidden" name="s">
         <button type="submit" class="btn btn-cyan" style="font-size:15px; padding:14px 32px;">Yes, resubscribe me</button>
       </form>
-      <p id="nl-confirm-msg" style="color:var(--text-muted); line-height:1.65; margin:0;">That link isn't valid. Please sign up again from the <a href="/newsletter" style="color:var(--neon-cyan);">newsletter form</a>.</p>
+      <p id="nl-confirm-msg" style="color:var(--text-muted); line-height:1.65; margin:0;">This page finishes a newsletter re-signup. Open it from the &quot;Yes, resubscribe me&quot; button in your confirmation email.</p>
+      <p id="nl-confirm-link" style="margin:24px 0 0;"><a href="/newsletter" class="btn btn-cyan" style="font-size:15px; padding:14px 32px;">Want our emails? Join the newsletter</a></p>
     </div>
   </div>
 </section>
@@ -3523,20 +3524,24 @@ def page_newsletter_confirm():
 (function () {
   var MESSAGES = {
     ok: "You're back on the list. Thanks for rejoining!",
-    expired: 'That link has expired. Please sign up again and we will send you a new one.',
-    invalid: "That link isn't valid. Please sign up again from the newsletter form.",
+    expired: 'That link has expired. Sign up again and we will email you a fresh one.',
+    invalid: "That link didn't work. It may have been copied incompletely. Sign up again and we will email you a fresh one.",
     error: 'Something went wrong on our side. Please try again in a few minutes.'
   };
   var q = new URLSearchParams(location.search);
   var msg = document.getElementById('nl-confirm-msg');
   var form = document.getElementById('nl-confirm-form');
+  var link = document.getElementById('nl-confirm-link');
   var status = q.get('status');
   if (status && MESSAGES.hasOwnProperty(status)) {
     msg.textContent = MESSAGES[status];
+    if (status === 'ok') link.hidden = true;
+    else link.querySelector('a').textContent = 'Join the newsletter';
   } else if (q.get('e') && q.get('l') && q.get('x') && q.get('s')) {
     ['e', 'l', 'x', 's'].forEach(function (k) { form.elements[k].value = q.get(k); });
     form.hidden = false;
     msg.hidden = true;
+    link.hidden = true;
   }
 })();
 </script>
