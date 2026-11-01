@@ -37,7 +37,7 @@
 ]}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"ItemList","name":"Hotels in Downtown Fremont","itemListElement":[{"@type":"ListItem","position":1,"name":"Fremont Hotel & Casino","url":"https://thevegashub.com/hotels/fremont-hotel"},{"@type":"ListItem","position":2,"name":"Plaza Hotel & Casino","url":"https://thevegashub.com/hotels/plaza-downtown"},{"@type":"ListItem","position":3,"name":"Golden Nugget Las Vegas Hotel & Casino","url":"https://thevegashub.com/hotels/golden-nugget-downtown"}]}
+{"@context":"https://schema.org","@type":"ItemList","name":"Hotels in Downtown Fremont","itemListElement":[{"@type":"ListItem","position":1,"name":"Circa Resort & Casino","url":"https://thevegashub.com/hotels/circa"},{"@type":"ListItem","position":2,"name":"Fremont Hotel & Casino","url":"https://thevegashub.com/hotels/fremont-hotel"},{"@type":"ListItem","position":3,"name":"Plaza Hotel & Casino","url":"https://thevegashub.com/hotels/plaza-downtown"},{"@type":"ListItem","position":4,"name":"Golden Nugget Las Vegas Hotel & Casino","url":"https://thevegashub.com/hotels/golden-nugget-downtown"}]}
 </script>
 <script>
   // GA4 loader — deferred until cookie consent decision
@@ -94,11 +94,26 @@
       
     <div class="filter-bar" id="hotel-filter-bar">
       <span class="filter-bar-label">FILTER:</span>
-      <button class="filter-chip active" data-tag="_all">All (3)</button>
-      <button class="filter-chip" data-tag="downtown">Downtown</button><button class="filter-chip" data-tag="fremont">Fremont</button>
+      <button class="filter-chip active" data-tag="_all">All (4)</button>
+      <button class="filter-chip" data-tag="downtown">Downtown</button><button class="filter-chip" data-tag="fremont">Fremont</button><button class="filter-chip" data-tag="pool">Pool</button>
       <span class="filter-count" id="hotel-filter-count"></span>
     </div>
       <div class="grid grid-3" id="hotels-grid">
+      <div class="card" id="circa" data-tags="downtown fremont new pool sportsbook">
+        <a href="/hotels/circa" style="text-decoration:none; color:inherit;">
+          <img class="card-img" src="/images/hotels/circa.jpg" alt="Circa Resort & Casino neon marquee sign lit up at night on Fremont Street in downtown Las Vegas" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">
+          <div class="card-body" style="padding-bottom:12px;">
+            <span class="pill pill-pink">HOT DEAL</span>
+            <h3 class="headline" style="font-size:26px; margin:10px 0 4px;">Circa Resort & Casino</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:0 0 12px;">Las Vegas</p>
+            <p class="card-spacer" style="margin:0 0 12px;">Downtown's only ground-up new casino (2020), 21-and-up — Stadium Swim's six-pool amphitheater, the three-story sportsbook, and the Legacy Club rooftop bar.</p>
+            <span class="display neon-cyan" style="font-size:12px; margin-top:auto;">Read full guide →</span>
+          </div>
+        </a>
+        <div style="padding:0 20px 20px; margin-top:auto;">
+          <a href="https://book.hotelroomdiscounters.com/url/51a1024a-49bc-44f4-af9e-3cbcbf2833e7?isPermanentLink=true" rel="nofollow sponsored" target="_blank" class="btn btn-pink" style="width:100%; text-align:center; font-size:13px; padding:12px;">BOOK NOW</a>
+        </div>
+      </div>
       <div class="card" id="fremont-hotel" data-tags="downtown fremont value">
         <a href="/hotels/fremont-hotel" style="text-decoration:none; color:inherit;">
           <img class="card-img" src="/images/hotels/fremont-hotel.jpg" alt="Fremont Hotel & Casino under the neon canopy of the Fremont Street Experience in downtown Las Vegas" loading="lazy" onerror="this.src='/images/og/og-default.jpg'">

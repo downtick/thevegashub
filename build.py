@@ -1343,6 +1343,14 @@ ATTRACTIONS = [
         "tip": "Fremont Street is also where locals go when tourists aren't looking. The crowd leans to older regulars + bachelorette parties, with the best people-watching on any Friday night between 9pm and midnight.",
         "book_label": "STAY DOWNTOWN",
         "book_href": "/hotels/downtown-fremont",
+        "featured_hotel": {
+            "name": "Circa Resort & Casino",
+            "img": "/images/hotels/circa.jpg",
+            "alt": "Circa Resort & Casino neon marquee sign lit up at night on Fremont Street in Downtown Las Vegas",
+            "blurb": "Downtown's showpiece — 21-and-up, built new in 2020 right under the Fremont Street Experience canopy. Home to Stadium Swim's six-pool amphitheater, the three-story sportsbook, and the Legacy Club rooftop bar. The most modern room you'll find on Fremont Street.",
+            "cta": "See Downtown Rooms",
+            "href": "/hotels/downtown-fremont",
+        },
     },
     {
         "slug": "hoover-dam",
@@ -1393,6 +1401,21 @@ def page_attraction(a):
 
     book_rel = 'rel="nofollow sponsored" target="_blank"' if a["book_href"].startswith("http") else ""
 
+    fh = a.get("featured_hotel")
+    featured_html = ""
+    if fh:
+        fh_rel = 'rel="nofollow sponsored" target="_blank"' if fh["href"].startswith("http") else ""
+        featured_html = f"""
+    <div class="card" style="overflow:hidden; margin:36px 0; border-color:var(--neon-pink);">
+      <img class="card-img" src="{fh['img']}" alt="{fh['alt']}" loading="lazy" onerror="this.style.display='none'">
+      <div class="card-body" style="padding:32px;">
+        <span class="pill pill-pink">FEATURED HOTEL</span>
+        <h2 class="headline neon-pink" style="font-size:28px; margin:12px 0 10px;">{fh['name']}</h2>
+        <p style="font-size:17px; line-height:1.7; margin:0 0 20px;">{fh['blurb']}</p>
+        <a class="btn btn-cyan" href="{fh['href']}" {fh_rel} style="font-size:15px; padding:14px 30px;">{fh['cta']} &rarr;</a>
+      </div>
+    </div>"""
+
     html = head(
         f"{a['name']} | TheVegasHub",
         a["intro"][:155],
@@ -1412,6 +1435,7 @@ def page_attraction(a):
   <div class="container" style="max-width:900px;">
     <p style="font-size:19px; line-height:1.75; margin:0 0 36px;">{a['intro']}</p>
 {sections_html}
+{featured_html}
 
     <div class="card" style="padding:28px; background:rgba(255,230,0,.06); border-color:var(--neon-yellow); margin:24px 0;">
       <span class="pill">INSIDER TIP</span>
