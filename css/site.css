@@ -250,7 +250,23 @@ a.card, a.card:hover, a.card:focus{ color:var(--text); text-decoration:none; }
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .site-nav.open{ background:#fff; }
 /* buttons */
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-cyan,
-:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-pink{ color:#fff !important; }
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-pink{ color:#fff !important; text-shadow:none; }
+/* Light mode: solid fills so the white label is readable (WCAG AA: #0b6070 and #a8155a are 7.2:1 with #fff;
+   hover shades #084c59 9.6:1, #8a1149 9.3:1). Dark mode keeps the neon outline look above. */
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-cyan{
+  background:#0b6070; border-color:#0b6070; box-shadow:0 2px 10px rgba(11,96,112,.25);
+}
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-cyan:hover,
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-cyan:focus-visible{
+  background:#084c59; border-color:#084c59; box-shadow:0 4px 16px rgba(11,96,112,.35);
+}
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-pink{
+  background:#a8155a; border-color:#a8155a; box-shadow:0 2px 10px rgba(168,21,90,.25);
+}
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-pink:hover,
+:root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-pink:focus-visible{
+  background:#8a1149; border-color:#8a1149; box-shadow:0 4px 16px rgba(168,21,90,.35);
+}
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-ghost{ color:var(--text); border-color:rgba(27,16,36,.35); }
 :root[data-theme="light"]:not([data-contrast="high"]):not([data-contrast="dark"]) .btn-ghost:hover{ border-color:var(--text); background:rgba(27,16,36,.05); }
 /* photo heroes keep light text over the image */

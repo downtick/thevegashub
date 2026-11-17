@@ -1,0 +1,5 @@
+# Build inputs and docs: not part of the public site
+*.md
+build.py
+data/
+_mockups/

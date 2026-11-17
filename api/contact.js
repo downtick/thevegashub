@@ -2,125 +2,49 @@
 // POST only. Sends via SMTP2GO API. Env vars required:
 //   SMTP2GO_API_KEY   - set in Vercel project settings
 //   CONTACT_TO_EMAIL  - recipient email for contact submissions
+//
+// Fails loud: if the email can't be sent the visitor gets a 5xx and an error
+// message, never a fake "thanks".
 
-const rateLimits = new Map(); // IP -> last-submit timestamp (resets on cold-start; adequate for MVP)
+const { clientIp, rateLimited, readJson, str, oneLine, escHtml, isEmail, sendJson } = require('./_lib/safe');
 
-function getClientIp(req) {
-  const fwd = (req.headers['x-forwarded-for'] || '').split(',').map(s => s.trim()).filter(Boolean);
-  return fwd[0] || req.socket?.remoteAddress || 'unknown';
-}
-
-function sanitize(str, maxLen = 2000) {
-  if (typeof str !== 'string') return '';
-  let out = str.slice(0, maxLen);
-  // Strip HTML tags
-  out = out.replace(/<[^>]*>/g, '');
-  // Strip dangerous protocols
-  out = out.replace(/javascript:/gi, '');
-  out = out.replace(/data:/gi, '');
-  out = out.replace(/vbscript:/gi, '');
-  // Strip inline event handlers remnants
-  out = out.replace(/on\w+\s*=/gi, '');
-  // Escape HTML entities
-  out = out
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
-  return out.trim();
-}
-
-function isValidEmail(email) {
-  if (typeof email !== 'string' || email.length > 254) return false;
-  return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
-}
+const FAIL_MSG = "Sorry, we couldn't send your message right now. Please try again in a few minutes.";
 
 module.exports = async (req, res) => {
-  // Security headers
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('Cache-Control', 'no-store');
-
   if (req.method !== 'POST') {
-    res.statusCode = 405;
-    return res.end(JSON.stringify({ error: 'Method not allowed' }));
+    res.setHeader('Allow', 'POST');
+    return sendJson(res, 405, { error: 'Method not allowed' });
   }
 
-  // Rate limit: 30 seconds per IP
-  const ip = getClientIp(req);
-  const now = Date.now();
-  const last = rateLimits.get(ip) || 0;
-  if (now - last < 30_000) {
-    console.error('[rate-limit] blocked ip=' + ip);
-    res.statusCode = 429;
-    return res.end(JSON.stringify({ error: 'Please wait a moment before submitting again.' }));
+  const ip = clientIp(req);
+  if (rateLimited(req, 'contact', 6, 10 * 60_000)) {
+    console.error('[rate-limit] contact blocked ip=' + ip);
+    return sendJson(res, 429, { error: 'Too many messages — please wait a few minutes and try again.' });
   }
 
-  // Parse body (Vercel usually gives us req.body; handle both)
-  let body = req.body;
-  if (!body || typeof body === 'string') {
-    try {
-      let raw = '';
-      if (typeof body === 'string') {
-        raw = body;
-      } else {
-        raw = await new Promise((resolve, reject) => {
-          let data = '';
-          req.on('data', c => { data += c; if (data.length > 10000) req.destroy(); });
-          req.on('end', () => resolve(data));
-          req.on('error', reject);
-        });
-      }
-      body = raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      console.error('[contact] bad json');
-      res.statusCode = 400;
-      return res.end(JSON.stringify({ error: 'Invalid request body.' }));
-    }
-  }
+  const body = await readJson(req, 20_000);
+  if (!body) return sendJson(res, 400, { error: 'Invalid request body.' });
 
-  // Honeypot — silent success if triggered
+  // Honeypot — silent success if triggered (never tell bots)
   if (body.website || body.hp_field) {
     console.error('[contact] honeypot triggered ip=' + ip);
-    rateLimits.set(ip, now);
-    return res.end(JSON.stringify({ ok: true }));
+    return sendJson(res, 200, { ok: true });
   }
 
-  // Sanitize + validate
-  const name = sanitize(body.name, 120);
-  const email = typeof body.email === 'string' ? body.email.slice(0, 254).trim() : '';
-  const phone = sanitize(body.phone, 24);
-  const subject = sanitize(body.subject, 180);
-  const message = sanitize(body.message, 5000);
-  const smsConsent = !!body.sms_consent;
+  const name = oneLine(str(body.name, 120), 120);
+  const email = str(body.email, 254);
+  const phone = oneLine(str(body.phone, 24), 24);
+  const subject = oneLine(str(body.subject, 180), 180);
+  const message = str(body.message, 5000);
+  const smsConsent = body.sms_consent === true || body.sms_consent === 'on' || body.sms_consent === 'true';
 
-  if (!name || name.length < 2) {
-    res.statusCode = 400;
-    return res.end(JSON.stringify({ error: 'Please provide your name.' }));
-  }
-  if (!isValidEmail(email)) {
-    res.statusCode = 400;
-    return res.end(JSON.stringify({ error: 'Please provide a valid email address.' }));
-  }
-  // Phone — keep digits only, require at least 7 digits
+  if (name.length < 2) return sendJson(res, 400, { error: 'Please provide your name.' });
+  if (!isEmail(email)) return sendJson(res, 400, { error: 'Please provide a valid email address.' });
   const phoneDigits = phone.replace(/\D/g, '');
-  if (phoneDigits.length < 7) {
-    res.statusCode = 400;
-    return res.end(JSON.stringify({ error: 'Please provide a valid phone number.' }));
-  }
-  if (!subject || subject.length < 2) {
-    res.statusCode = 400;
-    return res.end(JSON.stringify({ error: 'Please include a subject.' }));
-  }
-  if (!message || message.length < 5) {
-    res.statusCode = 400;
-    return res.end(JSON.stringify({ error: 'Please include a message.' }));
-  }
-  if (!smsConsent) {
-    res.statusCode = 400;
-    return res.end(JSON.stringify({ error: 'SMS consent is required to submit this form.' }));
-  }
+  if (phoneDigits.length < 7 || phoneDigits.length > 15) return sendJson(res, 400, { error: 'Please provide a valid phone number.' });
+  if (subject.length < 2) return sendJson(res, 400, { error: 'Please include a subject.' });
+  if (message.length < 5) return sendJson(res, 400, { error: 'Please include a message.' });
+  if (!smsConsent) return sendJson(res, 400, { error: 'SMS consent is required to submit this form.' });
 
   const apiKey = process.env.SMTP2GO_API_KEY;
   const toEmail = process.env.CONTACT_TO_EMAIL || 'contact@thevegashub.com';
@@ -128,18 +52,17 @@ module.exports = async (req, res) => {
 
   if (!apiKey) {
     console.error('[contact] missing SMTP2GO_API_KEY env var');
-    res.statusCode = 500;
-    return res.end(JSON.stringify({ error: 'Something went wrong. Please try again later.' }));
+    return sendJson(res, 503, { error: FAIL_MSG });
   }
 
-  const rawMessage = body.message?.slice(0, 5000) || '';
   const payload = {
     api_key: apiKey,
     to: [toEmail],
     sender: fromEmail,
-    subject: `[TheVegasHub] ${subject}`,
-    text_body: `From: ${name} <${email}>\nPhone: ${phone}\nSMS consent: YES — user agreed to receive a text message regarding this specific inquiry (standard message & data rates apply)\n\n${rawMessage}\n\n---\nIP: ${ip}\nUA: ${req.headers['user-agent'] || ''}`,
-    html_body: `<p><strong>From:</strong> ${name} &lt;${email}&gt;</p><p><strong>Phone:</strong> ${phone}</p><p><strong>SMS consent:</strong> YES — user agreed to receive a text message regarding this specific inquiry (standard message &amp; data rates apply)</p><p>${message.replace(/\n/g, '<br>')}</p><hr><p style="font-size:11px;color:#888">IP: ${ip}</p>`,
+    custom_headers: [{ header: 'Reply-To', value: email }],
+    subject: oneLine(`[TheVegasHub] ${subject}`, 200),
+    text_body: `From: ${name} <${email}>\nPhone: ${phone}\nSMS consent: YES — user agreed to receive a text message regarding this specific inquiry (standard message & data rates apply)\n\n${message}\n\n---\nIP: ${ip}\nUA: ${oneLine(req.headers['user-agent'] || '', 300)}`,
+    html_body: `<p><strong>From:</strong> ${escHtml(name)} &lt;${escHtml(email)}&gt;</p><p><strong>Phone:</strong> ${escHtml(phone)}</p><p><strong>SMS consent:</strong> YES — user agreed to receive a text message regarding this specific inquiry (standard message &amp; data rates apply)</p><p>${escHtml(message).replace(/\r?\n/g, '<br>')}</p><hr><p style="font-size:11px;color:#888">IP: ${escHtml(ip)}</p>`,
   };
 
   try {
@@ -149,27 +72,13 @@ module.exports = async (req, res) => {
       body: JSON.stringify(payload),
     });
     const data = await r.json().catch(() => ({}));
-    if (!r.ok || data?.data?.failed > 0) {
-      console.error('[contact] smtp2go error', r.status, JSON.stringify(data));
-      res.statusCode = 502;
-      // TEMPORARY: leak SMTP2GO diagnostic to the response so we can see what's wrong.
-      // Remove this diagnostic block once the form is confirmed working.
-      const diag = {
-        error: 'Something went wrong. Please try again later.',
-        _debug: {
-          httpStatus: r.status,
-          smtp2goError: data?.data?.error || data?.data?.error_code || data?.error || null,
-          smtp2goField: data?.data?.field || null,
-          smtp2goEmails: data?.data?.failures || null,
-        },
-      };
-      return res.end(JSON.stringify(diag));
+    if (!r.ok || !data?.data || data.data.failed > 0 || !(data.data.succeeded > 0)) {
+      console.error('[contact] smtp2go error', r.status, JSON.stringify(data?.data?.error || data?.data?.failures || ''));
+      return sendJson(res, 502, { error: FAIL_MSG });
     }
-    rateLimits.set(ip, now);
-    return res.end(JSON.stringify({ ok: true }));
+    return sendJson(res, 200, { ok: true });
   } catch (e) {
     console.error('[contact] fetch failed', e?.message);
-    res.statusCode = 500;
-    return res.end(JSON.stringify({ error: 'Something went wrong. Please try again later.' }));
+    return sendJson(res, 502, { error: FAIL_MSG });
   }
 };
