@@ -266,3 +266,39 @@ window.VegasHub.print = function() { window.print(); };
     });
   });
 })();
+
+/* ---- GA4 conversion tracking: affiliate/booking outbound clicks ---- */
+(function () {
+  function track(a) {
+    var href = a.getAttribute('href') || '';
+    var rel  = (a.getAttribute('rel') || '');
+    var isAffiliate = /book\.hotelroomdiscounters\.com/i.test(href) ||
+                      /(^|\s)sponsored(\s|$)/i.test(rel);
+    if (!isAffiliate) return;
+    if (typeof gtag === 'function') {
+      gtag('event', 'affiliate_click', {
+        link_url: href,
+        link_text: (a.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 100),
+        page_path: location.pathname
+      });
+    }
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (a) track(a);
+  }, true);
+  // auxclick = middle-click / open-in-new-tab
+  document.addEventListener('auxclick', function (e) {
+    if (e.button !== 1) return;
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (a) track(a);
+  }, true);
+})();
+
+/* ---- GA4 helper: fire newsletter_signup consistently from any form ---- */
+window.VegasHub = window.VegasHub || {};
+window.VegasHub.trackSignup = function (where) {
+  if (typeof gtag === 'function') {
+    gtag('event', 'newsletter_signup', { method: where || 'site' });
+  }
+};
