@@ -7,6 +7,7 @@
 // message, never a fake "thanks".
 
 const { clientIp, rateLimited, readJson, str, oneLine, escHtml, isEmail, sendJson } = require('./_lib/safe');
+const { sendToLeadHub, sectionsFrom } = require('./_leadhub');
 
 const FAIL_MSG = "Sorry, we couldn't send your message right now. Please try again in a few minutes.";
 
@@ -45,6 +46,9 @@ module.exports = async (req, res) => {
   if (subject.length < 2) return sendJson(res, 400, { error: 'Please include a subject.' });
   if (message.length < 5) return sendJson(res, 400, { error: 'Please include a message.' });
   if (!smsConsent) return sendJson(res, 400, { error: 'SMS consent is required to submit this form.' });
+  // Tracking: page the form was on + document.referrer (captured client-side).
+  const pageUrl = oneLine(str(body.pageUrl, 2000), 2000);
+  const referrer = oneLine(str(body.referrer, 2000), 2000);
 
   const apiKey = process.env.SMTP2GO_API_KEY;
   const toEmail = process.env.CONTACT_TO_EMAIL || 'contact@thevegashub.com';
@@ -61,9 +65,21 @@ module.exports = async (req, res) => {
     sender: fromEmail,
     custom_headers: [{ header: 'Reply-To', value: email }],
     subject: oneLine(`[TheVegasHub] ${subject}`, 200),
-    text_body: `From: ${name} <${email}>\nPhone: ${phone}\nSMS consent: YES — user agreed to receive a text message regarding this specific inquiry (standard message & data rates apply)\n\n${message}\n\n---\nIP: ${ip}\nUA: ${oneLine(req.headers['user-agent'] || '', 300)}`,
-    html_body: `<p><strong>From:</strong> ${escHtml(name)} &lt;${escHtml(email)}&gt;</p><p><strong>Phone:</strong> ${escHtml(phone)}</p><p><strong>SMS consent:</strong> YES — user agreed to receive a text message regarding this specific inquiry (standard message &amp; data rates apply)</p><p>${escHtml(message).replace(/\r?\n/g, '<br>')}</p><hr><p style="font-size:11px;color:#888">IP: ${escHtml(ip)}</p>`,
+    text_body: `From: ${name} <${email}>\nPhone: ${phone}\nSMS consent: YES — user agreed to receive a text message regarding this specific inquiry (standard message & data rates apply)\n\n${message}\n\n---\nIP: ${ip}\nUA: ${oneLine(req.headers['user-agent'] || '', 300)}\nPage URL: ${pageUrl || 'Unknown'}\nReferring URL: ${referrer || 'Direct'}`,
+    html_body: `<p><strong>From:</strong> ${escHtml(name)} &lt;${escHtml(email)}&gt;</p><p><strong>Phone:</strong> ${escHtml(phone)}</p><p><strong>SMS consent:</strong> YES — user agreed to receive a text message regarding this specific inquiry (standard message &amp; data rates apply)</p><p>${escHtml(message).replace(/\r?\n/g, '<br>')}</p><hr><p style="font-size:11px;color:#888">IP: ${escHtml(ip)}</p><p><strong>Page URL:</strong> ${escHtml(pageUrl || 'Unknown')}</p><p><strong>Referring URL:</strong> ${escHtml(referrer || 'Direct')}</p>`,
   };
+
+  // Lead Hub: same lead, alongside the email (never throws, never changes the response).
+  const sp = name.indexOf(' ');
+  const leadHub = sendToLeadHub({
+    leadType: 'Vegas Hub Contact Form',
+    contact: { firstName: sp > -1 ? name.slice(0, sp) : name, lastName: sp > -1 ? name.slice(sp + 1) : '', email, phone },
+    sections: sectionsFrom({
+      Contact: [['Name', name], ['Email', email], ['Phone', phone], ['SMS consent', 'Yes']],
+      Message: [['Subject', subject], ['Message', message]],
+    }),
+    tracking: { pageUrl, referrer, ip },
+  });
 
   try {
     const r = await fetch('https://api.smtp2go.com/v3/email/send', {
@@ -72,12 +88,14 @@ module.exports = async (req, res) => {
       body: JSON.stringify(payload),
     });
     const data = await r.json().catch(() => ({}));
+    await leadHub;
     if (!r.ok || !data?.data || data.data.failed > 0 || !(data.data.succeeded > 0)) {
       console.error('[contact] smtp2go error', r.status, JSON.stringify(data?.data?.error || data?.data?.failures || ''));
       return sendJson(res, 502, { error: FAIL_MSG });
     }
     return sendJson(res, 200, { ok: true });
   } catch (e) {
+    await leadHub;
     console.error('[contact] fetch failed', e?.message);
     return sendJson(res, 502, { error: FAIL_MSG });
   }

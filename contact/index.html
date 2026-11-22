@@ -136,6 +136,8 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     message: f.message.value,
     sms_consent: f.sms_consent.checked,
     website: f.website.value,
+    pageUrl: window.location.href,
+    referrer: document.referrer || '',
   };
   try {
     const r = await fetch('/api/contact', {
