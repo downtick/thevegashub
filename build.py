@@ -2706,6 +2706,46 @@ EVENTS = [
         "hotels_heading": "Where to Stay on the Strip",
         "hotel_slugs": ["bellagio", "caesars-palace", "cosmopolitan", "venetian"],
     },
+    {
+        "slug": "nfr-rodeo-2027",
+        "name": "Wrangler National Finals Rodeo (NFR) 2027",
+        "pill": "RODEO",
+        "date": "December 2–11, 2027",
+        "start_iso": "2027-12-02", "end_iso": "2027-12-11",
+        "city": "Las Vegas, NV", "region": "Las Vegas",
+        "admission": "Ticketed; all ten performances at the Thomas & Mack Center sell as individual nights or full packages",
+        "summary": "The championship finals of professional rodeo &mdash; ten nights of bareback riding, steer wrestling, team roping, saddle bronc, tie-down roping, barrel racing, and bull riding at the Thomas & Mack Center on the UNLV campus. The top fifteen contestants in each event compete for the world titles, and the whole city turns Western for the run, with pop-up marketplaces, the free Cowboy Christmas trade show at the convention center, and live country music across the Strip.",
+        "best_for": "Rodeo fans, Western-lifestyle shoppers, and country-music crowds.",
+        "planning_notes": [
+            "Performances start at 6:45 PM nightly &mdash; arrive early, because traffic around the Thomas & Mack Center and Tropicana Ave backs up fast on finals nights.",
+            "Cowboy Christmas, the free Western trade show at the Las Vegas Convention Center, runs daytime all ten days and is worth a full afternoon.",
+            "Rooms sell out for the full ten-day run earlier than almost any event except New Year's &mdash; book months ahead.",
+        ],
+        "ada": "The Thomas & Mack Center offers accessible seating on every level and accessible parking in the adjacent UNLV lots; request ADA seating when buying tickets.",
+        "near_venue": "The Thomas & Mack Center sits on the UNLV campus just east of the south Strip. South Point is the longtime rodeo hub &mdash; it hosts its own Western events during NFR and runs shuttles &mdash; and the south-Strip resorts below are a few minutes away.",
+        "hotels_heading": "Where to Stay for NFR",
+        "hotel_slugs": ["south-point", "mgm-grand", "luxor"],
+    },
+    {
+        "slug": "edc-las-vegas-2027",
+        "name": "EDC Las Vegas 2027 (Electric Daisy Carnival)",
+        "pill": "MUSIC FESTIVAL",
+        "date": "May 21–23, 2027",
+        "start_iso": "2027-05-21", "end_iso": "2027-05-23",
+        "city": "Las Vegas, NV", "region": "Las Vegas",
+        "admission": "Ticketed; 3-day general admission and VIP passes, 18+ only. Dusk-to-dawn hours, roughly 7 PM to 5:30 AM",
+        "summary": "The largest electronic dance music festival in North America &mdash; three all-night sessions under the lights at the Las Vegas Motor Speedway. More than eight stages, hundreds of DJs across house, techno, trance, bass, and dubstep, full carnival rides, art installations, and the sunrise closing sets the festival is known for. The crowd runs well over 100,000 a night.",
+        "best_for": "Electronic music fans and festival-goers who want the full all-night experience.",
+        "planning_notes": [
+            "It runs dusk to dawn &mdash; plan to sleep during the day and head out in the evening. The official shuttle is the sane way in and out of the Speedway.",
+            "The Speedway is about 15 miles north of the Strip; do not plan to drive, because rideshare surge and parking exits add hours. Shuttle passes from Strip hotels sell out, so buy early.",
+            "May nights in the desert swing from hot to genuinely cold before sunrise &mdash; bring a layer for the ride back.",
+        ],
+        "ada": "EDC runs an accessibility program with viewing platforms, accessible shuttle options, and a dedicated support team; register through the festival's accessibility page in advance.",
+        "near_venue": "The festival is at the Las Vegas Motor Speedway, north of downtown. Most attendees stay on the Strip and take the official shuttle; the Strip resorts below are common shuttle pickup points with member-rate booking.",
+        "hotels_heading": "Where to Stay for EDC",
+        "hotel_slugs": ["luxor", "excalibur", "cosmopolitan"],
+    },
 ]
 
 def _event_hotels_grid(e):
@@ -3268,6 +3308,7 @@ SEASONAL = [
     ("thanksgiving-in-las-vegas", "Thanksgiving"),
     ("christmas-in-las-vegas",    "Christmas"),
     ("new-years-in-las-vegas",    "New Year's"),
+    ("valentines-in-las-vegas",   "Valentine's Day"),
 ]
 
 HOLIDAYS = [
@@ -3369,6 +3410,39 @@ HOLIDAYS = [
         ],
         "close_h2": "Book it now, not later",
         "close_p": '''Nothing in Vegas books earlier or sells out harder than New Year's Eve. Rooms, club tables, and dinner reservations all go months ahead, and prices only climb as the date fills. If New Year's on the Strip is the plan, lock the room first and build everything else around it. Every hotel adds a nightly <a href="/things-to-do/resort-fees">resort fee</a> of $35 to $55 on top of the rate, and holiday rates are steep to begin with, so compare the all-in price. Coming for the whole week? Start with our <a href="/christmas-in-las-vegas">Christmas in Las Vegas</a> guide.''',
+    },
+    {
+        "slug": "valentines-in-las-vegas",
+        "title": "Valentine's Day in Las Vegas 2027 | TheVegasHub",
+        "desc": "Valentine's Day in Las Vegas 2027 — romantic dinners, gondola rides, couples' spas, the best Strip-view suites, and where to stay for the weekend.",
+        "h1": "Valentine's Day in Las Vegas", "hero_prefix": "Valentine's Day", "emoji": "💘",
+        "hero_sub": "Valentine's Day 2027 lands on a Sunday, so it's a full weekend — gondola rides, fountain-view suites, and the best couples' dinners in the country. Here's where to stay.",
+        "cta": "💞 Find Your Romantic Hotel",
+        "hero_grad": "radial-gradient(60% 65% at 20% 20%, rgba(255,46,120,.40), transparent 60%), radial-gradient(55% 60% at 82% 28%, rgba(180,30,90,.38), transparent 60%), linear-gradient(160deg,#20060f 0%, #120409 72%)",
+        "hero_border": "rgba(255,70,130,.30)", "glow": "rgba(255,60,120,.5)", "glow2": "rgba(255,120,170,.4)",
+        "title_accent": "#ff9ec2", "btn_bg": "#ff3d77", "btn_ink": "#ffffff",
+        "ink": "#d12864", "ink_dark": "#ff9ec2",
+        "pill_border": "rgba(255,70,130,.55)", "pill_bg": "rgba(255,70,130,.10)",
+        "card_border": "rgba(255,70,130,.40)", "card_hover": "#ff3d77",
+        "band_grad": "linear-gradient(135deg, rgba(255,60,120,.13), rgba(180,30,90,.12))", "band_border": "rgba(255,70,130,.32)",
+        "intro": "Valentine's Day 2027 falls on a Sunday, which turns it into a full romantic weekend — and Las Vegas is built for exactly this. Some of the best restaurants in the country sit a short walk apart, the fountains run all night, and you can go from a gondola ride to a rooftop nightcap without ever calling a car. Here's where to stay and how to plan it.",
+        "sections": [
+            ("Dinner is the whole night", '''<p>Vegas has more great Valentine's tables than any city in the country, and most of them are inside a 15-minute walk of each other. The marquee rooms — fine dining at the Bellagio, the chef's counters at the Cosmopolitan, Wynn's restaurant row, the steakhouses at Caesars — all run Valentine's menus, and they fill weeks ahead. Book the table before you book anything else.</p>
+<p>Want the view with the meal? A fountain-view table at the Bellagio, the Eiffel Tower restaurant at Paris, or a Strip-view perch at the Cosmopolitan turns dinner into the main event. Reserve the early seating and catch the late fountain show after.</p>'''),
+            ("The romantic classics still work", '''<p>The gondola rides at the Venetian — indoor along the canal or outdoor on the lagoon — are exactly as corny and exactly as good as you'd hope. The High Roller's Happy Half Hour cabin gives you 30 minutes over the Strip with the lights below. The couples' spas at Wynn, Aria, and the Waldorf are the quiet move for the afternoon before dinner. And the free <a href="/things-to-do/bellagio-fountains">Bellagio fountains</a>, with the right song, are still the best no-reservation date in the city.</p>'''),
+        ],
+        "stay_h2": "Where to stay for Valentine's weekend",
+        "stay_intro": "The right room makes the weekend — a view, a short walk to dinner, and a spa downstairs. These six are the romantic picks on the Strip.",
+        "hotels": [
+            ("venetian",       "GONDOLAS · SUITES",   "All-suite rooms and the gondola rides downstairs — the easiest romantic weekend to plan on the Strip."),
+            ("bellagio",       "FOUNTAIN VIEWS",      "A fountain-view room frames the water show from bed, and the fine-dining rooms are an elevator ride away."),
+            ("wynn",           "SPA + DINING",        "The couples' spa and some of the best restaurants in the city, wrapped in the quietest luxury on the Strip."),
+            ("cosmopolitan",   "TERRACE SUITES",      "A terrace suite with a private balcony over the Strip — the view does half the work, the chef's counters do the rest."),
+            ("aria",           "CITYCENTER SPA",      "A central base with a full spa and a quick walk to the Cosmopolitan and Bellagio for dinner."),
+            ("caesars-palace", "STEAKHOUSES · NOBU",  "Center-Strip, walking distance to a dozen great tables, and the Nobu tower for couples who want to stay in."),
+        ],
+        "close_h2": "Book early — it's a sellout weekend",
+        "close_p": '''Valentine's weekend is one of the busiest of the winter on the Strip, and the best dinner reservations go first. Lock the table, then the room, then the show. Our <a href="/where-to-stay-in-las-vegas">where to stay in Las Vegas</a> guide breaks down every area if you want options off the Strip, and every hotel adds a nightly <a href="/things-to-do/resort-fees">resort fee</a> of $35 to $55 on top of the rate, so compare the all-in price.''',
     },
 ]
 
